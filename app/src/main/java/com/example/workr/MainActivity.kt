@@ -16,5 +16,8 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        // Ejemplo de uso de una propiedad de configuración en código.
+        println("Connection test URL: ${BuildConfig.CONNECTION_TEST_URL}")
     }
 }
