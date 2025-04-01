@@ -10,9 +10,13 @@ import androidx.lifecycle.lifecycleScope
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
 class MainActivity : AppCompatActivity() {
     private lateinit var txtResponse: TextView
@@ -40,13 +44,22 @@ class MainActivity : AppCompatActivity() {
      */
     suspend fun makeRequest() {
         // Configuración del cliente http y la URL obtenida desde propiedades.
-        val client = HttpClient(CIO)
+        val client = HttpClient(CIO) {
+            install(ContentNegotiation) {
+                json(Json {
+                    prettyPrint = true
+                })
+            }
+        }
         val url = BuildConfig.CONNECTION_TEST_URL
 
         try {
             // Con una solicitud correcta se mostrarán los datos de la respuesta en un TextView.
             val response: HttpResponse = client.get(url)
-            txtResponse.text = "URL: $url\nHttp response status:\n${response.status}"
+            val urlInfo = "URL:\n$url"
+            val statusInfo = "Http response status:\n${response.status}"
+            val bodyInfo = "Body:\n${response.bodyAsText()}"
+            txtResponse.text = "$urlInfo\n$statusInfo\n$bodyInfo"
         }
         // Manejo de excepciones de conectividad.
         catch (e: Exception) {

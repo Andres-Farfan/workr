@@ -57,6 +57,8 @@ val ktor_version: String by project
 dependencies {
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
