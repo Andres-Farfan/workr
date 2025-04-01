@@ -9,14 +9,13 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.bodyAsText
-import io.ktor.serialization.kotlinx.json.json
+import io.ktor.serialization.gson.gson
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 
 class MainActivity : AppCompatActivity() {
     private lateinit var txtResponse: TextView
@@ -36,19 +35,18 @@ class MainActivity : AppCompatActivity() {
 
         // Se lanza una corutina con la tarea de hacer la solicitud web
         // usando un Scope de corutinas no-bloqueante al nivel del ciclo de vida de la Activity.
-        lifecycleScope.launch { makeRequest() }
+        lifecycleScope.launch { doRequest() }
     }
 
     /**
      * Hace una solicitud HTTP y muestra el resultado con texto en la vista.
      */
-    suspend fun makeRequest() {
+    suspend fun doRequest() {
         // Configuración del cliente http y la URL obtenida desde propiedades.
         val client = HttpClient(CIO) {
             install(ContentNegotiation) {
-                json(Json {
-                    prettyPrint = true
-                })
+                // Dependencia para soportar parseo de JSON a estructuras de datos.
+                gson()
             }
         }
         val url = BuildConfig.CONNECTION_TEST_URL
@@ -58,11 +56,16 @@ class MainActivity : AppCompatActivity() {
             val response: HttpResponse = client.get(url)
             val urlInfo = "URL:\n$url"
             val statusInfo = "Http response status:\n${response.status}"
-            val bodyInfo = "Body:\n${response.bodyAsText()}"
-            txtResponse.text = "$urlInfo\n$statusInfo\n$bodyInfo"
+
+            // Se parsea el JSON dentro de body a su clase correspondiente para acceder a sus campos.
+            val user: User = response.body()
+
+            // Se muestra la información obtenida.
+            txtResponse.text = "$urlInfo\n$statusInfo\n\n$user"
         }
         // Manejo de excepciones de conectividad.
         catch (e: Exception) {
+            txtResponse.text = "An exception occurred while doing the request"
             e.printStackTrace()
         }
         finally {
