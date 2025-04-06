@@ -8,13 +8,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.get
+import io.ktor.client.plugins.ResponseException
 import io.ktor.client.statement.HttpResponse
-import io.ktor.serialization.gson.gson
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpMethod
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -31,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         txtResponse = findViewById(R.id.txtResponse)
-        txtResponse.text = "Loading request..."
+        txtResponse.text = "Cargando solicitud..."
 
         // Se lanza una corutina con la tarea de hacer la solicitud web
         // usando un Scope de corutinas no-bloqueante al nivel del ciclo de vida de la Activity.
@@ -42,36 +39,24 @@ class MainActivity : AppCompatActivity() {
      * Hace una solicitud HTTP y muestra el resultado con texto en la vista.
      */
     suspend fun doRequest() {
-        // Configuración del cliente http y la URL obtenida desde propiedades.
-        val client = HttpClient(CIO) {
-            install(ContentNegotiation) {
-                // Dependencia para soportar parseo de JSON a estructuras de datos.
-                gson()
-            }
-        }
-        val url = BuildConfig.CONNECTION_TEST_URL
+        // Se establece el endpoint al que se hará la solicitud
+        val endpoint = "/users/test_http_client_api"
+        // Se establece el metodo HTTP correspondiente al endpoint.
+        val method = HttpMethod.Get
 
         try {
             // Con una solicitud correcta se mostrarán los datos de la respuesta en un TextView.
-            val response: HttpResponse = client.get(url)
-            val urlInfo = "URL:\n$url"
+            val response: HttpResponse = HTTPClientAPI.makeRequest(endpoint, method)
+            val endpoint = "Endpoint:\n$method $endpoint"
             val statusInfo = "Http response status:\n${response.status}"
+            val body = "Http body:\n${response.bodyAsText()}"
 
-            // Se parsea el JSON dentro de body a su clase correspondiente para acceder a sus campos.
-            val user: User = response.body()
-
-            // Se muestra la información obtenida.
-            txtResponse.text = "$urlInfo\n$statusInfo\n\n$user"
+            txtResponse.text = "$endpoint\n$statusInfo\n$body"
         }
         // Manejo de excepciones de conectividad.
-        catch (e: Exception) {
-            txtResponse.text = "An exception occurred while doing the request"
+        catch (e: ResponseException) {
+            txtResponse.text = "Una excepción ocurrió al hacer la solicitud"
             e.printStackTrace()
-        }
-        finally {
-            // Liberación de recursos del ktor client.
-            client.close()
-            println("Ktor client closed")
         }
     }
 }

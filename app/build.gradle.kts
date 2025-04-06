@@ -26,7 +26,7 @@ android {
         properties.load(FileInputStream(propertiesFile))
 
         // Se hace accesible para el código una propiedad de configuración con BuildConfig.
-        buildConfigField("String", "CONNECTION_TEST_URL", properties.getProperty("CONNECTION_TEST_URL"))
+        buildConfigField("String", "BACKEND_BASE_URL", properties.getProperty("BACKEND_BASE_URL"))
     }
 
     buildFeatures {
