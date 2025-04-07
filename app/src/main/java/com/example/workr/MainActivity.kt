@@ -9,8 +9,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             //RegistrationScreen()
-            //ProfileEditScreen()
-            ProfileViewScreen()
+            ProfileEditScreen()
+            //ProfileViewScreen()
         }
     }
 }

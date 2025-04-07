@@ -4,8 +4,10 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -91,6 +93,18 @@ fun ProfileEditScreen() {
                 }
             )
 
+            OutlinedTextField(
+                value = contactLink,
+                onValueChange = { contactLink = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("Número de teléfono") },
+                trailingIcon = {
+                    IconButton(onClick = { contactLink = TextFieldValue("") }) {
+                        Icon(Icons.Default.Close, contentDescription = "Eliminar")
+                    }
+                }
+            )
+
             OutlinedButton(
                 onClick = { /* agregar contacto */ },
                 modifier = Modifier
@@ -103,6 +117,27 @@ fun ProfileEditScreen() {
             ) {
                 Text("+ Agregar Enlace de Contacto")
             }
+            experiences.forEachIndexed { index, experience ->
+                ExperienceItem(
+                    experience = experience,
+                    onRemove = {
+                        experiences = experiences.toMutableList().apply { removeAt(index) }
+                    }
+                )
+            }
+
+            OutlinedButton(
+                onClick = { /* agregar número de teléfono */ },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    backgroundColor = Color.White, // Fondo blanco
+                    contentColor = Color(0xFF0078C1) // Texto e ícono azules
+                ),
+                border = BorderStroke(1.dp, colorResource(id = R.color.blue_WorkR))
+            ) {
+                Text("+ Agregar Número de Teléfono")
+            }
+
             experiences.forEachIndexed { index, experience ->
                 ExperienceItem(
                     experience = experience,
@@ -134,60 +169,66 @@ fun ExperienceItem(
     experience: ExperienceState,
     onRemove: () -> Unit
 ) {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .heightIn(min = 100.dp, max = 400.dp) // altura máxima del bloque con scroll
             .background(Color(0xFFEDEDED), RoundedCornerShape(8.dp))
             .padding(8.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
         ) {
-            Text(
-                text = "Elemento de Experiencia",
-                fontWeight = FontWeight.Bold,
-                color = Color.Gray
-            )
-            IconButton(onClick = onRemove) {
-                Icon(Icons.Default.Close, contentDescription = "Eliminar")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Elemento de Experiencia",
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Gray
+                )
+                IconButton(onClick = onRemove) {
+                    Icon(Icons.Default.Close, contentDescription = "Eliminar")
+                }
             }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            OutlinedTextField(
+                value = experience.position,
+                onValueChange = { experience.position = it },
+                label = { Text("Posición") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = experience.company,
+                onValueChange = { experience.company = it },
+                label = { Text("Empresa") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = experience.startDate,
+                onValueChange = { experience.startDate = it },
+                label = { Text("Fecha inicio") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = experience.endDate,
+                onValueChange = { experience.endDate = it },
+                label = { Text("Fecha fin") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = experience.activities,
+                onValueChange = { experience.activities = it },
+                label = { Text("Descripción de actividades") },
+                modifier = Modifier.fillMaxWidth()
+            )
         }
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        OutlinedTextField(
-            value = experience.position,
-            onValueChange = { experience.position = it },
-            label = { Text("Posición") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        OutlinedTextField(
-            value = experience.company,
-            onValueChange = { experience.company = it },
-            label = { Text("Empresa") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        OutlinedTextField(
-            value = experience.startDate,
-            onValueChange = { experience.startDate = it },
-            label = { Text("Fecha inicio") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        OutlinedTextField(
-            value = experience.endDate,
-            onValueChange = { experience.endDate = it },
-            label = { Text("Fecha fin") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        OutlinedTextField(
-            value = experience.activities,
-            onValueChange = { experience.activities = it },
-            label = { Text("Descripción de actividades") },
-            modifier = Modifier.fillMaxWidth()
-        )
     }
 }
 

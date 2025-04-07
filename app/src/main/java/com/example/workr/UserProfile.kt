@@ -99,13 +99,7 @@ fun ContactSection() {
             Text("RedSocial1: nombre@usuario", color = colorResource(id = R.color.blue_WorkR))
             Text("RedSocial2: nombre_usuario", color = colorResource(id = R.color.blue_WorkR))
             Text("RedSocial3: nombre.usuario", color = colorResource(id = R.color.blue_WorkR))
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(
-                value = "",
-                onValueChange = {},
-                label = { Text("Número de Teléfono") },
-                modifier = Modifier.fillMaxWidth()
-            )
+            Text("Número de teléfono: 123-456-7890", color = colorResource(id = R.color.blue_WorkR))
         }
     }
     Spacer(modifier = Modifier.height(16.dp))
