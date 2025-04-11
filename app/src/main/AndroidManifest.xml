@@ -13,6 +13,21 @@
         android:theme="@style/Theme.WorkR"
         tools:targetApi="31">
         <activity
+            android:name=".ui.theme.qies"
+            android:exported="false"
+            android:label="@string/title_activity_qies"
+            android:theme="@style/Theme.WorkR" />
+        <activity
+            android:name=".Business_Creation_Registry"
+            android:exported="false"
+            android:label="@string/title_activity_business_creation_registry"
+            android:theme="@style/Theme.WorkR" />
+        <activity
+            android:name=".PerfilEmpresarial"
+            android:exported="false"
+            android:label="@string/title_activity_perfil_empresarial"
+            android:theme="@style/Theme.WorkR" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
