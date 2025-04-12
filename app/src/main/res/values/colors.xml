@@ -4,4 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="blue_WorkR">#0078C1</color>
     <color name="gray_WorkR">#878787</color>
+    <color name="cian_WorkR">#FFD1EDFF</color>
+    <color name="lightBlue_WorkR">#DEE9ED</color>
+    <color name="traslucidBlue_WorkR">#552196F3</color>
 </resources>

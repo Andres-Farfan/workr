@@ -9,8 +9,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             //RegistrationScreen()
-            ProfileEditScreen()
+            //ProfileEditScreen()
             //ProfileViewScreen()
+            LoginScreen(
+                onLoginClick = { /* acción al presionar Login */ },
+                onRegisterClick = { /* acción al presionar Crear cuenta */ }
+            )
+            //PostulacionFormScreen()
+            //JobDetailScreen()
         }
     }
 }
