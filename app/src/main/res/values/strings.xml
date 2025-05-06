@@ -3,4 +3,8 @@
     <string name="title_activity_perfil_empresarial">PerfilEmpresarial</string>
     <string name="title_activity_business_creation_registry">Business_Creation_Registry</string>
     <string name="title_activity_qies">qies</string>
+    <string name="title_activity_complete_business_profile">Complete_Business_Profile</string>
+    <string name="title_activity_company_listing">Company_Listing</string>
+    <string name="title_activity_complete_perfile_bussiness">Complete_Perfile_Bussiness</string>
+    <string name="title_activity_list_vacancies_company">List_vacanciesCompany</string>
 </resources>
