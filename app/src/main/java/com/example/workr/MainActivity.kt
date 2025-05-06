@@ -11,12 +11,13 @@ class MainActivity : ComponentActivity() {
             //RegistrationScreen()
             //ProfileEditScreen()
             //ProfileViewScreen()
-            LoginScreen(
-                onLoginClick = { /* acción al presionar Login */ },
-                onRegisterClick = { /* acción al presionar Crear cuenta */ }
-            )
+            //LoginScreen(
+                //onLoginClick = { /* acción al presionar Login */ },
+                //onRegisterClick = { /* acción al presionar Crear cuenta */ }
+            //)
             //PostulacionFormScreen()
             //JobDetailScreen()
+            CreateJobScreen()
         }
     }
 }
