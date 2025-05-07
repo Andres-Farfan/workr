@@ -19,7 +19,14 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        // Se lee un archivo de propiedades para usarlas en este archivo de Build.
+        // Nota: El archivo debe ser correctamente ignorado del repositorio con .gitignore.
+        val propertiesFile = rootProject.file("config.properties")
+        val properties = Properties()
+        properties.load(FileInputStream(propertiesFile))
 
+        // Se hace accesible para el código una propiedad de configuración con BuildConfig.
+        buildConfigField("String", "BACKEND_BASE_URL", properties.getProperty("BACKEND_BASE_URL"))
     }
 
     buildFeatures {
