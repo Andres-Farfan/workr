@@ -18,7 +18,13 @@ import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpMethod
+import android.util.Log
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
+import com.example.workr.BuildConfig.BACKEND_BASE_URL
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
@@ -27,6 +33,8 @@ fun LoginScreen(
 ) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -43,9 +51,6 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Espacio reservado para ícono personalizado si decides agregarlo
-            Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = "Work-R",
@@ -74,7 +79,20 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = onLoginClick,
+                onClick = {
+                    coroutineScope.launch {
+                        val success = login(email.value, password.value)
+                        if (success) {
+                            onLoginClick()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Correo o contraseña incorrectos",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp)
@@ -91,7 +109,7 @@ fun LoginScreen(
 
             TextButton(onClick = onRegisterClick) {
                 Text(
-                    text = "Aun no estas dentro?\nCrea una cuenta!",
+                    text = "¿Aún no estás dentro?\n¡Crea una cuenta!",
                     textAlign = TextAlign.Center,
                     fontSize = 14.sp,
                     color = colorResource(id = R.color.blue_WorkR)
@@ -108,7 +126,8 @@ fun RoundedInputField(
     placeholder: String,
     isPassword: Boolean = false
 ) {
-    val visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None
+    val visualTransformation =
+        if (isPassword) PasswordVisualTransformation() else VisualTransformation.None
     val keyboardType = if (isPassword) KeyboardType.Password else KeyboardType.Email
 
     OutlinedTextField(
@@ -161,3 +180,24 @@ fun BlueCorners() {
         )
     }
 }
+
+suspend fun login(email: String, password: String): Boolean {
+    val body = mapOf("email" to email, "password" to password)
+
+    return try {
+        val response = HTTPClientAPI.makeRequest(
+            endpoint = "https://workr-backend.vercel.app/api/login",
+            method = HttpMethod.Post,
+            body = body
+        )
+
+        Log.d("Login", "Código de respuesta: ${response.status.value}")
+        Log.d("Login", "Body: ${response.bodyAsText()}")
+
+        response.status.value == 200
+    } catch (e: Exception) {
+        Log.e("Login", "Error: ${e.message}")
+        false
+    }
+}
+

@@ -1,8 +1,6 @@
 package com.example.workr
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,16 +22,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-
-
-class Business_Creation_Registry : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            BusinessCreationScreen()
-        }
-    }
-}
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+import io.ktor.http.HttpMethod
+import androidx.compose.ui.platform.LocalContext
 
 
 @Preview
@@ -43,6 +35,8 @@ fun BusinessCreationScreen() {
     var sector by remember { mutableStateOf("") }
     var employeesNumber by remember { mutableStateOf("") }
     var companyType by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -129,7 +123,38 @@ fun BusinessCreationScreen() {
             Spacer(modifier = Modifier.height(24.dp))
 
             OutlinedButton(
-                onClick = { /* acción para guardar */ },
+                onClick = {
+                    scope.launch {
+                        try {
+                            // Validación simple
+                            if (companyName.isBlank() || sector.isBlank() || employeesNumber.isBlank() || companyType.isBlank()) {
+                                Toast.makeText(context, "Por favor completa todos los campos", Toast.LENGTH_SHORT).show()
+                                return@launch
+                            }
+
+                            val empresa = BusinessRegisterRequest(
+                                nombre = companyName,
+                                sector = sector,
+                                numeroEmpleados = employeesNumber.toIntOrNull() ?: 0,
+                                tipo = companyType
+                            )
+
+                            val response = HTTPClientAPI.makeRequest(
+                                endpoint = "/empresas",
+                                method = HttpMethod.Post,
+                                body = empresa
+                            )
+
+                            if (response.status.value in 200..299) {
+                                Toast.makeText(context, "Empresa registrada correctamente", Toast.LENGTH_LONG).show()
+                            } else {
+                                Toast.makeText(context, "Error al registrar: ${response.status}", Toast.LENGTH_LONG).show()
+                            }
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "Error: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                },
                 modifier = Modifier.fillMaxWidth(),
                 border = BorderStroke(1.dp, Color(0xFF0078C1)),
                 colors = ButtonDefaults.outlinedButtonColors(
