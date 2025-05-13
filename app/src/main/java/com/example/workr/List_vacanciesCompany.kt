@@ -23,19 +23,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.navigation.NavHostController
 
-class List_vacanciesCompany : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            PostuladosScreen()
-        }
-    }
-}
-@Preview
 @Composable
-fun PostuladosScreen() {
+fun VacantesScreen(navController: NavHostController, isEmpleado: Boolean) {
     val listaEncargos = listOf(
         Triple("Nombre del encargo", "Ubicación", 2),
         Triple("Nombre del encargo", "Ubicación", 4),
@@ -58,6 +49,14 @@ fun PostuladosScreen() {
                 Text("Disponibles", color = Color.White)
             }
         }
+
+        WorkRTopBar(
+            navController = navController,
+            isEmpleado = isEmpleado,
+            modifier = Modifier
+                .align(Alignment.CenterEnd as Alignment.Horizontal) // Esquina derecha centrada verticalmente
+                .padding(end = 12.dp)
+        )
 
         // Lista
         LazyColumn(

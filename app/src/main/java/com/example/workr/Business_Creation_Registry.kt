@@ -1,5 +1,6 @@
 package com.example.workr
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,26 +24,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavHostController
 
 
-class Business_Creation_Registry : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            BusinessCreationScreen()
-        }
-    }
-}
-
-
-@Preview
 @Composable
-fun BusinessCreationScreen() {
+fun BusinessCreationScreen(navController: NavHostController, isEmpleado: Boolean) {
     var companyName by remember { mutableStateOf("") }
     var sector by remember { mutableStateOf("") }
     var employeesNumber by remember { mutableStateOf("") }
     var companyType by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val sharedPref = context.getSharedPreferences("workr_prefs", Context.MODE_PRIVATE)
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -54,6 +48,15 @@ fun BusinessCreationScreen() {
                 .fillMaxWidth()
                 .height(60.dp)
                 .background(Color(0xFF0078C1))
+        )
+
+        // Menú en la esquina superior derecha
+        WorkRTopBar(
+            navController = navController,
+            isEmpleado = isEmpleado,
+            modifier = Modifier
+                .align(Alignment.TopEnd as Alignment.Horizontal)
+                .padding(top = 8.dp, end = 12.dp)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -129,7 +132,26 @@ fun BusinessCreationScreen() {
             Spacer(modifier = Modifier.height(24.dp))
 
             OutlinedButton(
-                onClick = { /* acción para guardar */ },
+                onClick = {
+                    // Aquí podrías validar los campos del formulario si es necesario
+                    if (companyName.isNotBlank() && sector.isNotBlank()) {
+                        with(sharedPref.edit()) {
+                            putBoolean("has_company", true)
+                            apply()
+                        }
+                        navController.navigate("company_profile")
+                    } else {
+                        // Mostrar error o Snackbar si lo deseas
+                    }
+                    // Guardar que el usuario ya tiene una empresa
+                    with(sharedPref.edit()) {
+                        putBoolean("has_company", true)
+                        apply()
+                    }
+
+                    // Navegar al perfil de empresa
+                    navController.navigate("company_profile")
+                },
                 modifier = Modifier.fillMaxWidth(),
                 border = BorderStroke(1.dp, Color(0xFF0078C1)),
                 colors = ButtonDefaults.outlinedButtonColors(

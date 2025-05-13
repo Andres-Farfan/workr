@@ -18,13 +18,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.ui.res.colorResource
+import androidx.navigation.NavHostController
 
 @Composable
-fun ProfileEditScreen() {
+fun ProfileEditScreen(navController: NavHostController, isEmpleado: Boolean) {
     var description by remember { mutableStateOf(TextFieldValue()) }
     var contactLink by remember { mutableStateOf(TextFieldValue()) }
     var experiences by remember { mutableStateOf(mutableListOf<ExperienceState>()) }
@@ -39,6 +39,14 @@ fun ProfileEditScreen() {
         )
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        WorkRTopBar(
+            navController = navController,
+            isEmpleado = isEmpleado,
+            modifier = Modifier
+                .align(Alignment.CenterEnd as Alignment.Horizontal) // Esquina derecha centrada verticalmente
+                .padding(end = 12.dp)
+        )
 
         // Imagen de perfil
         Box(
@@ -239,10 +247,4 @@ class ExperienceState {
     var startDate by mutableStateOf("")
     var endDate by mutableStateOf("")
     var activities by mutableStateOf("")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ProfileEditScreenPreview() {
-    ProfileEditScreen()
 }

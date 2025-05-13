@@ -25,9 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.navigation.NavHostController
 
 @Composable
-fun CreateJobScreen() {
+fun CreateJobScreen(navController: NavHostController, isEmpleado: Boolean) {
     val scrollState = rememberScrollState()
 
     var position by remember { mutableStateOf("") }
@@ -38,6 +39,8 @@ fun CreateJobScreen() {
     val skills = remember { mutableStateListOf("") }
 
     Column(modifier = Modifier.fillMaxSize()) {
+
+        WorkRTopBar(navController = navController, isEmpleado = isEmpleado)
         // Barra azul vacía
         Box(
             modifier = Modifier

@@ -1,9 +1,6 @@
 package com.example.workr
 
-import android.R
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,31 +9,20 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.SpanStyle
+import androidx.navigation.NavHostController
 
 
-
-class PerfilEmpresarial : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            PerfilEmpresarialScreen()
-        }
-    }
-}
-@Preview
 @Composable
-fun PerfilEmpresarialScreen() {
+fun PerfilEmpresarialScreen(navController: NavHostController, isEmpleado: Boolean) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,6 +37,16 @@ fun PerfilEmpresarialScreen() {
                 .height(65.dp)
                 .background(Color(0xFF0066CC)) // Azul
         )
+
+        // Barra superior personalizada
+        WorkRTopBar(
+            navController = navController,
+            isEmpleado = isEmpleado,
+            modifier = Modifier
+                .align(Alignment.CenterEnd as Alignment.Horizontal) // Esquina derecha centrada verticalmente
+                .padding(end = 12.dp)
+        )
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()

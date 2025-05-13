@@ -20,20 +20,11 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 
 
-class Complete_Perfile_Bussiness : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            CompletePerfile()
-        }
-    }
-}
-@Preview(showBackground = true)
 @Composable
-fun CompletePerfile(){
+fun CompletePerfile(navController: NavHostController, isEmpleado: Boolean){
     var description by remember { mutableStateOf("") }
     var vision by remember { mutableStateOf("") }
     var mission by remember { mutableStateOf("") }
@@ -48,6 +39,14 @@ fun CompletePerfile(){
                 .fillMaxWidth()
                 .height(60.dp)
                 .background(Color(0xFF0078C1))
+        )
+
+        WorkRTopBar(
+            navController = navController,
+            isEmpleado = isEmpleado,
+            modifier = Modifier
+                .align(Alignment.CenterEnd as Alignment.Horizontal)
+                .padding(end = 12.dp)
         )
 
         Spacer(modifier = Modifier.height(16.dp))

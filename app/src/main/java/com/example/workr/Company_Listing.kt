@@ -27,30 +27,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
 
-class Company_Listing : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            CompanyListing()
-        }
-    }
-}
 
-@Preview
 @Composable
-fun CompanyListing() {
+fun CompanyListing(navController: NavHostController, isEmpleado: Boolean) {
     var searchText by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxSize().background(Color.White)) {
         // Encabezado
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color(0xFF0078C1))
                 .padding(16.dp)
-        ) {
+        )
+        {
+            WorkRTopBar(
+                navController = navController,
+                isEmpleado = isEmpleado,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 8.dp, end = 12.dp)
+            )
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()

@@ -18,15 +18,14 @@ import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 
 
 @Composable
-fun LoginScreen(
-    onLoginClick: () -> Unit,
-    onRegisterClick: () -> Unit
-) {
+fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    val isEmpleado = remember { mutableStateOf(true) }
 
     Box(
         modifier = Modifier
@@ -44,9 +43,7 @@ fun LoginScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Espacio reservado para ícono personalizado si decides agregarlo
-            Spacer(modifier = Modifier.height(8.dp))
-
+            // Título
             Text(
                 text = "Work-R",
                 fontSize = 24.sp,
@@ -71,10 +68,31 @@ fun LoginScreen(
                 isPassword = true
             )
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Selector Empleado/Empresa
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Empleado")
+                Switch(
+                    checked = isEmpleado.value,
+                    onCheckedChange = { isEmpleado.value = it }
+                )
+                Text("Empresa")
+            }
+
             Spacer(modifier = Modifier.height(24.dp))
 
+            // Botón de login con navegación condicional
             Button(
-                onClick = onLoginClick,
+                onClick = {
+                    if (isEmpleado.value) {
+                        navController.navigate("user_profile")
+                    } else {
+                        navController.navigate("company_profile")
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp)
@@ -91,7 +109,7 @@ fun LoginScreen(
 
             TextButton(onClick = onRegisterClick) {
                 Text(
-                    text = "Aun no estas dentro?\nCrea una cuenta!",
+                    text = "¿Aún no estás dentro?\n¡Crea una cuenta!",
                     textAlign = TextAlign.Center,
                     fontSize = 14.sp,
                     color = colorResource(id = R.color.blue_WorkR)
@@ -100,6 +118,7 @@ fun LoginScreen(
         }
     }
 }
+
 
 @Composable
 fun RoundedInputField(

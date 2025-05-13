@@ -22,9 +22,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.TextStyle
+import androidx.navigation.NavHostController
 
 @Composable
-fun JobDetailScreen() {
+fun JobDetailScreen(navController: NavHostController, isEmpleado: Boolean) {
     Box(modifier = Modifier.fillMaxSize()) {
         RectangleCorners()
 
@@ -33,7 +34,21 @@ fun JobDetailScreen() {
                 .fillMaxSize()
                 .padding(bottom = 16.dp)
         ) {
-            BlueTopBar(title = "")
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp)
+                    .background(Color(0xFF0078C1))
+            ) {
+                WorkRTopBar(
+                    navController = navController,
+                    isEmpleado = isEmpleado,
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 12.dp)
+                )
+            }
 
             Text(
                 text = "Posición de Vacante",
@@ -220,26 +235,5 @@ fun RectangleCorners() {
             },
             color = Color(0x552196F3)
         )
-    }
-}
-
-@Composable
-fun BlueTopBar(title: String) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(colorResource(id = R.color.blue_WorkR))
-            .padding(vertical = 24.dp)
-    ) {
-        if (title.isNotEmpty()) {
-            Text(
-                text = title,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = colorResource(id = R.color.white),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
     }
 }

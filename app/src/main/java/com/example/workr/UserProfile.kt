@@ -8,21 +8,24 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.compose.runtime.Composable
+
 
 @Composable
-fun ProfileViewScreen() {
+fun ProfileViewScreen(navController: NavHostController, isEmpleado: Boolean) {
     Column(modifier = Modifier.fillMaxSize()) {
+
+        WorkRTopBar(navController = navController, isEmpleado = isEmpleado)
+
         // Rectángulo azul superior
         Box(
             modifier = Modifier
@@ -171,10 +174,4 @@ fun StudiesSection() {
         }
     }
     Spacer(modifier = Modifier.height(16.dp))
-}
-
-@Preview
-@Composable
-fun ProfileViewScreenPreview() {
-    ProfileViewScreen()
 }

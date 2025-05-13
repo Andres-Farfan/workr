@@ -1,10 +1,9 @@
 package com.example.workr
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,38 +14,33 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 
 @Composable
-fun RegistrationContent(
-    firstName: String,
-    onFirstNameChange: (String) -> Unit,
-    lastName: String,
-    onLastNameChange: (String) -> Unit,
-    contact: String,
-    onContactChange: (String) -> Unit,
-    password: String,
-    onPasswordChange: (String) -> Unit,
-    country: String,
-    onCountryChange: (String) -> Unit,
-    position: String,
-    onPositionChange: (String) -> Unit
+fun RegistrationScreen(
+    navController: NavHostController,
+    isEmpleado: Boolean
 ) {
+    // Estados locales
+    var firstName by remember { mutableStateOf("") }
+    var lastName by remember { mutableStateOf("") }
+    var contact by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var country by remember { mutableStateOf("") }
+    var position by remember { mutableStateOf("") }
+
     Box(modifier = Modifier.fillMaxSize()) {
-        // Canvas with rounded corners and color
+        // Fondo con barra azul arriba y esquinas redondeadas abajo
         Canvas(modifier = Modifier.fillMaxSize()) {
             val width = size.width
             val height = size.height
             val cornerSize = 80.dp.toPx()
 
-            // Draw the blue top bar
             drawRect(
-                color = Color(0xFF0078C1), // Blue color for the top bar
+                color = Color(0xFF0078C1),
                 size = Size(width, 60.dp.toPx())
             )
 
-            // Draw the rounded corners at the bottom
             val pathLeft = Path().apply {
                 moveTo(0f, height - cornerSize)
                 lineTo(0f, height)
@@ -65,63 +59,72 @@ fun RegistrationContent(
             drawPath(pathRight, color = Color(0xFFD0D8F0), style = Fill)
         }
 
-        // Column for form inputs
+        // Barra superior personalizada
+        WorkRTopBar(
+            navController = navController,
+            isEmpleado = isEmpleado,
+            modifier = Modifier
+                .align(Alignment.CenterEnd) // Esquina derecha centrada verticalmente
+                .padding(end = 12.dp)
+        )
+
+        // Contenido del formulario
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(top = 80.dp, start = 16.dp, end = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(80.dp))
             Text(text = "Join Work-R", fontSize = 20.sp, color = Color.Black)
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Input fields
             OutlinedTextField(
                 value = firstName,
-                onValueChange = onFirstNameChange,
+                onValueChange = { firstName = it },
                 label = { Text("Nombre(s)") },
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
                 value = lastName,
-                onValueChange = onLastNameChange,
+                onValueChange = { lastName = it },
                 label = { Text("Apellido(s)") },
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
                 value = contact,
-                onValueChange = onContactChange,
+                onValueChange = { contact = it },
                 label = { Text("Correo Electrónico") },
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
                 value = password,
-                onValueChange = onPasswordChange,
+                onValueChange = { password = it },
                 label = { Text("Contraseña") },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
                 value = country,
-                onValueChange = onCountryChange,
+                onValueChange = { country = it },
                 label = { Text("País") },
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
                 value = position,
-                onValueChange = onPositionChange,
+                onValueChange = { position = it },
                 label = { Text("Posición Actual (Opcional)") },
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Register Button
+            // Botón de registro
             Button(
-                onClick = { /* Registration action */ },
+                onClick = {
+                    // Aquí puedes implementar la lógica de registro
+                },
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF0078C1)),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0078C1)),
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text("Registrarse", color = Color.White)
@@ -129,11 +132,11 @@ fun RegistrationContent(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Back Button
+            // Botón de regresar
             Button(
-                onClick = { /* Back action */ },
+                onClick = { navController.popBackStack() },
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFD1EAFA)),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD1EAFA)),
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text("Regresar", color = Color(0xFF0078C1))
@@ -142,21 +145,3 @@ fun RegistrationContent(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun RegistrationScreen() {
-    RegistrationContent(
-        firstName = "Juan",
-        onFirstNameChange = {},
-        lastName = "Pérez",
-        onLastNameChange = {},
-        contact = "email@example.com",
-        onContactChange = {},
-        password = "1234",
-        onPasswordChange = {},
-        country = "Mexico",
-        onCountryChange = {},
-        position = "Engineer",
-        onPositionChange = {}
-    )
-}

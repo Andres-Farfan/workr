@@ -24,10 +24,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 
 // --- Pantalla Principal ---
 @Composable
-fun PostulacionFormScreen() {
+fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean) {
     val nombre = remember { mutableStateOf("") }
     val telefono = remember { mutableStateOf("") }
     val correo = remember { mutableStateOf("") }
@@ -45,13 +46,11 @@ fun PostulacionFormScreen() {
             val height = size.height
             val cornerSize = 80.dp.toPx()
 
-            // Draw the blue top bar
             drawRect(
-                color = Color(0xFF0078C1), // Blue color for the top bar
+                color = Color(0xFF0078C1),
                 size = Size(width, 60.dp.toPx())
             )
 
-            // Draw the rounded corners at the bottom
             val pathLeft = Path().apply {
                 moveTo(0f, height - cornerSize)
                 lineTo(0f, height)
@@ -70,11 +69,21 @@ fun PostulacionFormScreen() {
             drawPath(pathRight, color = Color(0xFFD0D8F0), style = Fill)
         }
 
+        WorkRTopBar(
+            navController = navController,
+            isEmpleado = isEmpleado,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+                .align(Alignment.TopEnd)
+        )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
+
             BlueTopBar()
 
             Text(
@@ -129,6 +138,7 @@ fun PostulacionFormScreen() {
         }
     }
 }
+
 
 // --- Campo con etiqueta + input ---
 @Composable
