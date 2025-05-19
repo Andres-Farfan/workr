@@ -40,6 +40,10 @@ fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean,
     val razonIngreso = remember { mutableStateOf("") }
     val portafolio = remember { mutableStateOf("") }
 
+    // Se determina una bandera de habilitación de los campos de texto,
+    // sólo se podrán editar si se accede al form fuera del Sistema Gestor de Aspirantes.
+    val fieldsEnabled = (fromAspirantsTrackingList == null)
+
     Box(modifier = Modifier.fillMaxSize()) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val width = size.width
@@ -106,16 +110,16 @@ fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean,
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp)
             ) {
-                LabelWithInput("Nombre completo:", "Nombre completo(Primero el apellido)", nombre)
-                LabelWithInput("Número de teléfono:", "Teléfono", telefono)
-                LabelWithInput("Correo electrónico:", "Correo electrónico", correo)
-                LabelWithInput("¿Último nivel de estudio alcanzado?", "Nivel alcanzado", nivelEstudio)
-                LabelWithInput("¿Último puesto de empleo? (opcional)", "Último empleo", ultimoEmpleo)
-                LabelWithInput("Nivel de experiencia", "Nivel alcanzado", experiencia)
-                LabelWithInput("¿Cuáles son tus principales habilidades técnicas?", "Principales técnicas", habilidades)
-                LabelWithInput("¿Qué herramientas o softwares dominas?", "Herramientas dominadas", herramientas)
-                LabelWithInput("¿Por qué quieres trabajar en nuestra empresa?", "Razón", razonIngreso)
-                LabelWithInput("¿Puedes compartir un portafolio o ejemplos de tu trabajo?", "Razón", portafolio)
+                LabelWithInput("Nombre completo:", "Nombre completo(Primero el apellido)", nombre, fieldsEnabled)
+                LabelWithInput("Número de teléfono:", "Teléfono", telefono, fieldsEnabled)
+                LabelWithInput("Correo electrónico:", "Correo electrónico", correo, fieldsEnabled)
+                LabelWithInput("¿Último nivel de estudio alcanzado?", "Nivel alcanzado", nivelEstudio, fieldsEnabled)
+                LabelWithInput("¿Último puesto de empleo? (opcional)", "Último empleo", ultimoEmpleo, fieldsEnabled)
+                LabelWithInput("Nivel de experiencia", "Nivel alcanzado", experiencia, fieldsEnabled)
+                LabelWithInput("¿Cuáles son tus principales habilidades técnicas?", "Principales técnicas", habilidades, fieldsEnabled)
+                LabelWithInput("¿Qué herramientas o softwares dominas?", "Herramientas dominadas", herramientas, fieldsEnabled)
+                LabelWithInput("¿Por qué quieres trabajar en nuestra empresa?", "Razón", razonIngreso, fieldsEnabled)
+                LabelWithInput("¿Puedes compartir un portafolio o ejemplos de tu trabajo?", "Razón", portafolio, fieldsEnabled)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -171,7 +175,7 @@ fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean,
 
 // --- Campo con etiqueta + input ---
 @Composable
-fun LabelWithInput(label: String, placeholder: String, state: MutableState<String>) {
+fun LabelWithInput(label: String, placeholder: String, state: MutableState<String>, enabled: Boolean) {
     Column(modifier = Modifier.padding(bottom = 12.dp)) {
         Text(
             text = label,
@@ -180,6 +184,7 @@ fun LabelWithInput(label: String, placeholder: String, state: MutableState<Strin
         )
         OutlinedTextField(
             value = state.value,
+            enabled = enabled,
             onValueChange = { state.value = it },
             placeholder = {
                 Text(text = placeholder, color = colorResource(id = R.color.gray_WorkR))
