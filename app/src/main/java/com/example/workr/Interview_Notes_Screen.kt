@@ -14,7 +14,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,6 +36,13 @@ fun InterviewNotesScreen(navController: NavHostController) {
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
+        Text(
+            text = "Nombre de aspirante",
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
         TextField(
             value = text,
             onValueChange = { newText: String -> text = newText },
@@ -42,17 +51,26 @@ fun InterviewNotesScreen(navController: NavHostController) {
             maxLines = 10,
             modifier = Modifier.fillMaxWidth().weight(1f)
         )
-        Row (
-            modifier = Modifier.weight(2f).fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround
+        Column(
+            verticalArrangement = Arrangement.spacedBy(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.weight(2f)
         ) {
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                OutlinedButton(onClick = {}) {
+                    Text("Descartar cambios")
+                }
+                Button (onClick = {}) {
+                    Text("Guardar cambios")
+                }
+            }
             OutlinedButton (onClick = {
                 navController.popBackStack()
             }) {
                 Text("Regresar")
-            }
-            Button (onClick = {}) {
-                Text("Guardar")
             }
         }
     }
