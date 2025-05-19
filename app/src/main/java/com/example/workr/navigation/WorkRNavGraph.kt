@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.workr.AspirantTrackingScreen
 import com.example.workr.BusinessCreationScreen
 import com.example.workr.CompanyListing
 import com.example.workr.CompletePerfile
@@ -43,6 +44,12 @@ fun WorkRApp() {
         composable("postulation_form") {
             PostulacionFormScreen(navController, isEmpleado = true)
         }
+        composable("initial_aspirant_postulation_form") {
+            PostulacionFormScreen(navController, isEmpleado = false, fromAspirantsTrackingList = "initial")
+        }
+        composable("contacted_aspirant_postulation_form") {
+            PostulacionFormScreen(navController, isEmpleado = false, fromAspirantsTrackingList = "contacted")
+        }
         composable("company_listing") {
             CompanyListing(navController, isEmpleado = true)
         }
@@ -63,6 +70,9 @@ fun WorkRApp() {
         }
         composable("company_register"){
             BusinessCreationScreen(navController, isEmpleado = false)
+        }
+        composable("aspirant_tracking_system") {
+            AspirantTrackingScreen(navController)
         }
     }
 }

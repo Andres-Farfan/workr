@@ -28,7 +28,7 @@ import androidx.navigation.NavHostController
 
 // --- Pantalla Principal ---
 @Composable
-fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean) {
+fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean, fromAspirantsTrackingList: String? = null) {
     val nombre = remember { mutableStateOf("") }
     val telefono = remember { mutableStateOf("") }
     val correo = remember { mutableStateOf("") }
@@ -69,14 +69,18 @@ fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean)
             drawPath(pathRight, color = Color(0xFFD0D8F0), style = Fill)
         }
 
-        WorkRTopBar(
-            navController = navController,
-            isEmpleado = isEmpleado,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .align(Alignment.TopEnd)
-        )
+        // La barra superior se mostrará solamente si el formulario se carga
+        // desde un origen diferente al Sistema Gestor de Aspirantes.
+        if (fromAspirantsTrackingList == null) {
+            WorkRTopBar(
+                navController = navController,
+                isEmpleado = isEmpleado,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp)
+                    .align(Alignment.TopEnd)
+            )
+        }
 
         Column(
             modifier = Modifier
@@ -115,22 +119,47 @@ fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                Button(
-                    onClick = { /* Acción al enviar */ },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
-                        .clip(RoundedCornerShape(25.dp)),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(id = R.color.cian_WorkR),
-                        contentColor = colorResource(id = R.color.blue_WorkR)
-                    )
-                ) {
-                    Text(
-                        text = "Enviar",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                // Opciones para el formulario fuera del Sistema Gestor de Aspirantes.
+                if (fromAspirantsTrackingList == null) {
+                    Button(
+                        onClick = { /* Acción al enviar */ },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .clip(RoundedCornerShape(25.dp)),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = colorResource(id = R.color.cian_WorkR),
+                            contentColor = colorResource(id = R.color.blue_WorkR)
+                        )
+                    ) {
+                        Text(
+                            text = "Enviar",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+                // Opciones para el formulario dentro del Sistema Gestor de Aspirantes.
+                else {
+                    Row (
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        OutlinedButton(onClick = {
+                            navController.popBackStack()
+                        }) {
+                            Text("Regresar")
+                        }
+
+                        // El botón de agendar cita solo aparecerá si se abrió el
+                        // formulario desde la lista de aspirantes iniciales.
+                        if (fromAspirantsTrackingList == "initial") {
+                            Button(onClick = {}) {
+                                Text("Agendar cita")
+                            }
+                        }
+                    }
+
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -180,5 +209,3 @@ fun BlueTopBar() {
             .background(colorResource(id = R.color.blue_WorkR))
     )
 }
-
-

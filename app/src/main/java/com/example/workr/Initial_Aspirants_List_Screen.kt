@@ -13,21 +13,21 @@ import androidx.compose.ui.unit.dp
  * en el Sistema Gestor de Aspirantes.
  */
 @Composable
-fun InitialAspirantsListScreen() {
+fun InitialAspirantsListScreen(onFormButtonPressed: () -> Unit) {
     Column (
         modifier = Modifier
             .padding(horizontal = 8.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        AspirantListItem(name = "Nombre del aspirante")
-        AspirantListItem(name = "Nombre del aspirante")
-        AspirantListItem(name = "Nombre del aspirante")
-        AspirantListItem(name = "Nombre del aspirante")
-        AspirantListItem(name = "Nombre del aspirante")
-        AspirantListItem(name = "Nombre del aspirante")
-        AspirantListItem(name = "Nombre del aspirante")
-        AspirantListItem(name = "Nombre del aspirante")
-        AspirantListItem(name = "Nombre del aspirante")
-        AspirantListItem(name = "Nombre del aspirante")
+        AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed)
+        AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed)
+        AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed)
+        AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed)
+        AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed)
+        AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed)
+        AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed)
+        AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed)
+        AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed)
+        AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed)
     }
 }

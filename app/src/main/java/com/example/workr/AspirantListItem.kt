@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.sp
  * para una entrevista o no, permite alternar las opciones del item.
  */
 @Composable
-fun AspirantListItem(name: String, contacted: Boolean = false) {
+fun AspirantListItem(name: String, onFormButtonPressed: () -> Unit, contacted: Boolean = false) {
     Row (
         modifier = Modifier.height(IntrinsicSize.Min).padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -61,7 +61,7 @@ fun AspirantListItem(name: String, contacted: Boolean = false) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                OutlinedButton(onClick = {}) {
+                OutlinedButton(onClick = onFormButtonPressed) {
                     Text("Formulario")
                 }
                 if (contacted) {

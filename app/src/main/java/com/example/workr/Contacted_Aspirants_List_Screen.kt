@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
  * en el Sistema Gestor de Aspirantes.
  */
 @Composable
-fun ContactedAspirantsListScreen() {
+fun ContactedAspirantsListScreen(onFormButtonPressed: () -> Unit) {
     Column (
         modifier = Modifier.fillMaxHeight()
     ) {
@@ -31,11 +31,11 @@ fun ContactedAspirantsListScreen() {
                 .verticalScroll(rememberScrollState())
                 .weight(1f)
         ) {
-            AspirantListItem(name = "Nombre del aspirante", contacted = true)
-            AspirantListItem(name = "Nombre del aspirante", contacted = true)
-            AspirantListItem(name = "Nombre del aspirante", contacted = true)
-            AspirantListItem(name = "Nombre del aspirante", contacted = true)
-            AspirantListItem(name = "Nombre del aspirante", contacted = true)
+            AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed, contacted = true)
+            AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed, contacted = true)
+            AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed, contacted = true)
+            AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed, contacted = true)
+            AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed, contacted = true)
         }
         Box (
             modifier = Modifier.background(Color.LightGray).padding(vertical = 8.dp)

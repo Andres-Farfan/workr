@@ -6,10 +6,11 @@ import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -17,45 +18,54 @@ import androidx.navigation.compose.rememberNavController
 /**
  * Ventana del Sistema Gestor de Aspirantes usada para controlar el
  * flujo de los aspirantes registrados en una vacante.
+ * @param globalNavController Controlador de la navegación global de la app.
  */
 @Composable
 // Anotación para utilizar la clase PrimaryTabRow, experimental de Material 3.
 @OptIn(ExperimentalMaterial3Api::class)
-fun AspirantTrackingScreen() {
-    // Configuración de variables necesarias para Navigation Host.
-    val navController = rememberNavController()
-    val startDestination = AspirantTrackingNavDestination.CONTACTED
+fun AspirantTrackingScreen(globalNavController: NavHostController) {
+    // Configuración de variables necesarias para el Navigation Host de las pestañas.
+    val tabsNavController = rememberNavController()
+    val startTab = AspirantTrackingNavTabs.INITIAL
 
     // Se guardará como estado el índice de enumeración (ordinal) de la pestaña abierta
     // para actualizar la apariencia de pestaña seleccionada.
-    var selectedDestination by rememberSaveable { mutableIntStateOf(startDestination.ordinal) }
+    var selectedTab by rememberSaveable { mutableStateOf(startTab) }
 
     Column {
-        PrimaryTabRow (selectedTabIndex = selectedDestination) {
-            AspirantTrackingNavDestination.entries.forEachIndexed { index, destination ->
+        PrimaryTabRow (selectedTabIndex = selectedTab.ordinal) {
+            AspirantTrackingNavTabs.entries.forEachIndexed { index, tab ->
                 Tab(
-                    selected = selectedDestination == index,
+                    selected = selectedTab.ordinal == index,
                     onClick = {
-                        navController.navigate(route = destination.route)
-                        selectedDestination = index
+                        tabsNavController.navigate(route = tab.route)
+                        selectedTab = tab
                     },
                     text = {
                         Text(
-                            text = destination.label
+                            text = tab.label
                         )
                     }
                 )
             }
         }
         NavHost(
-            navController,
-            startDestination = startDestination.route
+            tabsNavController,
+            startDestination = startTab.route
         ) {
-            AspirantTrackingNavDestination.entries.forEach { destination ->
+            AspirantTrackingNavTabs.entries.forEach { destination ->
                 composable(destination.route) {
                     when(destination) {
-                        AspirantTrackingNavDestination.INITIAL -> InitialAspirantsListScreen()
-                        AspirantTrackingNavDestination.CONTACTED -> ContactedAspirantsListScreen()
+                        AspirantTrackingNavTabs.INITIAL -> InitialAspirantsListScreen(
+                            onFormButtonPressed = {
+                                globalNavController.navigate("initial_aspirant_postulation_form")
+                            }
+                        )
+                        AspirantTrackingNavTabs.CONTACTED -> ContactedAspirantsListScreen(
+                            onFormButtonPressed = {
+                                globalNavController.navigate("contacted_aspirant_postulation_form")
+                            }
+                        )
                     }
                 }
             }
@@ -67,7 +77,7 @@ fun AspirantTrackingScreen() {
  * Clase enumeradora que lista las posibles pestañas para navegar en el
  * sistema de gestión de aspirantes.
  */
-enum class AspirantTrackingNavDestination(
+enum class AspirantTrackingNavTabs(
     val route: String,
     val label: String
 ) {
