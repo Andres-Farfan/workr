@@ -17,8 +17,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 /**
- * Componente de lista de aspirantes contactados para una vacante
+ * Sub-ventana de lista de aspirantes contactados para una vacante
  * en el Sistema Gestor de Aspirantes.
+ * @param onFormButtonPressed Callback usado cuando se presiona el botón de consulta de formulario.
+ * @param onInterviewButtonPressed Callback usado cuando se presiona el botón de consulta de
+ * notas de entrevista.
  */
 @Composable
 fun ContactedAspirantsListScreen(onFormButtonPressed: () -> Unit, onInterviewButtonPressed: () -> Unit) {

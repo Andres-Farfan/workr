@@ -9,8 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 /**
- * Componente de lista de aspirantes iniciales en una vacante
+ * Sub-ventana de lista de aspirantes iniciales en una vacante
  * en el Sistema Gestor de Aspirantes.
+ * @param onFormButtonPressed Callback usado cuando se presiona el botón de consulta de formulario.
  */
 @Composable
 fun InitialAspirantsListScreen(onFormButtonPressed: () -> Unit) {

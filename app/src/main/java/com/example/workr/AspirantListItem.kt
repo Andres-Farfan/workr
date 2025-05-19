@@ -33,6 +33,9 @@ import androidx.compose.ui.unit.sp
  * puede reusarse entre los 2 estados de aspirante inicial a contactado cambiando el
  * parámetro contacted.
  * @param name Nombre del aspirante listado.
+ * @param onFormButtonPressed Callback usado cuando se presiona el botón de consulta de formulario.
+ * @param onInterviewButtonPressed Callback usado cuando se presiona el botón de consulta de
+ * notas de entrevista (si es que está visible por tratarse de un aspirante contactado).
  * @param contacted Booleano que indica si el aspirante a listar ya fue contactado
  * para una entrevista o no, permite alternar las opciones del item.
  */

@@ -22,6 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 
+/**
+ * Ventana de consulta de notas de entrevista del Sistema Gestor de Aspirantes.
+ */
 @Composable
 fun InterviewNotesScreen(navController: NavHostController) {
     var text by remember { mutableStateOf("") }

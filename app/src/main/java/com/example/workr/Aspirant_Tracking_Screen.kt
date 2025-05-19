@@ -28,7 +28,7 @@ fun AspirantTrackingScreen(globalNavController: NavHostController) {
     val tabsNavController = rememberNavController()
     val startTab = AspirantTrackingNavTabs.INITIAL
 
-    // Se guardará como estado el índice de enumeración (ordinal) de la pestaña abierta
+    // Se guardará como estado el enumerador de la pestaña abierta
     // para actualizar la apariencia de pestaña seleccionada.
     var selectedTab by rememberSaveable { mutableStateOf(startTab) }
 
