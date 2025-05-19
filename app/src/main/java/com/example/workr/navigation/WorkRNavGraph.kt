@@ -9,6 +9,7 @@ import com.example.workr.BusinessCreationScreen
 import com.example.workr.CompanyListing
 import com.example.workr.CompletePerfile
 import com.example.workr.CreateJobScreen
+import com.example.workr.InterviewNotesScreen
 import com.example.workr.JobDetailScreen
 import com.example.workr.LoginScreen
 import com.example.workr.ProfileViewScreen
@@ -73,6 +74,9 @@ fun WorkRApp() {
         }
         composable("aspirant_tracking_system") {
             AspirantTrackingScreen(navController)
+        }
+        composable("interview_notes") {
+            InterviewNotesScreen(navController)
         }
     }
 }

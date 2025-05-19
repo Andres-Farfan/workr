@@ -64,6 +64,9 @@ fun AspirantTrackingScreen(globalNavController: NavHostController) {
                         AspirantTrackingNavTabs.CONTACTED -> ContactedAspirantsListScreen(
                             onFormButtonPressed = {
                                 globalNavController.navigate("contacted_aspirant_postulation_form")
+                            },
+                            onInterviewButtonPressed = {
+                                globalNavController.navigate("interview_notes")
                             }
                         )
                     }

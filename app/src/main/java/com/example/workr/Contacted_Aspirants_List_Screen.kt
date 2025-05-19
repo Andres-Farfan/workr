@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
  * en el Sistema Gestor de Aspirantes.
  */
 @Composable
-fun ContactedAspirantsListScreen(onFormButtonPressed: () -> Unit) {
+fun ContactedAspirantsListScreen(onFormButtonPressed: () -> Unit, onInterviewButtonPressed: () -> Unit) {
     Column (
         modifier = Modifier.fillMaxHeight()
     ) {
@@ -31,11 +31,11 @@ fun ContactedAspirantsListScreen(onFormButtonPressed: () -> Unit) {
                 .verticalScroll(rememberScrollState())
                 .weight(1f)
         ) {
-            AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed, contacted = true)
-            AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed, contacted = true)
-            AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed, contacted = true)
-            AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed, contacted = true)
-            AspirantListItem(name = "Nombre del aspirante", onFormButtonPressed = onFormButtonPressed, contacted = true)
+            AspirantListItem("Nombre del aspirante", onFormButtonPressed, onInterviewButtonPressed, contacted = true)
+            AspirantListItem("Nombre del aspirante", onFormButtonPressed, onInterviewButtonPressed, contacted = true)
+            AspirantListItem("Nombre del aspirante", onFormButtonPressed, onInterviewButtonPressed, contacted = true)
+            AspirantListItem("Nombre del aspirante", onFormButtonPressed, onInterviewButtonPressed, contacted = true)
+            AspirantListItem("Nombre del aspirante", onFormButtonPressed, onInterviewButtonPressed, contacted = true)
         }
         Box (
             modifier = Modifier.background(Color.LightGray).padding(vertical = 8.dp)
