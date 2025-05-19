@@ -7,4 +7,5 @@
     <string name="title_activity_company_listing">Company_Listing</string>
     <string name="title_activity_complete_perfile_bussiness">Complete_Perfile_Bussiness</string>
     <string name="title_activity_list_vacancies_company">List_vacanciesCompany</string>
+    <string name="title_activity_aspirants_management_screen">Aspirants_Management_Screen</string>
 </resources>
