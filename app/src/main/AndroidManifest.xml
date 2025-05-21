@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-<uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,6 +14,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WorkR"
         tools:targetApi="31">
+        <activity
+            android:name=".ManagementCandidates"
+            android:exported="false"
+            android:label="@string/title_activity_management_candidates"
+            android:theme="@style/Theme.WorkR" />
         <activity
             android:name=".List_vacanciesCompany"
             android:exported="false"
@@ -27,7 +34,6 @@
             android:exported="false"
             android:label="@string/title_activity_company_listing"
             android:theme="@style/Theme.WorkR" />
-
         <activity
             android:name=".Business_Creation_Registry"
             android:exported="false"
