@@ -1,9 +1,6 @@
 package com.example.workr
 
 import android.content.Context
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -27,6 +24,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavHostController
+import androidx.compose.runtime.*
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.OutlinedButton
 
 
 @Composable
@@ -133,7 +133,6 @@ fun BusinessCreationScreen(navController: NavHostController, isEmpleado: Boolean
 
             OutlinedButton(
                 onClick = {
-                    // Aquí podrías validar los campos del formulario si es necesario
                     if (companyName.isNotBlank() && sector.isNotBlank()) {
                         with(sharedPref.edit()) {
                             putBoolean("has_company", true)
@@ -143,18 +142,10 @@ fun BusinessCreationScreen(navController: NavHostController, isEmpleado: Boolean
                     } else {
                         // Mostrar error o Snackbar si lo deseas
                     }
-                    // Guardar que el usuario ya tiene una empresa
-                    with(sharedPref.edit()) {
-                        putBoolean("has_company", true)
-                        apply()
-                    }
-
-                    // Navegar al perfil de empresa
-                    navController.navigate("company_profile")
                 },
                 modifier = Modifier.fillMaxWidth(),
                 border = BorderStroke(1.dp, Color(0xFF0078C1)),
-                colors = ButtonDefaults.outlinedButtonColors(
+                colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF0078C1),
                     contentColor = Color.White
                 )
@@ -162,10 +153,13 @@ fun BusinessCreationScreen(navController: NavHostController, isEmpleado: Boolean
                 Text("Registrar")
             }
             OutlinedButton(
-                onClick = { /* acción para guardar */ },
+                onClick = {
+                    // Acción para regresar, por ejemplo:
+                    navController.popBackStack()
+                },
                 modifier = Modifier.fillMaxWidth(),
                 border = BorderStroke(1.dp, Color(0xFF0078C1)),
-                colors = ButtonDefaults.outlinedButtonColors(
+                colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFFD1EAFA),
                     contentColor = Color(0xFF0078C1)
                 )
