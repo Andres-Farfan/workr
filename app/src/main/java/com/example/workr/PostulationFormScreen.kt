@@ -28,7 +28,7 @@ import androidx.navigation.NavHostController
 
 // --- Pantalla Principal ---
 @Composable
-fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean) {
+fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean, fromAspirantsTrackingList: String? = null) {
     val nombre = remember { mutableStateOf("") }
     val telefono = remember { mutableStateOf("") }
     val correo = remember { mutableStateOf("") }
@@ -39,6 +39,10 @@ fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean)
     val herramientas = remember { mutableStateOf("") }
     val razonIngreso = remember { mutableStateOf("") }
     val portafolio = remember { mutableStateOf("") }
+
+    // Se determina una bandera de habilitación de los campos de texto,
+    // sólo se podrán editar si se accede al form fuera del Sistema Gestor de Aspirantes.
+    val fieldsEnabled = (fromAspirantsTrackingList == null)
 
     Box(modifier = Modifier.fillMaxSize()) {
         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -69,14 +73,18 @@ fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean)
             drawPath(pathRight, color = Color(0xFFD0D8F0), style = Fill)
         }
 
-        WorkRTopBar(
-            navController = navController,
-            isEmpleado = isEmpleado,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .align(Alignment.TopEnd)
-        )
+        // La barra superior se mostrará solamente si el formulario se carga
+        // desde un origen diferente al Sistema Gestor de Aspirantes.
+        if (fromAspirantsTrackingList == null) {
+            WorkRTopBar(
+                navController = navController,
+                isEmpleado = isEmpleado,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp)
+                    .align(Alignment.TopEnd)
+            )
+        }
 
         Column(
             modifier = Modifier
@@ -102,35 +110,60 @@ fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean)
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp)
             ) {
-                LabelWithInput("Nombre completo:", "Nombre completo(Primero el apellido)", nombre)
-                LabelWithInput("Número de teléfono:", "Teléfono", telefono)
-                LabelWithInput("Correo electrónico:", "Correo electrónico", correo)
-                LabelWithInput("¿Último nivel de estudio alcanzado?", "Nivel alcanzado", nivelEstudio)
-                LabelWithInput("¿Último puesto de empleo? (opcional)", "Último empleo", ultimoEmpleo)
-                LabelWithInput("Nivel de experiencia", "Nivel alcanzado", experiencia)
-                LabelWithInput("¿Cuáles son tus principales habilidades técnicas?", "Principales técnicas", habilidades)
-                LabelWithInput("¿Qué herramientas o softwares dominas?", "Herramientas dominadas", herramientas)
-                LabelWithInput("¿Por qué quieres trabajar en nuestra empresa?", "Razón", razonIngreso)
-                LabelWithInput("¿Puedes compartir un portafolio o ejemplos de tu trabajo?", "Razón", portafolio)
+                LabelWithInput("Nombre completo:", "Nombre completo(Primero el apellido)", nombre, fieldsEnabled)
+                LabelWithInput("Número de teléfono:", "Teléfono", telefono, fieldsEnabled)
+                LabelWithInput("Correo electrónico:", "Correo electrónico", correo, fieldsEnabled)
+                LabelWithInput("¿Último nivel de estudio alcanzado?", "Nivel alcanzado", nivelEstudio, fieldsEnabled)
+                LabelWithInput("¿Último puesto de empleo? (opcional)", "Último empleo", ultimoEmpleo, fieldsEnabled)
+                LabelWithInput("Nivel de experiencia", "Nivel alcanzado", experiencia, fieldsEnabled)
+                LabelWithInput("¿Cuáles son tus principales habilidades técnicas?", "Principales técnicas", habilidades, fieldsEnabled)
+                LabelWithInput("¿Qué herramientas o softwares dominas?", "Herramientas dominadas", herramientas, fieldsEnabled)
+                LabelWithInput("¿Por qué quieres trabajar en nuestra empresa?", "Razón", razonIngreso, fieldsEnabled)
+                LabelWithInput("¿Puedes compartir un portafolio o ejemplos de tu trabajo?", "Razón", portafolio, fieldsEnabled)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                Button(
-                    onClick = { /* Acción al enviar */ },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
-                        .clip(RoundedCornerShape(25.dp)),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(id = R.color.cian_WorkR),
-                        contentColor = colorResource(id = R.color.blue_WorkR)
-                    )
-                ) {
-                    Text(
-                        text = "Enviar",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                // Opciones para el formulario fuera del Sistema Gestor de Aspirantes.
+                if (fromAspirantsTrackingList == null) {
+                    Button(
+                        onClick = { /* Acción al enviar */ },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .clip(RoundedCornerShape(25.dp)),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = colorResource(id = R.color.cian_WorkR),
+                            contentColor = colorResource(id = R.color.blue_WorkR)
+                        )
+                    ) {
+                        Text(
+                            text = "Enviar",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+                // Opciones para el formulario dentro del Sistema Gestor de Aspirantes.
+                else {
+                    Row (
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        OutlinedButton(onClick = {
+                            navController.popBackStack()
+                        }) {
+                            Text("Regresar")
+                        }
+
+                        // El botón de agendar cita solo aparecerá si se abrió el
+                        // formulario desde la lista de aspirantes iniciales.
+                        if (fromAspirantsTrackingList == "initial") {
+                            Button(onClick = {}) {
+                                Text("Agendar cita")
+                            }
+                        }
+                    }
+
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -142,7 +175,7 @@ fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean)
 
 // --- Campo con etiqueta + input ---
 @Composable
-fun LabelWithInput(label: String, placeholder: String, state: MutableState<String>) {
+fun LabelWithInput(label: String, placeholder: String, state: MutableState<String>, enabled: Boolean) {
     Column(modifier = Modifier.padding(bottom = 12.dp)) {
         Text(
             text = label,
@@ -151,6 +184,7 @@ fun LabelWithInput(label: String, placeholder: String, state: MutableState<Strin
         )
         OutlinedTextField(
             value = state.value,
+            enabled = enabled,
             onValueChange = { state.value = it },
             placeholder = {
                 Text(text = placeholder, color = colorResource(id = R.color.gray_WorkR))
@@ -180,5 +214,3 @@ fun BlueTopBar() {
             .background(colorResource(id = R.color.blue_WorkR))
     )
 }
-
-
