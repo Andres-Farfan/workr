@@ -43,7 +43,7 @@ fun PerfilEmpresarialScreen(navController: NavHostController, isEmpleado: Boolea
             navController = navController,
             isEmpleado = isEmpleado,
             modifier = Modifier
-                .align(Alignment.CenterEnd as Alignment.Horizontal) // Esquina derecha centrada verticalmente
+                .align(Alignment.CenterHorizontally) // Esquina derecha centrada verticalmente
                 .padding(end = 12.dp)
         )
 
