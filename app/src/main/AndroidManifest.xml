@@ -15,9 +15,9 @@
         android:theme="@style/Theme.WorkR"
         tools:targetApi="31">
         <activity
-            android:name=".ManagementCandidates"
+            android:name=".Aspirants_Management_Screen"
             android:exported="false"
-            android:label="@string/title_activity_management_candidates"
+            android:label="@string/title_activity_aspirants_management_screen"
             android:theme="@style/Theme.WorkR" />
         <activity
             android:name=".List_vacanciesCompany"
