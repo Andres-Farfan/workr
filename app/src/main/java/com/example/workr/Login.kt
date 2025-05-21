@@ -1,9 +1,11 @@
 package com.example.workr
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -175,13 +177,40 @@ fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit) {
             }
             Spacer(modifier = Modifier.height(16.dp))
 
-            TextButton(onClick = onRegisterClick) {
-                Text(
-                    text = "¿Aún no estás dentro?\n¡Crea una cuenta!",
-                    textAlign = TextAlign.Center,
-                    fontSize = 14.sp,
-                    color = colorResource(id = R.color.blue_WorkR)
-                )
+            Text(
+                text = "¿Aún no estás dentro?",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = colorResource(id = R.color.blue_WorkR)
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+
+            ) {
+                OutlinedButton(
+                    onClick = { navController.navigate("register_user") },
+                    shape = RoundedCornerShape(20.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = colorResource(id = R.color.blue_WorkR)
+                    ),
+                    border = BorderStroke(1.dp, colorResource(id = R.color.blue_WorkR))
+                ) {
+                    Text("Registrar Usuario", fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                }
+
+                OutlinedButton(
+                    onClick = { navController.navigate("company_register") },
+                    shape = RoundedCornerShape(20.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = colorResource(id = R.color.blue_WorkR)
+                    ),
+                    border = BorderStroke(1.dp, colorResource(id = R.color.blue_WorkR))
+                ) {
+                    Text("Registrar Empresa", fontSize = 14.sp,fontWeight = FontWeight.Medium)
+                }
             }
         }
     }

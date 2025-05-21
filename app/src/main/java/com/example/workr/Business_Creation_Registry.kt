@@ -55,7 +55,7 @@ fun BusinessCreationScreen(navController: NavHostController, isEmpleado: Boolean
             navController = navController,
             isEmpleado = isEmpleado,
             modifier = Modifier
-                .align(Alignment.TopEnd as Alignment.Horizontal)
+                .align(Alignment.End)
                 .padding(top = 8.dp, end = 12.dp)
         )
 
