@@ -128,8 +128,8 @@ fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit) {
                                         ).show()
 
                                         // Navegación según tipo de usuario
-                                        if (loginResponse.loginType == "COMPANY") {
-                                            navController.navigate("company_register")
+                                        if (loginResponse.loginType == "company") {
+                                            navController.navigate("company_profile")
                                         } else {
                                             navController.navigate("user_profile")
                                         }
