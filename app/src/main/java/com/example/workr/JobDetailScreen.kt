@@ -44,9 +44,6 @@ fun JobDetailScreen(navController: NavHostController, isEmpleado: Boolean) {
                 WorkRTopBar(
                     navController = navController,
                     isEmpleado = isEmpleado,
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 12.dp)
                 )
             }
 

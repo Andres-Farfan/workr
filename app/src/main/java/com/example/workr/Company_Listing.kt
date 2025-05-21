@@ -1,9 +1,5 @@
 package com.example.workr
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,8 +21,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
 
 
@@ -47,10 +43,9 @@ fun CompanyListing(navController: NavHostController, isEmpleado: Boolean) {
             WorkRTopBar(
                 navController = navController,
                 isEmpleado = isEmpleado,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 8.dp, end = 12.dp)
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             Column(
                 modifier = Modifier
@@ -61,13 +56,13 @@ fun CompanyListing(navController: NavHostController, isEmpleado: Boolean) {
                 Text(
                     text = "Empleos",
                     fontSize = 24.sp,
-                    color = Color.White,
+                    color = colorResource(id = R.color.black) ,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = "Cerca de tu zona",
                     fontSize = 14.sp,
-                    color = Color.White
+                    color = colorResource(id = R.color.black)
                 )
             }
         }

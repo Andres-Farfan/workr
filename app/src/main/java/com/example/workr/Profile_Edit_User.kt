@@ -43,9 +43,6 @@ fun ProfileEditScreen(navController: NavHostController, isEmpleado: Boolean) {
         WorkRTopBar(
             navController = navController,
             isEmpleado = isEmpleado,
-            modifier = Modifier
-                .align(Alignment.CenterEnd as Alignment.Horizontal) // Esquina derecha centrada verticalmente
-                .padding(end = 12.dp)
         )
 
         // Imagen de perfil

@@ -10,6 +10,7 @@ import com.example.workr.CompletePerfile
 import com.example.workr.CreateJobScreen
 import com.example.workr.JobDetailScreen
 import com.example.workr.LoginScreen
+import com.example.workr.NotificationsScreen
 import com.example.workr.ProfileViewScreen
 import com.example.workr.PerfilEmpresarialScreen
 import com.example.workr.PostulacionFormScreen
@@ -63,6 +64,9 @@ fun WorkRApp() {
         }
         composable("company_register"){
             BusinessCreationScreen(navController, isEmpleado = false)
+        }
+        composable("notifications"){
+            NotificationsScreen(navController, isEmpleado = true)
         }
     }
 }

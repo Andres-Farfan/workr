@@ -63,9 +63,6 @@ fun RegistrationScreen(
         WorkRTopBar(
             navController = navController,
             isEmpleado = isEmpleado,
-            modifier = Modifier
-                .align(Alignment.CenterEnd) // Esquina derecha centrada verticalmente
-                .padding(end = 12.dp)
         )
 
         // Contenido del formulario

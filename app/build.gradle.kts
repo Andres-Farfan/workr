@@ -83,6 +83,7 @@ dependencies {
     implementation ("androidx.compose.ui:ui-tooling-preview:1.4.0") // Herramientas de vista previa
     implementation ("androidx.activity:activity-compose:1.7.0") // Integración con Activity
     implementation("androidx.compose.ui:ui-tooling-preview:1.5.1")
+    implementation("androidx.navigation:navigation-compose:2.7.3")
     implementation("io.coil-kt:coil-svg:2.2.2")
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)

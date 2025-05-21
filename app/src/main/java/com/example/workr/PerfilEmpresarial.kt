@@ -26,74 +26,70 @@ fun PerfilEmpresarialScreen(navController: NavHostController, isEmpleado: Boolea
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .fillMaxWidth()
-            .background(Color.White),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(Color.White)
     ) {
-        // Encabezado
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(65.dp)
-                .background(Color(0xFF0066CC)) // Azul
-        )
-
-        // Barra superior personalizada
+        // Barra azul con iconos
         WorkRTopBar(
             navController = navController,
             isEmpleado = isEmpleado,
             modifier = Modifier
-                .align(Alignment.CenterEnd as Alignment.Horizontal) // Esquina derecha centrada verticalmente
-                .padding(end = 12.dp)
+                .fillMaxWidth()
+                .height(65.dp)
         )
 
-        Box(
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Título FUERA de la barra azul, texto negro
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(10.dp)
-                .background(color = Color(0xFFDEE9ED)) // Fondo gris claro
-        )
+                .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Empleos",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+            Text(
+                text = "Cerca de tu zona",
+                fontSize = 14.sp,
+                color = Color.Black
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Fondo gris claro con círculo azul centrado
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(125.dp)
-                .background(color = Color(0xFFDEE9ED)) // Fondo gris claro
+                .background(color = Color(0xFFDEE9ED))
         ) {
-            // Círculo azul superpuesto
             Box(
                 modifier = Modifier
                     .size(120.dp)
-                    .background(Color(0xFF0066CC), shape = CircleShape) // Círculo azul
-                    .align(Alignment.Center) // Centrado dentro del Box padre
+                    .align(Alignment.Center)
+                    .background(Color(0xFF0066CC), shape = CircleShape)
                     .padding(15.dp)
             )
-            // Texto o ícono dentro del círculo azul
-            Box(
-                modifier = Modifier
-                    .align(Alignment.Center) // Misma posición que el círculo
-            ) {
-                // Aquí puedes añadir tu contenido como texto o ícono
-                //Icon(
-                    //painter = painterResource(id = R.drawable.folder), // Ícono de carpeta
-                    //contentDescription = "Ícono de Carpeta",
-                    //tint = Color.White,
-                    //modifier = Modifier.size(30.dp)
-                //)
+            // Ícono opcional dentro del círculo
+            Box(modifier = Modifier.align(Alignment.Center)) {
+                // Agrega un ícono si lo necesitas
             }
         }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(20.dp)
-                .background(color = Color(0xFFFFFFFF)) // Fondo gris claro
-        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
         // Nombre y descripción
         Text("Nombre", fontSize = 24.sp, fontWeight = FontWeight.Bold)
         Text(
             "Descripción de la empresa y su función.",
             fontSize = 16.sp,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 26.dp)
+            modifier = Modifier.padding(top = 26.dp, start = 16.dp, end = 16.dp)
         )
 
         // Sección "Sobre Nosotros"
@@ -140,18 +136,30 @@ fun PerfilEmpresarialScreen(navController: NavHostController, isEmpleado: Boolea
                 )
             }
         }
+
         // Sección "Contacto"
         Column(
-            verticalArrangement = Arrangement.spacedBy(0.dp, Alignment.Top),
-            horizontalAlignment = Alignment.Start,
+            modifier = Modifier.padding(horizontal = 34.dp),
+            horizontalAlignment = Alignment.Start
         ) {
             Text("Contacto", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+
             Text(
                 text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = Color.Black)) {
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                    ) {
                         append("Correo: ")
                     }
-                    withStyle(style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)) {
+                    withStyle(
+                        style = SpanStyle(
+                            color = Color.Blue,
+                            textDecoration = TextDecoration.Underline
+                        )
+                    ) {
                         append("nombre@usuario")
                     }
                 },
@@ -160,10 +168,20 @@ fun PerfilEmpresarialScreen(navController: NavHostController, isEmpleado: Boolea
 
             Text(
                 text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = Color.Black)) {
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                    ) {
                         append("Sitio Web: ")
                     }
-                    withStyle(style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)) {
+                    withStyle(
+                        style = SpanStyle(
+                            color = Color.Blue,
+                            textDecoration = TextDecoration.Underline
+                        )
+                    ) {
                         append("empresa.com.mx")
                     }
                 },
@@ -172,10 +190,20 @@ fun PerfilEmpresarialScreen(navController: NavHostController, isEmpleado: Boolea
 
             Text(
                 text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = Color.Black)) {
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                    ) {
                         append("Ubicación: ")
                     }
-                    withStyle(style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)) {
+                    withStyle(
+                        style = SpanStyle(
+                            color = Color.Blue,
+                            textDecoration = TextDecoration.Underline
+                        )
+                    ) {
                         append("Google Maps")
                     }
                 },

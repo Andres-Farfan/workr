@@ -72,10 +72,6 @@ fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean)
         WorkRTopBar(
             navController = navController,
             isEmpleado = isEmpleado,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .align(Alignment.TopEnd)
         )
 
         Column(

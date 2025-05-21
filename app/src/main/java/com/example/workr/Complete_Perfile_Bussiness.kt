@@ -44,9 +44,6 @@ fun CompletePerfile(navController: NavHostController, isEmpleado: Boolean){
         WorkRTopBar(
             navController = navController,
             isEmpleado = isEmpleado,
-            modifier = Modifier
-                .align(Alignment.CenterEnd as Alignment.Horizontal)
-                .padding(end = 12.dp)
         )
 
         Spacer(modifier = Modifier.height(16.dp))

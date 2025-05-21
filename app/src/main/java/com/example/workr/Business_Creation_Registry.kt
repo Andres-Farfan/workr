@@ -1,9 +1,6 @@
 package com.example.workr
 
 import android.content.Context
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -50,13 +46,10 @@ fun BusinessCreationScreen(navController: NavHostController, isEmpleado: Boolean
                 .background(Color(0xFF0078C1))
         )
 
-        // Menú en la esquina superior derecha
+        // Menú en la barra superior
         WorkRTopBar(
             navController = navController,
             isEmpleado = isEmpleado,
-            modifier = Modifier
-                .align(Alignment.TopEnd as Alignment.Horizontal)
-                .padding(top = 8.dp, end = 12.dp)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
