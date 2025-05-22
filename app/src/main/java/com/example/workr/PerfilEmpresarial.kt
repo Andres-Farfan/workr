@@ -33,8 +33,8 @@ fun PerfilEmpresarialScreen(navController: NavHostController, isEmpleado: Boolea
             navController = navController,
             isEmpleado = isEmpleado,
             modifier = Modifier
-                .fillMaxWidth()
-                .height(65.dp)
+                .align(Alignment.CenterHorizontally) // Esquina derecha centrada verticalmente
+                .padding(end = 12.dp)
         )
 
         Spacer(modifier = Modifier.height(12.dp))
