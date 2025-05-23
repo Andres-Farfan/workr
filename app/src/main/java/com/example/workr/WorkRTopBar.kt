@@ -22,8 +22,10 @@ fun WorkRTopBar(
     var expanded by remember { mutableStateOf(false) }
 
     TopAppBar(
-        title = { Text("Work-R") },
+        title = { Text("Work-R",color = colorResource(id = R.color.white)) },
+
         backgroundColor = colorResource(id = R.color.blue_WorkR),
+        modifier = Modifier.height(70.dp),
         actions = {
             Box(Modifier.wrapContentSize(Alignment.TopEnd)) {
                 IconButton(onClick = { expanded = true }) {
@@ -54,7 +56,7 @@ fun WorkRTopBar(
                         }
                     } else {
                         DropdownMenuItem(onClick = {
-                            navController.navigate("register_company")
+                            navController.navigate("company_register")
                             expanded = false
                         }) {
                             Text("Registrar empresa")

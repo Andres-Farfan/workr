@@ -38,16 +38,9 @@ fun CreateJobScreen(navController: NavHostController, isEmpleado: Boolean) {
     var description by remember { mutableStateOf("") }
     val skills = remember { mutableStateListOf("") }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().background(Color.White)) {
 
         WorkRTopBar(navController = navController, isEmpleado = isEmpleado)
-        // Barra azul vacía
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .background(Color(0xFF0078C1))
-        )
 
         // Título centrado debajo de la barra
         Box(
@@ -157,7 +150,21 @@ fun CreateJobScreen(navController: NavHostController, isEmpleado: Boolean) {
                             Text("Publicar", color = Color.White)
                         }
                     }
-
+                    Spacer(Modifier.height(16.dp))
+                    OutlinedButton(
+                        onClick = {
+                            // Acción para regresar, por ejemplo:
+                            navController.popBackStack()
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        border = BorderStroke(1.dp, Color(0xFF0078C1)),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(0xFFD1EAFA),
+                            contentColor = Color(0xFF0078C1)
+                        )
+                    ) {
+                        Text("Regresar")
+                    }
                     Spacer(Modifier.height(16.dp))
                 }
 

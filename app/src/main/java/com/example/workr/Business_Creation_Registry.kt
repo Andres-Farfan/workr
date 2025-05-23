@@ -41,14 +41,6 @@ fun BusinessCreationScreen(navController: NavHostController, isEmpleado: Boolean
     Column(modifier = Modifier
         .fillMaxSize()
         .background(Color.White)) {
-        // Encabezado azul
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .background(Color(0xFF0078C1))
-        )
 
         // Menú en la esquina superior derecha
         WorkRTopBar(

@@ -38,7 +38,6 @@ import io.ktor.client.plugins.*
 fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
-    val isEmpresa = remember { mutableStateOf(false) } // false = empleado, true = empresa
 
     // Variables para mensajes de error
     val emailError = remember { mutableStateOf(false) }
@@ -87,20 +86,6 @@ fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit) {
                 isPassword = true,
                 isError = passwordError.value
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Selector Empleado/Empresa (ahora con lógica clara)
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Empleado")
-                Switch(
-                    checked = isEmpresa.value,
-                    onCheckedChange = { isEmpresa.value = it }
-                )
-                Text("Empresa")
-            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -188,7 +173,7 @@ fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit) {
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
-
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OutlinedButton(
                     onClick = { navController.navigate("register_user") },
