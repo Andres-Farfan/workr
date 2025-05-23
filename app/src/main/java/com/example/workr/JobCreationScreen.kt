@@ -16,16 +16,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.navigation.NavHostController
 
 @Composable
-fun CreateJobScreen(
-    loginType: String,
-    userId: String,
-    navController: NavHostController
-) {
+fun CreateJobScreen(navController: NavHostController, isEmpleado: Boolean) {
     val scrollState = rememberScrollState()
 
     var position by remember { mutableStateOf("") }
@@ -35,145 +38,139 @@ fun CreateJobScreen(
     var description by remember { mutableStateOf("") }
     val skills = remember { mutableStateListOf("") }
 
-    val isEmpleado = loginType == "user"
+    Column(modifier = Modifier.fillMaxSize()) {
 
-    WorkRScaffold(
-        navController = navController,
-        loginType = loginType,
-    ) { innerPadding ->
-
-        // Aplicar padding que evita superposición con barra superior
-        Column(
+        WorkRTopBar(navController = navController, isEmpleado = isEmpleado)
+        // Barra azul vacía
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp)
+                .fillMaxWidth()
+                .height(56.dp)
+                .background(Color(0xFF0078C1))
+        )
+
+        // Título centrado debajo de la barra
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            contentAlignment = Alignment.Center
         ) {
-            // Título centrado debajo de la barra
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Creación de vacante",
-                    color = Color.Black,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            Text(
+                text = "Creación de vacante",
+                color = Color.Black,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
 
-            Box(modifier = Modifier.weight(1f)) {
-                Row(modifier = Modifier.fillMaxSize()) {
-                    Column(
+        Box(modifier = Modifier.weight(1f)) {
+            Row(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .verticalScroll(scrollState)
+                        .padding(16.dp)
+                ) {
+                    SectionTitle("Datos generales")
+                    LabeledTextField("Posición de vacante", position) { position = it }
+                    Spacer(Modifier.height(8.dp))
+                    LabeledTextField("Ubicación de la oferta", location) { location = it }
+                    Spacer(Modifier.height(8.dp))
+                    LabeledTextField("Días laborales", days) { days = it }
+                    Spacer(Modifier.height(8.dp))
+                    LabeledTextField("Horario de turno", schedule) { schedule = it }
+
+                    Spacer(Modifier.height(16.dp))
+                    SectionTitle("Descripción")
+                    OutlinedTextField(
+                        value = description,
+                        onValueChange = { description = it },
                         modifier = Modifier
-                            .weight(1f)
-                            .verticalScroll(scrollState)
-                    ) {
-                        SectionTitle("Datos generales")
-                        LabeledTextField("Posición de vacante", position) { position = it }
-                        Spacer(Modifier.height(8.dp))
-                        LabeledTextField("Ubicación de la oferta", location) { location = it }
-                        Spacer(Modifier.height(8.dp))
-                        LabeledTextField("Días laborales", days) { days = it }
-                        Spacer(Modifier.height(8.dp))
-                        LabeledTextField("Horario de turno", schedule) { schedule = it }
+                            .fillMaxWidth()
+                            .height(100.dp),
+                        placeholder = {
+                            Text(
+                                "Una descripción de las responsabilidades y tareas desempeñadas en este puesto que den un entendimiento suficiente a los aspirantes"
+                            )
+                        }
+                    )
 
-                        Spacer(Modifier.height(16.dp))
-                        SectionTitle("Descripción")
+                    Spacer(Modifier.height(16.dp))
+                    SectionTitle("Habilidades preferibles")
+                    skills.forEachIndexed { index, skill ->
                         OutlinedTextField(
-                            value = description,
-                            onValueChange = { description = it },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(100.dp),
-                            placeholder = {
-                                Text(
-                                    "Una descripción de las responsabilidades y tareas desempeñadas en este puesto que den un entendimiento suficiente a los aspirantes"
-                                )
+                            value = skill,
+                            onValueChange = { skills[index] = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = { Text("Habilidad competitiva") },
+                            trailingIcon = {
+                                IconButton(onClick = {
+                                    if (index in skills.indices) skills.removeAt(index)
+                                }) {
+                                    Icon(Icons.Default.Close, contentDescription = "Eliminar")
+                                }
                             }
                         )
+                        Spacer(Modifier.height(8.dp))
+                    }
 
-                        Spacer(Modifier.height(16.dp))
-                        SectionTitle("Habilidades preferibles")
-                        skills.forEachIndexed { index, skill ->
-                            OutlinedTextField(
-                                value = skill,
-                                onValueChange = { skills[index] = it },
-                                modifier = Modifier.fillMaxWidth(),
-                                placeholder = { Text("Habilidad competitiva") },
-                                trailingIcon = {
-                                    IconButton(onClick = {
-                                        if (index in skills.indices) skills.removeAt(index)
-                                    }) {
-                                        Icon(Icons.Default.Close, contentDescription = "Eliminar")
-                                    }
-                                }
-                            )
-                            Spacer(Modifier.height(8.dp))
-                        }
+                    OutlinedButton(
+                        onClick = { skills.add("") },
+                        modifier = Modifier.fillMaxWidth(),
+                        border = BorderStroke(1.dp, Color(0xFF0078C1)),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            backgroundColor = Color.White,
+                            contentColor = Color(0xFF0078C1)
+                        )
+                    ) {
+                        Text("+ Agregar Habilidad")
+                    }
 
+                    Spacer(Modifier.height(24.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
                         OutlinedButton(
-                            onClick = { skills.add("") },
-                            modifier = Modifier.fillMaxWidth(),
+                            onClick = { /* Cancel logic */ },
                             border = BorderStroke(1.dp, Color(0xFF0078C1)),
                             colors = ButtonDefaults.outlinedButtonColors(
                                 backgroundColor = Color.White,
                                 contentColor = Color(0xFF0078C1)
-                            )
+                            ),
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp)
                         ) {
-                            Text("+ Agregar Habilidad")
+                            Text("Cancelar")
                         }
 
-                        Spacer(Modifier.height(24.dp))
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
+                        Button(
+                            onClick = { /* Publish logic */ },
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF0078C1)),
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 8.dp)
                         ) {
-                            OutlinedButton(
-                                onClick = { /* Cancel logic */ },
-                                border = BorderStroke(1.dp, Color(0xFF0078C1)),
-                                colors = ButtonDefaults.outlinedButtonColors(
-                                    backgroundColor = Color.White,
-                                    contentColor = Color(0xFF0078C1)
-                                ),
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(end = 8.dp)
-                            ) {
-                                Text("Cancelar")
-                            }
-
-                            Button(
-                                onClick = { /* Publish logic */ },
-                                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF0078C1)),
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(start = 8.dp)
-                            ) {
-                                Text("Publicar", color = Color.White)
-                            }
+                            Text("Publicar", color = Color.White)
                         }
-
-                        Spacer(Modifier.height(16.dp))
                     }
 
-                    SimpleScrollbar(
-                        scrollState = scrollState,
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(vertical = 16.dp)
-                    )
+                    Spacer(Modifier.height(16.dp))
                 }
+
+                SimpleScrollbar(
+                    scrollState = scrollState,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(vertical = 16.dp)
+                )
             }
         }
     }
 }
-
-
-
 
 @Composable
 fun LabeledTextField(label: String, value: String, onValueChange: (String) -> Unit) {
