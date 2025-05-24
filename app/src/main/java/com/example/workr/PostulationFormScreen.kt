@@ -28,7 +28,14 @@ import androidx.navigation.NavHostController
 
 // --- Pantalla Principal ---
 @Composable
-fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean, fromAspirantsTrackingList: String? = null) {
+fun PostulacionFormScreen(
+    navController: NavHostController,
+    loginType: String,
+    userId: String,
+    fromAspirantsTrackingList: String? = null
+) {
+    val isEmpleado = loginType == "employee"
+
     val nombre = remember { mutableStateOf("") }
     val telefono = remember { mutableStateOf("") }
     val correo = remember { mutableStateOf("") }
@@ -40,8 +47,6 @@ fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean,
     val razonIngreso = remember { mutableStateOf("") }
     val portafolio = remember { mutableStateOf("") }
 
-    // Se determina una bandera de habilitación de los campos de texto,
-    // sólo se podrán editar si se accede al form fuera del Sistema Gestor de Aspirantes.
     val fieldsEnabled = (fromAspirantsTrackingList == null)
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -73,16 +78,12 @@ fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean,
             drawPath(pathRight, color = Color(0xFFD0D8F0), style = Fill)
         }
 
-        // La barra superior se mostrará solamente si el formulario se carga
-        // desde un origen diferente al Sistema Gestor de Aspirantes.
         if (fromAspirantsTrackingList == null) {
             WorkRTopBar(
                 navController = navController,
                 isEmpleado = isEmpleado,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .align(Alignment.TopEnd)
+                loginType = loginType,
+                userId = userId
             )
         }
 
@@ -91,7 +92,6 @@ fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean,
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-
             BlueTopBar()
 
             Text(
@@ -123,7 +123,6 @@ fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean,
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Opciones para el formulario fuera del Sistema Gestor de Aspirantes.
                 if (fromAspirantsTrackingList == null) {
                     Button(
                         onClick = { /* Acción al enviar */ },
@@ -142,10 +141,8 @@ fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean,
                             fontWeight = FontWeight.Bold
                         )
                     }
-                }
-                // Opciones para el formulario dentro del Sistema Gestor de Aspirantes.
-                else {
-                    Row (
+                } else {
+                    Row(
                         horizontalArrangement = Arrangement.SpaceAround,
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -155,15 +152,12 @@ fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean,
                             Text("Regresar")
                         }
 
-                        // El botón de agendar cita solo aparecerá si se abrió el
-                        // formulario desde la lista de aspirantes iniciales.
                         if (fromAspirantsTrackingList == "initial") {
                             Button(onClick = {}) {
                                 Text("Agendar cita")
                             }
                         }
                     }
-
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -171,7 +165,6 @@ fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean,
         }
     }
 }
-
 
 // --- Campo con etiqueta + input ---
 @Composable

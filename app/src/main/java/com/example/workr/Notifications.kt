@@ -11,31 +11,40 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 
 @Composable
-fun NotificationsScreen(navController: NavHostController, isEmpleado : Boolean) {
+fun NotificationsScreen(
+    navController: NavHostController,
+    loginType: String,
+    userId: String
+) {
+    val isEmpleado = loginType == "employee"
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // Barra azul con la barra de navegación
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .background(Color(0xFF007AFF)),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            WorkRTopBar(navController = navController, isEmpleado = isEmpleado)
-        }
+        // Barra superior reutilizable
+        WorkRTopBar(
+            navController = navController,
+            isEmpleado = isEmpleado,
+            loginType = loginType,
+            userId = userId
+        )
 
-        // Contenido vacío por ahora
+        // Contenido de la pantalla
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
+                .padding(16.dp)
         ) {
-            // Por ejemplo:
-            // Text("No hay notificaciones", modifier = Modifier.align(Alignment.Center))
+            Text(
+                text = if (isEmpleado)
+                    "No tienes notificaciones por el momento (Empleado)"
+                else
+                    "No hay notificaciones disponibles para tu empresa",
+                modifier = Modifier.align(Alignment.Center)
+            )
         }
     }
 }

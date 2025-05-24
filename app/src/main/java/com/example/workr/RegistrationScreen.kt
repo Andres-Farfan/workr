@@ -18,8 +18,7 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun RegistrationScreen(
-    navController: NavHostController,
-    isEmpleado: Boolean
+    navController: NavHostController
 ) {
     // Estados locales
     var firstName by remember { mutableStateOf("") }
@@ -58,12 +57,6 @@ fun RegistrationScreen(
             drawPath(pathLeft, color = Color(0xFFD0D8F0), style = Fill)
             drawPath(pathRight, color = Color(0xFFD0D8F0), style = Fill)
         }
-
-        // Barra superior personalizada
-        WorkRTopBar(
-            navController = navController,
-            isEmpleado = isEmpleado,
-        )
 
         // Contenido del formulario
         Column(
@@ -115,10 +108,9 @@ fun RegistrationScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón de registro
             Button(
                 onClick = {
-                    // Aquí puedes implementar la lógica de registro
+                    // Implementar lógica de registro
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0078C1)),
@@ -129,7 +121,6 @@ fun RegistrationScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Botón de regresar
             Button(
                 onClick = { navController.popBackStack() },
                 modifier = Modifier.fillMaxWidth(),
@@ -141,4 +132,5 @@ fun RegistrationScreen(
         }
     }
 }
+
 

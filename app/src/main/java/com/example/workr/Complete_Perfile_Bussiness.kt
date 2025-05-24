@@ -24,13 +24,20 @@ import androidx.navigation.NavHostController
 
 
 @Composable
-fun CompletePerfile(navController: NavHostController, isEmpleado: Boolean){
+fun CompletePerfile(
+    loginType: String,
+    userId: String,
+    navController: NavHostController){
+
     var description by remember { mutableStateOf("") }
     var vision by remember { mutableStateOf("") }
     var mission by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var websiteUrl by remember { mutableStateOf("") }
     var locationUrl by remember { mutableStateOf("") }
+
+    // Determinar si el usuario es empleado
+    val isEmpleado = loginType == "employee"
 
     Column(modifier = Modifier.fillMaxSize()) {
         // Encabezado azul
@@ -44,6 +51,8 @@ fun CompletePerfile(navController: NavHostController, isEmpleado: Boolean){
         WorkRTopBar(
             navController = navController,
             isEmpleado = isEmpleado,
+            loginType = loginType,
+            userId = userId
         )
 
         Spacer(modifier = Modifier.height(16.dp))

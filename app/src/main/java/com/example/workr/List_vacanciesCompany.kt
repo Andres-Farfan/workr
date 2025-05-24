@@ -26,7 +26,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.navigation.NavHostController
 
 @Composable
-fun VacantesScreen(navController: NavHostController, isEmpleado: Boolean) {
+fun VacantesScreen(
+    loginType: String,
+    userId: String,
+    navController: NavHostController) {
+
     val listaEncargos = listOf(
         Triple("Nombre del encargo", "Ubicación", 2),
         Triple("Nombre del encargo", "Ubicación", 4),
@@ -34,6 +38,9 @@ fun VacantesScreen(navController: NavHostController, isEmpleado: Boolean) {
         Triple("Nombre del encargo", "Ubicación", 5),
         Triple("Nombre del encargo", "Ubicación", 3),
     )
+
+    // Determinar si el usuario es empleado
+    val isEmpleado = loginType == "employee"
 
     Column(modifier = Modifier.fillMaxSize().background(Color.White)) {
         // Encabezado azul
@@ -53,6 +60,8 @@ fun VacantesScreen(navController: NavHostController, isEmpleado: Boolean) {
         WorkRTopBar(
             navController = navController,
             isEmpleado = isEmpleado,
+            loginType = loginType,
+            userId = userId
         )
 
         // Lista

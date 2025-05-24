@@ -25,9 +25,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.navigation.NavHostController
 
 @Composable
-fun JobDetailScreen(navController: NavHostController, isEmpleado: Boolean) {
+fun JobDetailScreen(
+    loginType: String,
+    userId: String,
+    navController: NavHostController) {
+
     Box(modifier = Modifier.fillMaxSize()) {
         RectangleCorners()
+
+        // Determinar si el usuario es empleado
+        val isEmpleado = loginType == "employee"
 
         Column(
             modifier = Modifier
@@ -44,6 +51,8 @@ fun JobDetailScreen(navController: NavHostController, isEmpleado: Boolean) {
                 WorkRTopBar(
                     navController = navController,
                     isEmpleado = isEmpleado,
+                    loginType = loginType,
+                    userId = userId
                 )
             }
 

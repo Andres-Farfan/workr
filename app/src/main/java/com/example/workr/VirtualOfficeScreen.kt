@@ -8,32 +8,44 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.compose.material3.Text
 
 @Composable
-fun  VirtualOfficeScreen(navController: NavHostController, isEmpleado : Boolean){
+fun VirtualOfficeScreen(
+    navController: NavHostController,
+    loginType: String,
+    userId: String
+) {
+    val isEmpleado = loginType == "employee"
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // Barra azul con la barra de navegación
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .background(Color(0xFF007AFF)),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            WorkRTopBar(navController = navController, isEmpleado = isEmpleado)
-        }
+        // Barra superior reutilizable
+        WorkRTopBar(
+            navController = navController,
+            isEmpleado = isEmpleado,
+            loginType = loginType,
+            userId = userId
+        )
 
-        // Contenido vacío por ahora
+        // Contenido de la pantalla
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .padding(16.dp)
         ) {
-
+            Text(
+                text = if (isEmpleado)
+                    "Bienvenido a tu Oficina Virtual (Empleado)"
+                else
+                    "Accede a la Oficina Virtual de tu empresa",
+                modifier = Modifier.align(Alignment.Center)
+            )
         }
     }
 }
+
+

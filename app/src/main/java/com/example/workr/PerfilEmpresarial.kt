@@ -22,7 +22,15 @@ import androidx.navigation.NavHostController
 
 
 @Composable
-fun PerfilEmpresarialScreen(navController: NavHostController, isEmpleado: Boolean) {
+fun PerfilEmpresarialScreen(
+    loginType: String,
+    userId: String,
+    navController: NavHostController
+) {
+
+    // Determinar si el usuario es empleado
+    val isEmpleado = loginType == "employee"
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -32,9 +40,8 @@ fun PerfilEmpresarialScreen(navController: NavHostController, isEmpleado: Boolea
         WorkRTopBar(
             navController = navController,
             isEmpleado = isEmpleado,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally) // Esquina derecha centrada verticalmente
-                .padding(end = 12.dp)
+            loginType = loginType,
+            userId = userId
         )
 
         Spacer(modifier = Modifier.height(12.dp))

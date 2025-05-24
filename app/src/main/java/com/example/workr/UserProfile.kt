@@ -1,8 +1,5 @@
 package com.example.workr
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -15,16 +12,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.compose.runtime.Composable
 
 
 @Composable
-fun ProfileViewScreen(navController: NavHostController, isEmpleado: Boolean) {
+fun ProfileViewScreen(
+    loginType: String,
+    userId: String,
+    navController: NavHostController
+) {
+    // Determinar si el usuario es empleado
+    val isEmpleado = loginType == "employee"
+
     Column(modifier = Modifier.fillMaxSize()) {
 
-        WorkRTopBar(navController = navController, isEmpleado = isEmpleado)
+        WorkRTopBar(
+            navController = navController,
+            isEmpleado = isEmpleado,
+            loginType = loginType,
+            userId = userId
+        )
 
         // Rectángulo azul superior
         Box(

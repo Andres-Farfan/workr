@@ -24,7 +24,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
 
 @Composable
-fun ProfileEditScreen(navController: NavHostController, isEmpleado: Boolean) {
+fun ProfileEditScreen(
+    loginType: String,
+    userId: String,
+    navController: NavHostController) {
+
+    // Determinar si el usuario es empleado
+    val isEmpleado = loginType == "employee"
+
     var description by remember { mutableStateOf(TextFieldValue()) }
     var contactLink by remember { mutableStateOf(TextFieldValue()) }
     var experiences by remember { mutableStateOf(mutableListOf<ExperienceState>()) }
@@ -43,6 +50,8 @@ fun ProfileEditScreen(navController: NavHostController, isEmpleado: Boolean) {
         WorkRTopBar(
             navController = navController,
             isEmpleado = isEmpleado,
+            loginType = loginType,
+            userId = userId
         )
 
         // Imagen de perfil

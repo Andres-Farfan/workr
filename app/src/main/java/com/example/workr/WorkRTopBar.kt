@@ -13,16 +13,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
-
+// Versión simple: solo para las pantallas normales
 @Composable
 fun WorkRTopBar(
     navController: NavHostController,
     isEmpleado: Boolean,
+    loginType: String,
+    userId: String,
     modifier: Modifier = Modifier
 ) {
+    val isEmpleado = loginType == "employee"
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
-    // Lista de íconos por tipo de usuario
     val items = if (isEmpleado) {
         listOf(
             Triple("user_profile", R.drawable.ic_user, "Perfil"),
@@ -31,14 +33,13 @@ fun WorkRTopBar(
     } else {
         listOf(
             Triple("company_profile", R.drawable.ic_company, "Perfil empresa"),
-            Triple("postulations", R.drawable.ic_postulations, "Postulaciones")
+            Triple("aspirant_tracking_system", R.drawable.ic_postulations, "Gestion de Aspirantes")
         )
     } + listOf(
         Triple("virtual_office", R.drawable.ic_virtual_office, "Oficina Virtual"),
         Triple("notifications", R.drawable.ic_notifications, "Notificaciones")
     )
 
-    // Barra de íconos sin título
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -49,7 +50,9 @@ fun WorkRTopBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         items.forEach { (route, iconId, description) ->
-            IconButton(onClick = { navController.navigate(route) }) {
+            IconButton(onClick = {
+                navController.navigate(route)
+            }) {
                 Icon(
                     painter = painterResource(id = iconId),
                     contentDescription = description,

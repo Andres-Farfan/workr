@@ -27,8 +27,15 @@ import androidx.navigation.NavHostController
 
 
 @Composable
-fun CompanyListing(navController: NavHostController, isEmpleado: Boolean) {
+fun CompanyListing(
+    loginType: String,
+    userId: String,
+    navController: NavHostController) {
+
     var searchText by remember { mutableStateOf("") }
+
+    // Determinar si el usuario es empleado
+    val isEmpleado = loginType == "employee"
 
     Column(modifier = Modifier.fillMaxSize().background(Color.White)) {
         // Encabezado
@@ -43,6 +50,8 @@ fun CompanyListing(navController: NavHostController, isEmpleado: Boolean) {
             WorkRTopBar(
                 navController = navController,
                 isEmpleado = isEmpleado,
+                loginType = loginType,
+                userId = userId
             )
 
             Spacer(modifier = Modifier.height(16.dp))
