@@ -4,13 +4,20 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.forms.MultiPartFormDataContent
+import io.ktor.client.request.forms.formData
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
+import io.ktor.http.defaultForFile
+import io.ktor.http.headers
 import io.ktor.serialization.gson.gson
+import io.ktor.utils.io.InternalAPI
+import java.io.File
 
 /**
  * Objeto global utilizado para encapsular la lógica de solicitudes HTTP al backend.
@@ -55,6 +62,93 @@ object HTTPClientAPI {
                     setBody(body)
                 }
                 headers.forEach { (key, value) -> this.headers.append(key, value) }
+            }
+        }
+        // Si ocurre un error en la solicitud, se lanzará una excepción para interrumpir otras operaciones.
+        catch (e: ResponseException) {
+            throw e
+        }
+        // Para el entorno de desarrollo, el HTTPClient se cierra después de cada solicitud.
+        finally {
+            client.close()
+            // Log para entorno de desarrollo.
+            println("Ktor HTTP Client cerrado")
+        }
+    }
+
+    /**
+     * Envía una solicitud multipart configurable.
+     * @param endpoint Endpoint al que se hará la solicitud.
+     * @param method Metodo HTTP del endpoint.
+     * @param headers Headers opcionales que se incluirán en la solicitud
+     * @param formFields Campos del formulario:
+     * Para texto se usa par clave-valor (String to String)
+     * Para archivos se usa par clave-File (String to File)
+     * @return HttpResponse del servidor
+     */
+    // Anotación para evitar un error conocido que impide usar el constructor de headers.
+    @OptIn(InternalAPI::class)
+    suspend fun submitMultipartForm(
+        endpoint: String,
+        method: HttpMethod,
+        headers: Map<String, String> = emptyMap(),
+        formFields: Map<String, Any>
+    ): HttpResponse {
+        // Para el entorno de desarrollo, se usa un nuevo HTTPClient por cada solicitud.
+        val client = HttpClient(CIO) {
+            install(ContentNegotiation) {
+                // Dependencia para soportar parseo de JSON a estructuras de datos.
+                gson()
+            }
+        }
+        // Log para entorno de desarrollo.
+        println("Ktor HTTP Client abierto")
+
+        // Ejecución de la solicitud con los parámetros proporcionados.
+        try {
+            // Se completa la URL de una solicitud combinando la URL base del backend
+            // con el endpoint indicado en parámetros.
+            val url = "$BACKEND_BASE_URL$endpoint"
+
+            return client.request(url) {
+                this.method = method
+
+                // Agrega headers si los hay.
+                headers.forEach { (key, value) -> this.headers.append(key, value) }
+
+                // Se establecen los diferentes campos del form data.
+                setBody(
+                    MultiPartFormDataContent(
+                        formData() {
+                            for ((key, value) in formFields) {
+                                when (value) {
+                                    is String -> {
+                                        append(key, value)
+                                    }
+                                    is File -> {
+                                        append(
+                                            key,
+                                            value.readBytes(),
+                                            headers {
+                                                append(
+                                                    HttpHeaders.ContentDisposition,
+                                                    "filename=\"${value.name}\""
+                                                )
+                                                append(
+                                                    HttpHeaders.ContentType,
+                                                    ContentType.defaultForFile(value)
+                                                )
+                                            }
+                                        )
+                                    }
+                                    else -> {
+                                        throw IllegalArgumentException("Tipo no soportado para campo '$key': ${value::class}")
+                                    }
+                                }
+                            }
+                        }
+                    )
+                )
             }
         }
         // Si ocurre un error en la solicitud, se lanzará una excepción para interrumpir otras operaciones.
