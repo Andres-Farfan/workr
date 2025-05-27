@@ -81,6 +81,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation ("androidx.compose.ui:ui:1.4.0") // Base de Jetpack Compose
     implementation ("androidx.compose.material:material:1.4.0") // Componentes Material Design
+    implementation ("androidx.compose.material:material-icons-extended:1.4.0") // Iconos Material Design
     implementation ("androidx.compose.ui:ui-tooling-preview:1.4.0") // Herramientas de vista previa
     implementation ("androidx.activity:activity-compose:1.7.0") // Integración con Activity
     implementation("androidx.compose.ui:ui-tooling-preview:1.5.1")
