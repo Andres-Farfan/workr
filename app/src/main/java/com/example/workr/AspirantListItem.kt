@@ -1,6 +1,7 @@
 package com.example.workr
 
 import android.R
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -24,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -65,15 +67,25 @@ fun AspirantListItem(name: String, onFormButtonPressed: () -> Unit, onInterviewB
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                OutlinedButton(onClick = onFormButtonPressed) {
+                OutlinedButton(
+                    onClick = onFormButtonPressed,
+                    border = BorderStroke(1.dp, colorResource(id = com.example.workr.R.color.blue_WorkR)),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = colorResource(id = com.example.workr.R.color.blue_WorkR)
+                    )
+                ) {
                     Text("Formulario")
                 }
                 if (contacted) {
-                    OutlinedButton(onClick = {
-                        if (onInterviewButtonPressed != null) {
-                            onInterviewButtonPressed()
-                        }
-                    }) {
+                    OutlinedButton(
+                        onClick = {
+                            onInterviewButtonPressed?.invoke()
+                        },
+                        border = BorderStroke(1.dp, colorResource(id = com.example.workr.R.color.blue_WorkR)),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = colorResource(id = com.example.workr.R.color.blue_WorkR)
+                        )
+                    ) {
                         Text("Entrevista")
                     }
                 }
@@ -102,7 +114,7 @@ fun SelectionToggleButton(onToggle: (selected: Boolean) -> Unit) {
             selected = !selected
             onToggle(selected)
         },
-        colors = ButtonDefaults.buttonColors(containerColor = if (selected) Color.Gray else Color.Blue),
+        colors = ButtonDefaults.buttonColors(containerColor = if (selected) Color.Gray else colorResource(id = com.example.workr.R.color.blue_WorkR)),
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(text = if (selected) "Deseleccionar" else "Seleccionar")

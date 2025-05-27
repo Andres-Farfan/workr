@@ -1,5 +1,6 @@
 package com.example.workr
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -146,14 +147,27 @@ fun PostulacionFormScreen(
                         horizontalArrangement = Arrangement.SpaceAround,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        OutlinedButton(onClick = {
-                            navController.popBackStack()
-                        }) {
+                        OutlinedButton(
+                            onClick = {
+                                navController.popBackStack()
+                            },
+                            border = BorderStroke(1.dp, colorResource(id = R.color.cian_WorkR)),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = colorResource(id = R.color.blue_WorkR)
+                            )
+                        ) {
                             Text("Regresar")
                         }
 
+// Botón "Agendar cita" solo si fromAspirantsTrackingList == "initial"
                         if (fromAspirantsTrackingList == "initial") {
-                            Button(onClick = {}) {
+                            OutlinedButton(
+                                onClick = { /* Acción para agendar cita */ },
+                                border = BorderStroke(1.dp, colorResource(id = R.color.blue_WorkR)),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = colorResource(id = R.color.blue_WorkR)
+                                )
+                            ) {
                                 Text("Agendar cita")
                             }
                         }

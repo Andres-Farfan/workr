@@ -31,7 +31,7 @@ fun WorkRApp() {
     val loginType = rememberSaveable { mutableStateOf("") }
     val userId = rememberSaveable { mutableStateOf("") }
 //Cambiar starDestination por login una vez finalizadas las pruebas*********
-    NavHost(navController = navController, startDestination = "aspirant_tracking_system") {
+    NavHost(navController = navController, startDestination = "login") {
 
         composable("login") {
             LoginScreen(
