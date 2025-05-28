@@ -4,7 +4,9 @@ package com.example.workr
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,195 +29,189 @@ fun PerfilEmpresarialScreen(
     userId: String,
     navController: NavHostController
 ) {
+    WorkRScaffold(
+        navController = navController,
+        loginType = loginType,
+    ) { innerPadding ->
 
-    // Determinar si el usuario es empleado
-    val isEmpleado = loginType == "employee"
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        // Barra azul con iconos
-        WorkRTopBar(
-            navController = navController,
-            isEmpleado = isEmpleado,
-            loginType = loginType,
-            userId = userId
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Título FUERA de la barra azul, texto negro
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            Text(
-                text = "Empleos",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-            Text(
-                text = "Cerca de tu zona",
-                fontSize = 14.sp,
-                color = Color.Black
-            )
-        }
+            Spacer(modifier = Modifier.height(12.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {}
 
-        // Fondo gris claro con círculo azul centrado
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(125.dp)
-                .background(color = Color(0xFFDEE9ED))
-        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+
             Box(
                 modifier = Modifier
-                    .size(120.dp)
-                    .align(Alignment.Center)
-                    .background(Color(0xFF0066CC), shape = CircleShape)
-                    .padding(15.dp)
-            )
-            // Ícono opcional dentro del círculo
-            Box(modifier = Modifier.align(Alignment.Center)) {
-                // Agrega un ícono si lo necesitas
+                    .fillMaxWidth()
+                    .height(125.dp)
+                    .background(color = Color(0xFFDEE9ED))
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(120.dp)
+                        .align(Alignment.Center)
+                        .background(Color(0xFF0066CC), shape = CircleShape)
+                        .padding(15.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    // Aquí podrías colocar un Icon si quieres
+                    // Icon(imageVector = Icons.Default.Business, contentDescription = null, tint = Color.White)
+                }
             }
-        }
 
-        Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-        // Nombre y descripción
-        Text("Nombre", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-        Text(
-            "Descripción de la empresa y su función.",
-            fontSize = 16.sp,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 26.dp, start = 16.dp, end = 16.dp)
-        )
+            Text("Nombre",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center)
+            Text(
+                "Descripción de la empresa y su función.",
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 26.dp, start = 16.dp, end = 16.dp)
+            )
 
-        // Sección "Sobre Nosotros"
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(34.dp),
-            backgroundColor = Color(0xFFF2F8FC),
-            elevation = 4.dp,
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(34.dp),
+                backgroundColor = Color(0xFFF2F8FC),
+                elevation = 4.dp,
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        "Sobre Nosotros",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        "Visión:",
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Text(
+                        "Nuestra visión de la empresa y cuáles son las metas.",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        "Misión:",
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Text(
+                        "Nuestra misión es lograr nuestros objetivos estratégicos.",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 34.dp)
+                    .padding(bottom = 32.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text("Contacto", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+
+                Spacer(modifier = Modifier.height(6.dp))
+
                 Text(
-                    "Sobre Nosotros",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black
+                            )
+                        ) {
+                            append("Correo: ")
+                        }
+                        withStyle(
+                            style = SpanStyle(
+                                color = Color.Blue,
+                                textDecoration = TextDecoration.Underline
+                            )
+                        ) {
+                            append("nombre@usuario")
+                        }
+                    },
+                    modifier = Modifier.clickable { /* Acción al hacer clic */ }
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+
+                Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    "Visión:",
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black
+                            )
+                        ) {
+                            append("Sitio Web: ")
+                        }
+                        withStyle(
+                            style = SpanStyle(
+                                color = Color.Blue,
+                                textDecoration = TextDecoration.Underline
+                            )
+                        ) {
+                            append("empresa.com.mx")
+                        }
+                    },
+                    modifier = Modifier.clickable { /* Acción al hacer clic */ }
                 )
-                Text(
-                    "Nuestra visión de la empresa y cuáles son las metas.",
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(8.dp))
+
+                Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    "Misión:",
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text(
-                    "Nuestra misión es lograr nuestros objetivos estratégicos.",
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black
+                            )
+                        ) {
+                            append("Ubicación: ")
+                        }
+                        withStyle(
+                            style = SpanStyle(
+                                color = Color.Blue,
+                                textDecoration = TextDecoration.Underline
+                            )
+                        ) {
+                            append("Google Maps")
+                        }
+                    },
+                    modifier = Modifier.clickable { /* Acción al hacer clic */ }
                 )
             }
-        }
-
-        // Sección "Contacto"
-        Column(
-            modifier = Modifier.padding(horizontal = 34.dp),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text("Contacto", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black
-                        )
-                    ) {
-                        append("Correo: ")
-                    }
-                    withStyle(
-                        style = SpanStyle(
-                            color = Color.Blue,
-                            textDecoration = TextDecoration.Underline
-                        )
-                    ) {
-                        append("nombre@usuario")
-                    }
-                },
-                modifier = Modifier.clickable { /* Acción al hacer clic */ }
-            )
-
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black
-                        )
-                    ) {
-                        append("Sitio Web: ")
-                    }
-                    withStyle(
-                        style = SpanStyle(
-                            color = Color.Blue,
-                            textDecoration = TextDecoration.Underline
-                        )
-                    ) {
-                        append("empresa.com.mx")
-                    }
-                },
-                modifier = Modifier.clickable { /* Acción al hacer clic */ }
-            )
-
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black
-                        )
-                    ) {
-                        append("Ubicación: ")
-                    }
-                    withStyle(
-                        style = SpanStyle(
-                            color = Color.Blue,
-                            textDecoration = TextDecoration.Underline
-                        )
-                    ) {
-                        append("Google Maps")
-                    }
-                },
-                modifier = Modifier.clickable { /* Acción al hacer clic */ }
-            )
         }
     }
 }
+

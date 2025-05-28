@@ -35,7 +35,7 @@ fun PostulacionFormScreen(
     userId: String,
     fromAspirantsTrackingList: String? = null
 ) {
-    val isEmpleado = loginType == "employee"
+    val isEmpleado = loginType == "user"
 
     val nombre = remember { mutableStateOf("") }
     val telefono = remember { mutableStateOf("") }
@@ -50,67 +50,62 @@ fun PostulacionFormScreen(
 
     val fieldsEnabled = (fromAspirantsTrackingList == null)
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            val width = size.width
-            val height = size.height
-            val cornerSize = 80.dp.toPx()
+    WorkRScaffold(
+        navController = navController,
+        loginType = loginType,
+    ) { innerPadding ->
 
-            drawRect(
-                color = Color(0xFF0078C1),
-                size = Size(width, 60.dp.toPx())
-            )
-
-            val pathLeft = Path().apply {
-                moveTo(0f, height - cornerSize)
-                lineTo(0f, height)
-                lineTo(cornerSize, height)
-                close()
-            }
-
-            val pathRight = Path().apply {
-                moveTo(width, height - cornerSize)
-                lineTo(width, height)
-                lineTo(width - cornerSize, height)
-                close()
-            }
-
-            drawPath(pathLeft, color = Color(0xFFD0D8F0), style = Fill)
-            drawPath(pathRight, color = Color(0xFFD0D8F0), style = Fill)
-        }
-
-        if (fromAspirantsTrackingList == null) {
-            WorkRTopBar(
-                navController = navController,
-                isEmpleado = isEmpleado,
-                loginType = loginType,
-                userId = userId
-            )
-        }
-
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .padding(innerPadding)
         ) {
-            BlueTopBar()
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                val width = size.width
+                val height = size.height
+                val cornerSize = 80.dp.toPx()
 
-            Text(
-                text = "Formulario para la\npostulación",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.Black,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp)
-            )
+                drawRect(
+                    color = Color(0xFF0078C1),
+                    size = Size(width, 60.dp.toPx())
+                )
+
+                val pathLeft = Path().apply {
+                    moveTo(0f, height - cornerSize)
+                    lineTo(0f, height)
+                    lineTo(cornerSize, height)
+                    close()
+                }
+
+                val pathRight = Path().apply {
+                    moveTo(width, height - cornerSize)
+                    lineTo(width, height)
+                    lineTo(width - cornerSize, height)
+                    close()
+                }
+
+                drawPath(pathLeft, color = Color(0xFFD0D8F0), style = Fill)
+                drawPath(pathRight, color = Color(0xFFD0D8F0), style = Fill)
+            }
 
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp, vertical = 8.dp)
             ) {
+
+                Text(
+                    text = "Formulario para la\npostulación",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp)
+                )
+
                 LabelWithInput("Nombre completo:", "Nombre completo(Primero el apellido)", nombre, fieldsEnabled)
                 LabelWithInput("Número de teléfono:", "Teléfono", telefono, fieldsEnabled)
                 LabelWithInput("Correo electrónico:", "Correo electrónico", correo, fieldsEnabled)
@@ -159,7 +154,6 @@ fun PostulacionFormScreen(
                             Text("Regresar")
                         }
 
-// Botón "Agendar cita" solo si fromAspirantsTrackingList == "initial"
                         if (fromAspirantsTrackingList == "initial") {
                             OutlinedButton(
                                 onClick = { /* Acción para agendar cita */ },

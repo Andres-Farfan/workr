@@ -16,25 +16,16 @@ fun VirtualOfficeScreen(
     loginType: String,
     userId: String
 ) {
-    val isEmpleado = loginType == "employee"
+    WorkRScaffold(
+        navController = navController,
+        loginType = loginType,
+    ) { paddingValues ->
+        val isEmpleado = loginType == "user"
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        // Barra superior reutilizable
-        WorkRTopBar(
-            navController = navController,
-            isEmpleado = isEmpleado,
-            loginType = loginType,
-            userId = userId
-        )
-
-        // Contenido de la pantalla
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues)
                 .padding(16.dp)
         ) {
             Text(

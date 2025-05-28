@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 
@@ -16,25 +17,17 @@ fun NotificationsScreen(
     loginType: String,
     userId: String
 ) {
-    val isEmpleado = loginType == "employee"
+    WorkRScaffold(
+        navController = navController,
+        loginType = loginType,
+    ) { innerPadding ->
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        // Barra superior reutilizable
-        WorkRTopBar(
-            navController = navController,
-            isEmpleado = isEmpleado,
-            loginType = loginType,
-            userId = userId
-        )
+        val isEmpleado = loginType == "user"
 
-        // Contenido de la pantalla
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(innerPadding)
                 .background(Color.White)
                 .padding(16.dp)
         ) {
@@ -43,8 +36,11 @@ fun NotificationsScreen(
                     "No tienes notificaciones por el momento (Empleado)"
                 else
                     "No hay notificaciones disponibles para tu empresa",
-                modifier = Modifier.align(Alignment.Center)
+                modifier = Modifier.align(Alignment.Center),
+                textAlign = TextAlign.Center
             )
         }
     }
 }
+
+

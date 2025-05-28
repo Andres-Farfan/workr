@@ -2,7 +2,10 @@ package com.example.workr
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,32 +16,49 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
-// Versión simple: solo para las pantallas normales
+@Composable
+fun WorkRScaffold(
+    navController: NavHostController,
+    loginType: String,
+    content: @Composable (PaddingValues) -> Unit
+) {
+    Scaffold(
+        topBar = {
+            WorkRTopBar(navController = navController, loginType = loginType)
+        }
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            content(innerPadding)
+        }
+    }
+}
+
 @Composable
 fun WorkRTopBar(
     navController: NavHostController,
-    isEmpleado: Boolean,
     loginType: String,
-    userId: String,
     modifier: Modifier = Modifier
 ) {
-    val isEmpleado = loginType == "employee"
-    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+    val isEmpleado = loginType == "user"
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
-    val items = if (isEmpleado) {
+    val items = remember(loginType) {
         listOf(
-            Triple("user_profile", R.drawable.ic_user, "Perfil"),
-            Triple("company_listing", R.drawable.ic_jobs, "Empleos")
+            Triple(
+                if (isEmpleado) "user_profile" else "company_profile",
+                if (isEmpleado) R.drawable.ic_user else R.drawable.ic_company,
+                "Perfil"
+            ),
+            Triple(
+                if (isEmpleado) "company_listing" else "aspirant_tracking_system",
+                if (isEmpleado) R.drawable.ic_jobs else R.drawable.ic_postulations,
+                if (isEmpleado) "Empleos" else "Gestión de Aspirantes"
+            ),
+            Triple("virtual_office", R.drawable.ic_virtual_office, "Oficina Virtual"),
+            Triple("notifications", R.drawable.ic_notifications, "Notificaciones")
         )
-    } else {
-        listOf(
-            Triple("company_profile", R.drawable.ic_company, "Perfil empresa"),
-            Triple("aspirant_tracking_system", R.drawable.ic_postulations, "Gestion de Aspirantes")
-        )
-    } + listOf(
-        Triple("virtual_office", R.drawable.ic_virtual_office, "Oficina Virtual"),
-        Triple("notifications", R.drawable.ic_notifications, "Notificaciones")
-    )
+    }
 
     Row(
         modifier = modifier
@@ -49,17 +69,29 @@ fun WorkRTopBar(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
+
         items.forEach { (route, iconId, description) ->
             IconButton(onClick = {
-                navController.navigate(route)
+                if (currentRoute != route) {
+                    navController.navigate(route) {
+                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
             }) {
                 Icon(
                     painter = painterResource(id = iconId),
                     contentDescription = description,
-                    tint = if (currentRoute == route) colorResource(id = R.color.black) else colorResource(id = R.color.white),
+                    tint = if (currentRoute == route)
+                        colorResource(id = R.color.black)
+                    else
+                        colorResource(id = R.color.white),
                     modifier = Modifier.size(32.dp)
                 )
             }
         }
     }
 }
+
+

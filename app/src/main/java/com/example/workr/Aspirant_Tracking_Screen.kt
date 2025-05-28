@@ -42,75 +42,73 @@ fun AspirantTrackingScreen(
     val tabsNavController = rememberNavController()
     val startTab = AspirantTrackingNavTabs.INITIAL
     var selectedTab by rememberSaveable { mutableStateOf(startTab) }
-    val isEmpleado = loginType == "employee"
+    val isEmpleado = loginType == "user"
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    WorkRScaffold(
+        navController = globalNavController,
+        loginType = loginType,
+    ) { innerPadding ->
 
-        // Barra azul superior
-        Box(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFF0078C1))
+                .fillMaxSize()
+                .padding(innerPadding)
         ) {
-            WorkRTopBar(
-                navController = globalNavController,
-                loginType = loginType,
-                userId = userId,
-                isEmpleado = isEmpleado
-            )
-        }
-
-        // Título centrado
-        Text(
-            text = "Gestión de Aspirantes",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 12.dp),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge.copy(
-                fontWeight = FontWeight.Bold,
-                color = colorResource(id = R.color.black)
-            )
-        )
-
-        // Pestañas
-        PrimaryTabRow(selectedTabIndex = selectedTab.ordinal) {
-            AspirantTrackingNavTabs.entries.forEachIndexed { index, tab ->
-                Tab(
-                    selected = selectedTab.ordinal == index,
-                    onClick = {
-                        tabsNavController.navigate(route = tab.route)
-                        selectedTab = tab
-                    },
-                    text = { Text(
-                        text = tab.label,
-                        color = colorResource(id = R.color.blue_WorkR)) }
+            // Título centrado
+            Text(
+                text = "Gestión de Aspirantes",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(id = R.color.black)
                 )
-            }
-        }
+            )
 
-        // Contenido de cada pestaña
-        NavHost(
-            navController = tabsNavController,
-            startDestination = startTab.route,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            AspirantTrackingNavTabs.entries.forEach { destination ->
-                composable(destination.route) {
-                    when (destination) {
-                        AspirantTrackingNavTabs.INITIAL -> InitialAspirantsListScreen(
-                            onFormButtonPressed = {
-                                globalNavController.navigate("initial_aspirant_postulation_form")
-                            }
-                        )
-                        AspirantTrackingNavTabs.CONTACTED -> ContactedAspirantsListScreen(
-                            onFormButtonPressed = {
-                                globalNavController.navigate("contacted_aspirant_postulation_form")
-                            },
-                            onInterviewButtonPressed = {
-                                globalNavController.navigate("interview_notes")
-                            }
-                        )
+            // Pestañas
+            PrimaryTabRow(selectedTabIndex = selectedTab.ordinal) {
+                AspirantTrackingNavTabs.entries.forEachIndexed { index, tab ->
+                    Tab(
+                        selected = selectedTab.ordinal == index,
+                        onClick = {
+                            tabsNavController.navigate(route = tab.route)
+                            selectedTab = tab
+                        },
+                        text = {
+                            Text(
+                                text = tab.label,
+                                color = colorResource(id = R.color.blue_WorkR)
+                            )
+                        }
+                    )
+                }
+            }
+
+            // Contenido de cada pestaña
+            NavHost(
+                navController = tabsNavController,
+                startDestination = startTab.route,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                AspirantTrackingNavTabs.entries.forEach { destination ->
+                    composable(destination.route) {
+                        when (destination) {
+                            AspirantTrackingNavTabs.INITIAL -> InitialAspirantsListScreen(
+                                onFormButtonPressed = {
+                                    globalNavController.navigate("initial_aspirant_postulation_form")
+                                }
+                            )
+                            AspirantTrackingNavTabs.CONTACTED -> ContactedAspirantsListScreen(
+                                onFormButtonPressed = {
+                                    globalNavController.navigate("contacted_aspirant_postulation_form")
+                                },
+                                onInterviewButtonPressed = {
+                                    globalNavController.navigate("interview_notes")
+                                }
+                            )
+                        }
                     }
                 }
             }

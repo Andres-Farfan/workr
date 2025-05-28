@@ -22,29 +22,18 @@ fun ProfileViewScreen(
     userId: String,
     navController: NavHostController
 ) {
-    // Determinar si el usuario es empleado
-    val isEmpleado = loginType == "employee"
+    val isEmpleado = loginType == "user"
 
-    Column(modifier = Modifier.fillMaxSize()) {
-
-        WorkRTopBar(
-            navController = navController,
-            isEmpleado = isEmpleado,
-            loginType = loginType,
-            userId = userId
-        )
-
-        // Rectángulo azul superior
-        Box(
+    WorkRScaffold(
+        navController = navController,
+        loginType = loginType,
+    ) { innerPadding ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .background(colorResource(id = R.color.blue_WorkR))
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Column(modifier = Modifier.padding(16.dp)) {
+                .fillMaxSize()
+                .padding(innerPadding) // 🔹 Padding para no tapar el contenido con la top bar
+                .padding(16.dp)
+        ) {
             ProfileHeaderCard()
             ContactSection()
             ExperienceSection()
