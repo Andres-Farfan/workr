@@ -59,7 +59,7 @@ fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(16.dp))
-            // Título
+
             Text(
                 text = "Work-R",
                 fontSize = 24.sp,
@@ -69,7 +69,6 @@ fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Email
             RoundedInputField(
                 value = email.value,
                 onValueChange = { email.value = it },
@@ -79,7 +78,6 @@ fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Password
             RoundedInputField(
                 value = password.value,
                 onValueChange = { password.value = it },
@@ -104,7 +102,6 @@ fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Botón de login
             Button(
                 onClick = {
                     emailError.value = email.value.isBlank()
@@ -123,13 +120,16 @@ fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit) {
                                     val loginResponse = response.body<LoginResponse>()
 
                                     withContext(Dispatchers.Main) {
+                                        // Sirve para guardar token
+                                        val sharedPref = navController.context.getSharedPreferences("auth_prefs", android.content.Context.MODE_PRIVATE)
+                                        sharedPref.edit().putString("jwt", loginResponse.jwt).apply()
+
                                         Toast.makeText(
                                             navController.context,
                                             "Login exitoso: ${loginResponse.loginType}",
                                             Toast.LENGTH_SHORT
                                         ).show()
 
-                                        // Navegación según tipo de usuario
                                         if (loginResponse.loginType == "company") {
                                             navController.navigate("company_profile")
                                         } else {
@@ -175,6 +175,7 @@ fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit) {
             ) {
                 Text("Login", fontWeight = FontWeight.Bold)
             }
+
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
@@ -209,7 +210,7 @@ fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit) {
                     ),
                     border = BorderStroke(1.dp, colorResource(id = R.color.blue_WorkR))
                 ) {
-                    Text("Registrar Empresa", fontSize = 14.sp,fontWeight = FontWeight.Medium)
+                    Text("Registrar Empresa", fontSize = 14.sp, fontWeight = FontWeight.Medium)
                 }
             }
         }
