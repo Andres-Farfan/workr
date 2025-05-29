@@ -1,13 +1,9 @@
 package com.example.workr
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -19,12 +15,15 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 
 
 @Composable
-fun CompletePerfile(navController: NavHostController, isEmpleado: Boolean){
+fun CompletePerfile(
+    loginType: String,
+    userId: String,
+    navController: NavHostController
+) {
     var description by remember { mutableStateOf("") }
     var vision by remember { mutableStateOf("") }
     var mission by remember { mutableStateOf("") }
@@ -32,35 +31,28 @@ fun CompletePerfile(navController: NavHostController, isEmpleado: Boolean){
     var websiteUrl by remember { mutableStateOf("") }
     var locationUrl by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        // Encabezado azul
-        Box(
+    val isEmpleado = loginType == "user"
+
+    WorkRScaffold(
+        navController = navController,
+        loginType = loginType,
+    ) { innerPadding ->
+
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .background(Color(0xFF0078C1))
-        )
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp)
+        ) {
+            Text(
+                text = "Completa tu Perfil de Empresa",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 16.dp)
+            )
 
-        WorkRTopBar(
-            navController = navController,
-            isEmpleado = isEmpleado,
-            modifier = Modifier
-                .align(Alignment.CenterEnd as Alignment.Horizontal)
-                .padding(end = 12.dp)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Comleta tu Perfil de Empresa",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom = 8.dp)
-        )
-
-        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
             OutlinedTextField(
                 value = description,
                 onValueChange = { description = it },
@@ -68,7 +60,6 @@ fun CompletePerfile(navController: NavHostController, isEmpleado: Boolean){
                 placeholder = { Text("¿Quiénes somos? ¿Qué hacemos?") },
                 modifier = Modifier.fillMaxWidth()
             )
-
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
@@ -78,7 +69,6 @@ fun CompletePerfile(navController: NavHostController, isEmpleado: Boolean){
                 placeholder = { Text("¿Hacia dónde va la empresa?") },
                 modifier = Modifier.fillMaxWidth()
             )
-
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
@@ -88,7 +78,6 @@ fun CompletePerfile(navController: NavHostController, isEmpleado: Boolean){
                 placeholder = { Text("¿Cuál es su propósito?") },
                 modifier = Modifier.fillMaxWidth()
             )
-
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
@@ -98,7 +87,6 @@ fun CompletePerfile(navController: NavHostController, isEmpleado: Boolean){
                 placeholder = { Text("ejemplo@empresa.com") },
                 modifier = Modifier.fillMaxWidth()
             )
-
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
@@ -108,7 +96,6 @@ fun CompletePerfile(navController: NavHostController, isEmpleado: Boolean){
                 placeholder = { Text("https://www.empresa.com") },
                 modifier = Modifier.fillMaxWidth()
             )
-
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
@@ -118,7 +105,6 @@ fun CompletePerfile(navController: NavHostController, isEmpleado: Boolean){
                 placeholder = { Text("https://maps.google.com/...") },
                 modifier = Modifier.fillMaxWidth()
             )
-
             Spacer(modifier = Modifier.height(24.dp))
 
             OutlinedButton(
@@ -130,10 +116,11 @@ fun CompletePerfile(navController: NavHostController, isEmpleado: Boolean){
                     contentColor = Color.White
                 )
             ) {
-                androidx.compose.material.Text("Completar")
+                Text("Completar")
             }
+            Spacer(modifier = Modifier.height(8.dp))
             OutlinedButton(
-                onClick = { /* acción para guardar */ },
+                onClick = { /* acción para regresar */ },
                 modifier = Modifier.fillMaxWidth(),
                 border = BorderStroke(1.dp, Color(0xFF0078C1)),
                 colors = ButtonDefaults.outlinedButtonColors(
@@ -141,8 +128,9 @@ fun CompletePerfile(navController: NavHostController, isEmpleado: Boolean){
                     contentColor = Color(0xFF0078C1)
                 )
             ) {
-                androidx.compose.material.Text("Regresar")
+                Text("Regresar")
             }
         }
     }
 }
+
