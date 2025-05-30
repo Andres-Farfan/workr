@@ -2,10 +2,14 @@ package com.example.workr
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.DefaultRequest
+import io.ktor.client.plugins.HttpSend
 import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.plugin
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
+import io.ktor.client.request.header
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
@@ -15,6 +19,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import io.ktor.http.defaultForFile
 import io.ktor.http.headers
+import io.ktor.http.isSecure
 import io.ktor.serialization.gson.gson
 import io.ktor.utils.io.InternalAPI
 import java.io.File
@@ -24,6 +29,7 @@ import java.io.File
  */
 object HTTPClientAPI {
     private val BACKEND_BASE_URL = BuildConfig.BACKEND_BASE_URL
+    private val BACKEND_API_KEY = BuildConfig.BACKEND_API_KEY
 
     /**
      * Realiza una solicitud HTTP al endpoint especificado del backend.
@@ -44,6 +50,20 @@ object HTTPClientAPI {
                 // Dependencia para soportar parseo de JSON a estructuras de datos.
                 gson()
             }
+            // Se agrega la api key del backend por defecto a toda solicitud.
+            install(DefaultRequest) {
+                header("Api-Key", BACKEND_API_KEY)
+            }
+        }
+        client.plugin(HttpSend).intercept { request ->
+            val url = request.url
+            val isLocalHost = url.host == "10.0.2.2"
+            val isSecure = url.protocol.isSecure()
+
+            if (!isSecure && !isLocalHost) {
+                throw IllegalStateException("Sólo se permiten solicitudes HTTPS fuera de localhost")
+            }
+            execute(request)
         }
         // Log para entorno de desarrollo.
         println("Ktor HTTP Client abierto")
@@ -100,6 +120,20 @@ object HTTPClientAPI {
                 // Dependencia para soportar parseo de JSON a estructuras de datos.
                 gson()
             }
+            // Se agrega la api key del backend por defecto a toda solicitud.
+            install(DefaultRequest) {
+                header("Api-Key", BACKEND_API_KEY)
+            }
+        }
+        client.plugin(HttpSend).intercept { request ->
+            val url = request.url
+            val isLocalHost = url.host == "10.0.2.2"
+            val isSecure = url.protocol.isSecure()
+
+            if (!isSecure && !isLocalHost) {
+                throw IllegalStateException("Sólo se permiten solicitudes HTTPS fuera de localhost")
+            }
+            execute(request)
         }
         // Log para entorno de desarrollo.
         println("Ktor HTTP Client abierto")
