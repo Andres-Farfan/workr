@@ -24,60 +24,60 @@ import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
 
 @Composable
-fun ProfileEditScreen(
-    loginType: String,
-    userId: String,
-    navController: NavHostController
-) {
-    val isEmpleado = loginType == "user"
+fun ProfileEditScreen(navController: NavHostController, isEmpleado: Boolean) {
     var description by remember { mutableStateOf(TextFieldValue()) }
     var contactLink by remember { mutableStateOf(TextFieldValue()) }
     var experiences by remember { mutableStateOf(mutableListOf<ExperienceState>()) }
 
-    WorkRScaffold(
-        navController = navController,
-        loginType = loginType,
-    ) { innerPadding ->
-
-        Column(
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Encabezado azul
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState()) // para poder scrollear si es necesario
-                .padding(16.dp)
-        ) {
+                .fillMaxWidth()
+                .height(60.dp)
+                .background(Color(0xFF0078C1))
+        )
 
-            // Ya no necesitas el Box azul ni WorkRTopBar porque el scaffold lo maneja
+        Spacer(modifier = Modifier.height(16.dp))
 
-            // Imagen de perfil
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .background(Color(0xFF0078C1))
-                    .align(Alignment.CenterHorizontally)
-                    .clickable { /* acción para cambiar foto */ }
-            )
+        WorkRTopBar(
+            navController = navController,
+            isEmpleado = isEmpleado,
+            modifier = Modifier
+                .align(Alignment.CenterEnd as Alignment.Horizontal) // Esquina derecha centrada verticalmente
+                .padding(end = 12.dp)
+        )
 
-            Spacer(modifier = Modifier.height(8.dp))
+        // Imagen de perfil
+        Box(
+            modifier = Modifier
+                .size(100.dp)
+                .clip(CircleShape)
+                .background(Color(0xFF0078C1))
+                .align(Alignment.CenterHorizontally)
+                .clickable { }
+        )
 
-            Text(
-                text = "Seleccionar foto de perfil",
-                fontSize = 14.sp,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
+        Spacer(modifier = Modifier.height(8.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "Seleccionar foto de perfil",
+            fontSize = 14.sp,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
 
-            Text(
-                text = "Nombre Apellido Apellido",
-                fontSize = 18.sp,
-                color = Color.Gray,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
+        Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "Nombre Apellido Apellido",
+            fontSize = 18.sp,
+            color = Color.Gray,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
 
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Column(modifier = Modifier.padding(16.dp)) {
             Text("Descripción", fontSize = 16.sp)
             OutlinedTextField(
                 value = description,
@@ -115,16 +115,16 @@ fun ProfileEditScreen(
 
             OutlinedButton(
                 onClick = { /* agregar contacto */ },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 colors = ButtonDefaults.outlinedButtonColors(
-                    backgroundColor = Color.White,
-                    contentColor = Color(0xFF0078C1)
+                    backgroundColor = Color.White, // Fondo blanco
+                    contentColor = Color(0xFF0078C1) // Texto e ícono azules
                 ),
                 border = BorderStroke(1.dp, colorResource(id = R.color.blue_WorkR))
             ) {
                 Text("+ Agregar Enlace de Contacto")
             }
-
             experiences.forEachIndexed { index, experience ->
                 ExperienceItem(
                     experience = experience,
@@ -138,8 +138,8 @@ fun ProfileEditScreen(
                 onClick = { /* agregar número de teléfono */ },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.outlinedButtonColors(
-                    backgroundColor = Color.White,
-                    contentColor = Color(0xFF0078C1)
+                    backgroundColor = Color.White, // Fondo blanco
+                    contentColor = Color(0xFF0078C1) // Texto e ícono azules
                 ),
                 border = BorderStroke(1.dp, colorResource(id = R.color.blue_WorkR))
             ) {

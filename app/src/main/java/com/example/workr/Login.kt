@@ -18,28 +18,28 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.workr.BuildConfig.BACKEND_BASE_URL
 import kotlinx.serialization.Serializable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.example.workr.HTTPClientAPI
 import io.ktor.client.call.body
 import io.ktor.http.HttpMethod
 import io.ktor.client.statement.bodyAsText
+import io.ktor.client.plugins.*
 
 @Composable
-fun LoginScreen(
-    navController: NavHostController,
-    onRegisterClick: () -> Unit,
-    onLoginSuccess: (String, String) -> Unit // <-- Usamos bien el parámetro
-) {
+fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
-    val isEmpresa = remember { mutableStateOf(false) }
 
+    // Variables para mensajes de error
     val emailError = remember { mutableStateOf(false) }
     val passwordError = remember { mutableStateOf(false) }
 
@@ -85,17 +85,6 @@ fun LoginScreen(
                 isError = passwordError.value
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Empleado")
-                Switch(
-                    checked = isEmpresa.value,
-                    onCheckedChange = { isEmpresa.value = it }
-                )
-                Text("Empresa")
-            }
-
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
@@ -131,11 +120,6 @@ fun LoginScreen(
                                         } else {
                                             navController.navigate("user_profile")
                                         }
-                                        // ✅ Llama al callback para que WorkRApp actualice estado y navegue
-                                        onLoginSuccess(
-                                            loginResponse.loginType,
-                                            loginResponse.id
-                                        )
                                     }
                                 } else {
                                     val errorMsg = response.bodyAsText()
@@ -192,9 +176,8 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-            Column(modifier = Modifier.fillMaxWidth()) {
                 OutlinedButton(
-                    onClick = onRegisterClick,
+                    onClick = { navController.navigate("register_user") },
                     shape = RoundedCornerShape(20.dp),
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = colorResource(id = R.color.blue_WorkR)
@@ -218,7 +201,6 @@ fun LoginScreen(
         }
     }
 }
-
 
 @Composable
 fun RoundedInputField(

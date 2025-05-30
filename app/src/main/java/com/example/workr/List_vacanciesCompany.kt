@@ -26,11 +26,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.navigation.NavHostController
 
 @Composable
-fun VacantesScreen(
-    loginType: String,
-    userId: String,
-    navController: NavHostController
-) {
+fun VacantesScreen(navController: NavHostController, isEmpleado: Boolean) {
     val listaEncargos = listOf(
         Triple("Nombre del encargo", "Ubicación", 2),
         Triple("Nombre del encargo", "Ubicación", 4),
@@ -39,66 +35,56 @@ fun VacantesScreen(
         Triple("Nombre del encargo", "Ubicación", 3),
     )
 
-    val isEmpleado = loginType == "user"
-
-    WorkRScaffold(
-        navController = navController,
-        loginType = loginType,
-    ) { innerPadding ->
-
-        Column(
+    Column(modifier = Modifier.fillMaxSize().background(Color.White)) {
+        // Encabezado azul
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(innerPadding) // Muy importante para no tapar la barra superior
+                .fillMaxWidth()
+                .background(Color(0xFF0078C1))
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
         ) {
-            // Encabezado azul
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color(0xFF0078C1))
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Postulados", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                    Text("Disponibles", color = Color.White)
-                }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Postulados", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text("Disponibles", color = Color.White)
             }
+        }
 
-            // Lista de vacantes
-            LazyColumn(
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.weight(1f) // Para que use el espacio restante y el botón quede abajo
-            ) {
-                items(listaEncargos) { (nombre, ubicacion, dias) ->
-                    PostuladoItem(
-                        encargo = nombre,
-                        ubicacion = ubicacion,
-                        dias = dias,
-                        postulados = (0..20).random()
-                    )
-                }
-            }
+        WorkRTopBar(
+            navController = navController,
+            isEmpleado = isEmpleado,
+            modifier = Modifier
+                .align(Alignment.CenterEnd as Alignment.Horizontal) // Esquina derecha centrada verticalmente
+                .padding(end = 12.dp)
+        )
 
-            OutlinedButton(
-                onClick = { navController.popBackStack() }, // O la acción deseada
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                border = BorderStroke(1.dp, Color(0xFF0078C1)),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = Color(0xFFD1EAFA),
-                    contentColor = Color(0xFF0078C1)
+        // Lista
+        LazyColumn(
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(listaEncargos) { (nombre, ubicacion, dias) ->
+                PostuladoItem(
+                    encargo = nombre,
+                    ubicacion = ubicacion,
+                    dias = dias,
+                    postulados = (0..20).random()
                 )
-            ) {
-                Text("Regresar")
             }
+        }
+        OutlinedButton(
+            onClick = { /* acción para guardar */ },
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            border = BorderStroke(1.dp, Color(0xFF0078C1)),
+            colors = ButtonDefaults.outlinedButtonColors(
+                containerColor = Color(0xFFD1EAFA),
+                contentColor = Color(0xFF0078C1)
+            )
+        ) {
+            Text("Regresar")
         }
     }
 }
-
 @Composable
 fun PostuladoItem(encargo: String, ubicacion: String, dias: Int, postulados: Int) {
     Card(
