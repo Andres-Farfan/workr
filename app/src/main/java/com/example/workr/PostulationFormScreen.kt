@@ -1,6 +1,5 @@
 package com.example.workr
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -29,14 +28,7 @@ import androidx.navigation.NavHostController
 
 // --- Pantalla Principal ---
 @Composable
-fun PostulacionFormScreen(
-    navController: NavHostController,
-    loginType: String,
-    userId: String,
-    fromAspirantsTrackingList: String? = null
-) {
-    val isEmpleado = loginType == "user"
-
+fun PostulacionFormScreen(navController: NavHostController, isEmpleado: Boolean, fromAspirantsTrackingList: String? = null) {
     val nombre = remember { mutableStateOf("") }
     val telefono = remember { mutableStateOf("") }
     val correo = remember { mutableStateOf("") }
@@ -48,64 +40,76 @@ fun PostulacionFormScreen(
     val razonIngreso = remember { mutableStateOf("") }
     val portafolio = remember { mutableStateOf("") }
 
+    // Se determina una bandera de habilitación de los campos de texto,
+    // sólo se podrán editar si se accede al form fuera del Sistema Gestor de Aspirantes.
     val fieldsEnabled = (fromAspirantsTrackingList == null)
 
-    WorkRScaffold(
-        navController = navController,
-        loginType = loginType,
-    ) { innerPadding ->
+    Box(modifier = Modifier.fillMaxSize()) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val width = size.width
+            val height = size.height
+            val cornerSize = 80.dp.toPx()
 
-        Box(
+            drawRect(
+                color = Color(0xFF0078C1),
+                size = Size(width, 60.dp.toPx())
+            )
+
+            val pathLeft = Path().apply {
+                moveTo(0f, height - cornerSize)
+                lineTo(0f, height)
+                lineTo(cornerSize, height)
+                close()
+            }
+
+            val pathRight = Path().apply {
+                moveTo(width, height - cornerSize)
+                lineTo(width, height)
+                lineTo(width - cornerSize, height)
+                close()
+            }
+
+            drawPath(pathLeft, color = Color(0xFFD0D8F0), style = Fill)
+            drawPath(pathRight, color = Color(0xFFD0D8F0), style = Fill)
+        }
+
+        // La barra superior se mostrará solamente si el formulario se carga
+        // desde un origen diferente al Sistema Gestor de Aspirantes.
+        if (fromAspirantsTrackingList == null) {
+            WorkRTopBar(
+                navController = navController,
+                isEmpleado = isEmpleado,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp)
+                    .align(Alignment.TopEnd)
+            )
+        }
+
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
         ) {
-            Canvas(modifier = Modifier.fillMaxSize()) {
-                val width = size.width
-                val height = size.height
-                val cornerSize = 80.dp.toPx()
 
-                drawRect(
-                    color = Color(0xFF0078C1),
-                    size = Size(width, 60.dp.toPx())
-                )
+            BlueTopBar()
 
-                val pathLeft = Path().apply {
-                    moveTo(0f, height - cornerSize)
-                    lineTo(0f, height)
-                    lineTo(cornerSize, height)
-                    close()
-                }
-
-                val pathRight = Path().apply {
-                    moveTo(width, height - cornerSize)
-                    lineTo(width, height)
-                    lineTo(width - cornerSize, height)
-                    close()
-                }
-
-                drawPath(pathLeft, color = Color(0xFFD0D8F0), style = Fill)
-                drawPath(pathRight, color = Color(0xFFD0D8F0), style = Fill)
-            }
+            Text(
+                text = "Formulario para la\npostulación",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.Black,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+            )
 
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 24.dp, vertical = 8.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
             ) {
-
-                Text(
-                    text = "Formulario para la\npostulación",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp)
-                )
-
                 LabelWithInput("Nombre completo:", "Nombre completo(Primero el apellido)", nombre, fieldsEnabled)
                 LabelWithInput("Número de teléfono:", "Teléfono", telefono, fieldsEnabled)
                 LabelWithInput("Correo electrónico:", "Correo electrónico", correo, fieldsEnabled)
@@ -119,6 +123,7 @@ fun PostulacionFormScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+                // Opciones para el formulario fuera del Sistema Gestor de Aspirantes.
                 if (fromAspirantsTrackingList == null) {
                     Button(
                         onClick = { /* Acción al enviar */ },
@@ -137,35 +142,28 @@ fun PostulacionFormScreen(
                             fontWeight = FontWeight.Bold
                         )
                     }
-                } else {
-                    Row(
+                }
+                // Opciones para el formulario dentro del Sistema Gestor de Aspirantes.
+                else {
+                    Row (
                         horizontalArrangement = Arrangement.SpaceAround,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        OutlinedButton(
-                            onClick = {
-                                navController.popBackStack()
-                            },
-                            border = BorderStroke(1.dp, colorResource(id = R.color.cian_WorkR)),
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = colorResource(id = R.color.blue_WorkR)
-                            )
-                        ) {
+                        OutlinedButton(onClick = {
+                            navController.popBackStack()
+                        }) {
                             Text("Regresar")
                         }
 
+                        // El botón de agendar cita solo aparecerá si se abrió el
+                        // formulario desde la lista de aspirantes iniciales.
                         if (fromAspirantsTrackingList == "initial") {
-                            OutlinedButton(
-                                onClick = { /* Acción para agendar cita */ },
-                                border = BorderStroke(1.dp, colorResource(id = R.color.blue_WorkR)),
-                                colors = ButtonDefaults.outlinedButtonColors(
-                                    contentColor = colorResource(id = R.color.blue_WorkR)
-                                )
-                            ) {
+                            Button(onClick = {}) {
                                 Text("Agendar cita")
                             }
                         }
                     }
+
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -173,6 +171,7 @@ fun PostulacionFormScreen(
         }
     }
 }
+
 
 // --- Campo con etiqueta + input ---
 @Composable

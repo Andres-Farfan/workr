@@ -1,64 +1,25 @@
 package com.example.workr
 
-import androidx.compose.foundation.background
+import android.content.Context
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
-
-@Composable
-fun WorkRScaffold(
-    navController: NavHostController,
-    loginType: String,
-    content: @Composable (PaddingValues) -> Unit
-) {
-    Scaffold(
-        topBar = {
-            WorkRTopBar(navController = navController, loginType = loginType)
-        }
-    ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            content(innerPadding)
-        }
-    }
-}
 
 @Composable
 fun WorkRTopBar(
-    navController: NavHostController,
-    loginType: String,
-    modifier: Modifier = Modifier
-) {
-    val isEmpleado = loginType == "user"
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+    navController: NavHostController, isEmpleado: Boolean, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val sharedPref = context.getSharedPreferences("workr_prefs", Context.MODE_PRIVATE)
+    val hasCompany = remember { mutableStateOf(sharedPref.getBoolean("has_company", false)) }
 
-    val items = remember(loginType) {
-        listOf(
-            Triple(
-                if (isEmpleado) "user_profile" else "company_profile",
-                if (isEmpleado) R.drawable.ic_user else R.drawable.ic_company,
-                "Perfil"
-            ),
-            Triple(
-                if (isEmpleado) "company_listing" else "aspirant_tracking_system",
-                if (isEmpleado) R.drawable.ic_jobs else R.drawable.ic_postulations,
-                if (isEmpleado) "Empleos" else "Gestión de Aspirantes"
-            ),
-            Triple("virtual_office", R.drawable.ic_virtual_office, "Oficina Virtual"),
-            Triple("notifications", R.drawable.ic_notifications, "Notificaciones")
-        )
-    }
+    var expanded by remember { mutableStateOf(false) }
 
     Row(
         modifier = modifier
@@ -79,19 +40,7 @@ fun WorkRTopBar(
                         restoreState = true
                     }
                 }
-            }) {
-                Icon(
-                    painter = painterResource(id = iconId),
-                    contentDescription = description,
-                    tint = if (currentRoute == route)
-                        colorResource(id = R.color.black)
-                    else
-                        colorResource(id = R.color.white),
-                    modifier = Modifier.size(32.dp)
-                )
             }
         }
-    }
+    )
 }
-
-
