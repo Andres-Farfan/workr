@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -30,7 +29,7 @@ import androidx.compose.material.OutlinedButton
 
 
 @Composable
-fun BusinessCreationScreen(navController: NavHostController, isEmpleado: Boolean) {
+fun BusinessCreationScreen(navController: NavHostController) {
     var companyName by remember { mutableStateOf("") }
     var sector by remember { mutableStateOf("") }
     var employeesNumber by remember { mutableStateOf("") }
@@ -42,22 +41,15 @@ fun BusinessCreationScreen(navController: NavHostController, isEmpleado: Boolean
         .fillMaxSize()
         .background(Color.White)) {
 
-        // Menú en la esquina superior derecha
-        WorkRTopBar(
-            navController = navController,
-            isEmpleado = isEmpleado,
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(top = 8.dp, end = 12.dp)
-        )
-
         Spacer(modifier = Modifier.height(16.dp))
+
         Text(
             text = "Registra tu Empresa",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.align(Alignment.CenterHorizontally),
         )
+
         // Logo de empresa (círculo)
         Box(
             modifier = Modifier
@@ -76,8 +68,6 @@ fun BusinessCreationScreen(navController: NavHostController, isEmpleado: Boolean
             color = Color.Gray,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -144,9 +134,9 @@ fun BusinessCreationScreen(navController: NavHostController, isEmpleado: Boolean
             ) {
                 Text("Registrar")
             }
+
             OutlinedButton(
                 onClick = {
-                    // Acción para regresar, por ejemplo:
                     navController.popBackStack()
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -161,5 +151,3 @@ fun BusinessCreationScreen(navController: NavHostController, isEmpleado: Boolean
         }
     }
 }
-
-

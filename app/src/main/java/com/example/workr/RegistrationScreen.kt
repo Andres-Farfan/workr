@@ -31,7 +31,10 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 
 @Composable
-fun RegistrationScreen(navController: NavHostController, isEmpleado: Boolean) {
+fun RegistrationScreen(
+    navController: NavHostController
+) {
+    // Estados locales
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var contact by remember { mutableStateOf("") }
@@ -82,14 +85,7 @@ fun RegistrationScreen(navController: NavHostController, isEmpleado: Boolean) {
             drawPath(pathRight, color = Color(0xFFD0D8F0), style = Fill)
         }
 
-        WorkRTopBar(
-            navController = navController,
-            isEmpleado = isEmpleado,
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(end = 12.dp)
-        )
-
+        // Contenido del formulario
         Column(
             modifier = Modifier
                 .fillMaxSize()
