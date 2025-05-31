@@ -5,8 +5,10 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.runtime.Composable
@@ -25,161 +27,163 @@ import androidx.compose.ui.text.TextStyle
 import androidx.navigation.NavHostController
 
 @Composable
-fun JobDetailScreen(navController: NavHostController, isEmpleado: Boolean) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        RectangleCorners()
+fun JobDetailScreen(
+    loginType: String,
+    userId: String,
+    navController: NavHostController
+) {
+    val isEmpleado = loginType == "user"
 
-        Column(
+    WorkRScaffold(
+        navController = navController,
+        loginType = loginType,
+    ) { innerPadding ->
+
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 16.dp)
+                .padding(innerPadding) // importante para no tapar contenido bajo la barra
         ) {
+            RectangleCorners()
 
-            Box(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .background(Color(0xFF0078C1))
+                    .fillMaxSize()
+                    .padding(bottom = 16.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
-                WorkRTopBar(
-                    navController = navController,
-                    isEmpleado = isEmpleado,
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 12.dp)
-                )
-            }
-
-            Text(
-                text = "Posición de Vacante",
-                fontSize = 18.sp,
-                color = colorResource(id = R.color.blue_WorkR),
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)
-            )
-
-            Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)) {
-                // Empresa + icono
-
-                OutlinedTextField(
-                    value = "Nombre de empresa",
-                    onValueChange = {},
-                    leadingIcon = {
-                        Box(
-                            modifier = Modifier
-                                .size(24.dp)
-                                .background(
-                                    color = colorResource(id = R.color.blue_WorkR),
-                                    shape = CircleShape
-                                )
-                        )
-                    },
+                Text(
+                    text = "Posición de Vacante",
+                    fontSize = 18.sp,
+                    color = colorResource(id = R.color.blue_WorkR),
+                    textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = colorResource(id = R.color.gray_WorkR),
-                        unfocusedBorderColor = colorResource(id = R.color.gray_WorkR),
-                        textColor = colorResource(id = R.color.black)
-                    ),
-                    singleLine = true,
-                    textStyle = TextStyle(
-                        fontSize = 14.sp,
-                        color = colorResource(id = R.color.black)
-                    ),
-                    readOnly = true
+                        .padding(top = 16.dp)
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                InfoRow(R.drawable.calendar_icon, "10 de marzo de 2025")
-                InfoRow(R.drawable.location_icon, "Ubicación de la oferta")
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Tipo de Posición",
-                    fontSize = 12.sp,
-                    color = colorResource(id = R.color.blue_WorkR),
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(colorResource(id = R.color.white))
-                        .border(
-                            width = 1.dp,
-                            color = colorResource(id = R.color.blue_WorkR),
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .padding(horizontal = 12.dp, vertical = 4.dp)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text("Descripción", fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                Text(
-                    text = "Una descripción acerca de las principales actividades de esta posición que deje claro al solicitante el tipo de trabajo que estará realizando.",
-                    fontSize = 13.sp,
-                    lineHeight = 18.sp
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text("Habilidades preferibles", fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                BulletPoint("Habilidad competitiva")
-                BulletPoint("Habilidad competitiva")
-                BulletPoint("Habilidad competitiva")
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text("Horario laboral", fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                Text("Lunes a Viernes\n09:00 AM a 05:00 PM", fontSize = 13.sp)
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                OutlinedButton(
-                    onClick = { /* Acción */ },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(45.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = colorResource(id = R.color.blue_WorkR)
-                    ),
-                    border = BorderStroke(1.dp, colorResource(id = R.color.blue_WorkR)),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        text = "Regresar",
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp
+                Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)) {
+                    // Empresa + icono
+                    OutlinedTextField(
+                        value = "Nombre de empresa",
+                        onValueChange = {},
+                        leadingIcon = {
+                            Box(
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .background(
+                                        color = colorResource(id = R.color.blue_WorkR),
+                                        shape = CircleShape
+                                    )
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = colorResource(id = R.color.gray_WorkR),
+                            unfocusedBorderColor = colorResource(id = R.color.gray_WorkR),
+                            textColor = colorResource(id = R.color.black)
+                        ),
+                        singleLine = true,
+                        textStyle = TextStyle(
+                            fontSize = 14.sp,
+                            color = colorResource(id = R.color.black)
+                        ),
+                        readOnly = true
                     )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    InfoRow(R.drawable.calendar_icon, "10 de marzo de 2025")
+                    InfoRow(R.drawable.location_icon, "Ubicación de la oferta")
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Tipo de Posición",
+                        fontSize = 12.sp,
+                        color = colorResource(id = R.color.blue_WorkR),
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(colorResource(id = R.color.white))
+                            .border(
+                                width = 1.dp,
+                                color = colorResource(id = R.color.blue_WorkR),
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .padding(horizontal = 12.dp, vertical = 4.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text("Descripción", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                    Text(
+                        text = "Una descripción acerca de las principales actividades de esta posición que deje claro al solicitante el tipo de trabajo que estará realizando.",
+                        fontSize = 13.sp,
+                        lineHeight = 18.sp
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text("Habilidades preferibles", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                    BulletPoint("Habilidad competitiva")
+                    BulletPoint("Habilidad competitiva")
+                    BulletPoint("Habilidad competitiva")
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text("Horario laboral", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                    Text("Lunes a Viernes\n09:00 AM a 05:00 PM", fontSize = 13.sp)
                 }
 
-                Button(
-                    onClick = { /* Lógica de aplicar */ },
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
                     modifier = Modifier
-                        .weight(1f)
-                        .height(48.dp)
-                        .padding(start = 8.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(id = R.color.blue_WorkR),
-                        contentColor = colorResource(id = R.color.white)
-                    )
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("Aplicar")
+                    OutlinedButton(
+                        onClick = { navController.popBackStack() },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(45.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = colorResource(id = R.color.blue_WorkR)
+                        ),
+                        border = BorderStroke(1.dp, colorResource(id = R.color.blue_WorkR)),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Regresar",
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 14.sp
+                        )
+                    }
+
+                    Button(
+                        onClick = { navController.navigate("postulation_form") },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(48.dp)
+                            .padding(start = 8.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = colorResource(id = R.color.blue_WorkR),
+                            contentColor = colorResource(id = R.color.white)
+                        )
+                    ) {
+                        Text("Aplicar")
+                    }
                 }
             }
         }
     }
 }
+
+
 
 @Composable
 fun InfoRow(drawableId: Int, text: String) {

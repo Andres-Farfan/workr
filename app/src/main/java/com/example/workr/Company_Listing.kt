@@ -1,14 +1,11 @@
 package com.example.workr
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -25,92 +22,104 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
 
 
 @Composable
-fun CompanyListing(navController: NavHostController, isEmpleado: Boolean) {
+fun CompanyListing(
+    loginType: String,
+    userId: String,
+    navController: NavHostController
+) {
     var searchText by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier.fillMaxSize().background(Color.White)) {
-        // Encabezado
+    WorkRScaffold(
+        navController = navController,
+        loginType = loginType,
+    ) { innerPadding ->
 
-        Box(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFF0078C1))
+                .fillMaxSize()
+                .padding(innerPadding)
                 .padding(16.dp)
-        )
-        {
-            WorkRTopBar(
-                navController = navController,
-                isEmpleado = isEmpleado,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 8.dp, end = 12.dp)
-            )
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
-            ){
+            ) {
                 Text(
                     text = "Empleos",
                     fontSize = 24.sp,
-                    color = Color.White,
+                    color = colorResource(id = R.color.black),
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = "Cerca de tu zona",
                     fontSize = 14.sp,
-                    color = Color.White
+                    color = colorResource(id = R.color.black)
                 )
             }
-        }
 
-        ItemSearchBox(
-            searchText = searchText,
-            onSearchChange = { searchText = it },
-            onFilterLocationClick = { /* acción filtro ubicación */ },
-            onFilterPositionClick = { /* acción filtro puesto */ },
-            onDateSelectorClick = { /* acción selector fecha */ }
-        )
-
-
-        // Lista de empleos
-        val jobs = List(4) { "Empresa" }
-
-        LazyColumn(
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(jobs) { job ->
-                JobItem(jobName = job)
-            }
-        }
-        OutlinedButton(
-            onClick = { /* acción para guardar */ },
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-            border = BorderStroke(1.dp, Color(0xFF0078C1)),
-            colors = ButtonDefaults.outlinedButtonColors(
-                backgroundColor = Color(0xFFD1EAFA),
-                contentColor = Color(0xFF0078C1)
+            ItemSearchBox(
+                searchText = searchText,
+                onSearchChange = { searchText = it },
+                onFilterLocationClick = { },
+                onFilterPositionClick = { },
+                onDateSelectorClick = { }
             )
-        ) {
-            androidx.compose.material.Text("Regresar")
+
+            val jobs = List(4) { "Empresa #${it + 1}" }
+
+            LazyColumn(
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(jobs) { job ->
+                    JobItem(
+                        jobName = job,
+                        onClick = {
+                            navController.navigate("job_detail")
+                        }
+                    )
+                }
+            }
+
+            OutlinedButton(
+                onClick = { navController.navigate("user_profile") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                border = BorderStroke(1.dp, Color(0xFF0078C1)),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    backgroundColor = Color(0xFFD1EAFA),
+                    contentColor = Color(0xFF0078C1)
+                )
+            ) {
+                Text("Regresar")
+            }
         }
     }
 }
 
+
+
 @Composable
-fun JobItem(jobName: String) {
+fun JobItem(
+    jobName: String,
+    onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { onClick() }
             .background(Color(0xFFF0FAFF), shape = RoundedCornerShape(8.dp))
             .padding(12.dp)
     ) {
@@ -134,6 +143,8 @@ fun JobItem(jobName: String) {
         }
     }
 }
+
+
 @Composable
 fun ItemSearchBox(
     searchText: String,

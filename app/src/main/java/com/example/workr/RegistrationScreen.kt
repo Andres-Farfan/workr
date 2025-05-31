@@ -31,7 +31,10 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 
 @Composable
-fun RegistrationScreen(navController: NavHostController, isEmpleado: Boolean) {
+fun RegistrationScreen(
+    navController: NavHostController
+) {
+    // Estados locales
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var contact by remember { mutableStateOf("") }

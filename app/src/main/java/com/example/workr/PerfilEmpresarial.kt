@@ -30,6 +30,13 @@ fun PerfilEmpresarialScreen(navController: NavHostController, isEmpleado: Boolea
             .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Encabezado
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(65.dp)
+                .background(Color(0xFF0066CC)) // Azul
+        )
 
         // Barra superior personalizada
         WorkRTopBar(
