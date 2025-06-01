@@ -47,6 +47,7 @@ fun PostulacionFormScreen(
     val herramientas = remember { mutableStateOf("") }
     val razonIngreso = remember { mutableStateOf("") }
     val portafolio = remember { mutableStateOf("") }
+    val aspirantTrackingListMode = fromAspirantsTrackingList != null
 
     val fieldsEnabled = (fromAspirantsTrackingList == null)
 
@@ -65,6 +66,12 @@ fun PostulacionFormScreen(
                 val height = size.height
                 val cornerSize = 80.dp.toPx()
 
+                if (!aspirantTrackingListMode) {
+                    drawRect(
+                        color = Color(0xFF0078C1),
+                        size = Size(width, 60.dp.toPx())
+                    )
+                }
                 val pathLeft = Path().apply {
                     moveTo(0f, height - cornerSize)
                     lineTo(0f, height)
