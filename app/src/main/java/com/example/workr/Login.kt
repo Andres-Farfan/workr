@@ -112,6 +112,9 @@ fun LoginScreen(
                                         val sharedPref = navController.context.getSharedPreferences("auth_prefs", android.content.Context.MODE_PRIVATE)
                                         sharedPref.edit().putString("jwt", loginResponse.jwt).apply()
 
+                                        // Se establece el jwt para uso por defecto en el HTTPClientAPI.
+                                        HTTPClientAPI.setJwt(loginResponse.jwt)
+
                                         Toast.makeText(
                                             navController.context,
                                             "Login exitoso: ${loginResponse.loginType}",
