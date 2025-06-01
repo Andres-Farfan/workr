@@ -31,6 +31,16 @@ object HTTPClientAPI {
     private val BACKEND_BASE_URL = BuildConfig.BACKEND_BASE_URL
     private val BACKEND_API_KEY = BuildConfig.BACKEND_API_KEY
 
+    private var jwt: String? = null
+
+    /**
+     * Configura el JWT a usar en las requests.
+     * @param jwt JWT que se usará para autenticación de las requests.
+     */
+    fun setJwt(jwt: String) {
+        this.jwt = jwt
+    }
+
     /**
      * Realiza una solicitud HTTP al endpoint especificado del backend.
      * @param endpoint Endpoint al que se hará la solicitud.
@@ -52,6 +62,9 @@ object HTTPClientAPI {
             }
             // Se agrega la api key del backend por defecto a toda solicitud.
             install(DefaultRequest) {
+                if (jwt != null) {
+                    header(HttpHeaders.Authorization, "Bearer $jwt")
+                }
                 header("Api-Key", BACKEND_API_KEY)
             }
         }
@@ -122,6 +135,9 @@ object HTTPClientAPI {
             }
             // Se agrega la api key del backend por defecto a toda solicitud.
             install(DefaultRequest) {
+                if (jwt != null) {
+                    header(HttpHeaders.Authorization, "Bearer $jwt")
+                }
                 header("Api-Key", BACKEND_API_KEY)
             }
         }

@@ -47,7 +47,6 @@ fun PostulacionFormScreen(
     val herramientas = remember { mutableStateOf("") }
     val razonIngreso = remember { mutableStateOf("") }
     val portafolio = remember { mutableStateOf("") }
-    val aspirantTrackingListMode = fromAspirantsTrackingList != null
 
     val fieldsEnabled = (fromAspirantsTrackingList == null)
     val aspirantTrackingListMode = fromAspirantsTrackingList != null
