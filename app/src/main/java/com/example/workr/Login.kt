@@ -35,7 +35,9 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.client.plugins.*
 
 @Composable
-fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit,onLoginSuccess: (loginType: String, userId: String) -> Unit ) {
+fun LoginScreen(
+    navController: NavHostController,
+    onLoginSuccess: (loginType: String, userId: String) -> Unit ) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val isEmpresa = remember { mutableStateOf(false) } // false = empleado, true = empresa
@@ -85,20 +87,6 @@ fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit,on
                 isPassword = true,
                 isError = passwordError.value
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Selector Empleado/Empresa (ahora con lógica clara)
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Empleado")
-                Switch(
-                    checked = isEmpresa.value,
-                    onCheckedChange = { isEmpresa.value = it }
-                )
-                Text("Empresa")
-            }
 
             Spacer(modifier = Modifier.height(24.dp))
 

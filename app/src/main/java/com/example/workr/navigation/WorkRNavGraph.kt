@@ -52,17 +52,13 @@ fun WorkRApp(loginViewModel: LoginViewModel = viewModel()) {
                         popUpTo("login") { inclusive = true }
                         launchSingleTop = true
                     }
-                },
-                onRegisterClick = {
-                    navController.navigate("register_user")
                 }
             )
         }
 
         composable("register_user") {
             RegistrationScreen(
-                navController = navController,
-                loginType = "user")
+                navController = navController)
         }
 
         composable("company_register") {
