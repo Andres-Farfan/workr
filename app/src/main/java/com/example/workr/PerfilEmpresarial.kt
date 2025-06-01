@@ -30,21 +30,14 @@ fun PerfilEmpresarialScreen(navController: NavHostController, loginType: String,
             .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Encabezado
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(65.dp)
-                .background(Color(0xFF0066CC)) // Azul
-        )
-
         // Barra superior personalizada
         WorkRTopBar(
             navController = navController,
             loginType = loginType,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally) // Esquina derecha centrada verticalmente
-                .padding(end = 12.dp)
+                .fillMaxWidth()
+                .height(65.dp)
         )
 
         Box(

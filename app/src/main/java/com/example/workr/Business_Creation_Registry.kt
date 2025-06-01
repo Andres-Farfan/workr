@@ -57,16 +57,17 @@ fun BusinessCreationScreen(navController: NavHostController) {
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
+            .fillMaxWidth()
+            .background(Color.White),
     ) {
         // Encabezado azul
-
-        Box(
+        WorkRTopBar(
+            navController = navController,
+            loginType = "company",
             modifier = Modifier
+                .align(Alignment.CenterHorizontally) // Esquina derecha centrada verticalmente
                 .fillMaxWidth()
-                .height(60.dp)
-                .background(Color(0xFF0078C1))
+                .height(65.dp)
         )
         // Lanzador para seleccionar imagen
         val imageLauncher = rememberLauncherForActivityResult(
@@ -81,14 +82,6 @@ fun BusinessCreationScreen(navController: NavHostController) {
                 .background(Color.White)
                 .verticalScroll(rememberScrollState())
         ) {
-            WorkRTopBar(
-                navController = navController,
-                loginType= "company",
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(top = 8.dp, end = 12.dp)
-            )
-
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Registra tu Empresa",

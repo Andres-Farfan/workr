@@ -185,6 +185,7 @@ fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit,on
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
 
             ) {
                 OutlinedButton(

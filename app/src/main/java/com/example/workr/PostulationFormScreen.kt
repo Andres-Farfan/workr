@@ -65,11 +65,6 @@ fun PostulacionFormScreen(
                 val height = size.height
                 val cornerSize = 80.dp.toPx()
 
-                drawRect(
-                    color = Color(0xFF0078C1),
-                    size = Size(width, 60.dp.toPx())
-                )
-
                 val pathLeft = Path().apply {
                     moveTo(0f, height - cornerSize)
                     lineTo(0f, height)

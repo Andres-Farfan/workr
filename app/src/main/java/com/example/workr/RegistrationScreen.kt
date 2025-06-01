@@ -91,7 +91,6 @@ fun RegistrationScreen(
             navController = navController,
             loginType = loginType,
             modifier = Modifier
-                .align(Alignment.CenterEnd)
                 .padding(end = 12.dp)
         )
 
