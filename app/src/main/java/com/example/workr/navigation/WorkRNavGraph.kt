@@ -98,24 +98,6 @@ fun WorkRApp(loginViewModel: LoginViewModel = viewModel()) {
             )
         }
 
-        composable("initial_aspirant_postulation_form") {
-            PostulacionFormScreen(
-                navController = navController,
-                loginType = loginType,
-                userId = userId,
-                fromAspirantsTrackingList = "initial"
-            )
-        }
-
-        composable("contacted_aspirant_postulation_form") {
-            PostulacionFormScreen(
-                navController = navController,
-                loginType = loginType,
-                userId = userId,
-                fromAspirantsTrackingList = "contacted"
-            )
-        }
-
         composable("company_listing") {
             CompanyListing(
                 navController = navController,
@@ -172,16 +154,12 @@ fun WorkRApp(loginViewModel: LoginViewModel = viewModel()) {
             )
         }
 
-        composable("aspirant_tracking_system") {
-            AspirantTrackingScreen(
+        composable("company_vacancies") {
+            CompanyVacanciesScreen(
                 globalNavController = navController,
                 loginType = loginType,
                 userId = userId
             )
-        }
-
-        composable("interview_notes") {
-            InterviewNotesScreen(navController = navController)
         }
     }
 }

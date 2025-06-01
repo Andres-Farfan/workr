@@ -25,8 +25,9 @@ android {
         val properties = Properties()
         properties.load(FileInputStream(propertiesFile))
 
-        // Se hace accesible para el código una propiedad de configuración con BuildConfig.
+        // Se hacen accesibles para el código las propiedades de configuración con BuildConfig.
         buildConfigField("String", "BACKEND_BASE_URL", properties.getProperty("BACKEND_BASE_URL"))
+        buildConfigField("String", "BACKEND_API_KEY", properties.getProperty("BACKEND_API_KEY"))
     }
 
     buildFeatures {

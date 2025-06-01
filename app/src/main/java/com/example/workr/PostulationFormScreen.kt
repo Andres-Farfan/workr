@@ -50,10 +50,12 @@ fun PostulacionFormScreen(
     val aspirantTrackingListMode = fromAspirantsTrackingList != null
 
     val fieldsEnabled = (fromAspirantsTrackingList == null)
+    val aspirantTrackingListMode = fromAspirantsTrackingList != null
 
     WorkRScaffold(
         navController = navController,
         loginType = loginType,
+        fromAspirantsTrackingList = aspirantTrackingListMode
     ) { innerPadding ->
 
         Box(
@@ -121,7 +123,7 @@ fun PostulacionFormScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                if (fromAspirantsTrackingList == null) {
+                if (!aspirantTrackingListMode) {
                     Button(
                         onClick = { /* Acción al enviar */ },
                         modifier = Modifier
