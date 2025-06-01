@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -13,11 +14,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.navigation.NavHostController
 
 @Composable
@@ -42,14 +42,13 @@ fun CreateJobScreen(
         loginType = loginType,
     ) { innerPadding ->
 
-        // Aplicar padding que evita superposición con barra superior
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp)
         ) {
-            // Título centrado debajo de la barra
+            // Título
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -133,7 +132,9 @@ fun CreateJobScreen(
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             OutlinedButton(
-                                onClick = { /* Cancel logic */ },
+                                onClick = {
+                                    // TODO: lógica de cancelación
+                                },
                                 border = BorderStroke(1.dp, Color(0xFF0078C1)),
                                 colors = ButtonDefaults.outlinedButtonColors(
                                     backgroundColor = Color.White,
@@ -147,7 +148,9 @@ fun CreateJobScreen(
                             }
 
                             Button(
-                                onClick = { /* Publish logic */ },
+                                onClick = {
+                                    // TODO: lógica de publicación futura (API)
+                                },
                                 colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF0078C1)),
                                 modifier = Modifier
                                     .weight(1f)
@@ -171,9 +174,6 @@ fun CreateJobScreen(
         }
     }
 }
-
-
-
 
 @Composable
 fun LabeledTextField(label: String, value: String, onValueChange: (String) -> Unit) {
@@ -220,5 +220,3 @@ fun SimpleScrollbar(scrollState: ScrollState, modifier: Modifier = Modifier) {
         )
     }
 }
-
-

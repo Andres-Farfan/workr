@@ -18,28 +18,31 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.workr.BuildConfig.BACKEND_BASE_URL
 import kotlinx.serialization.Serializable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.example.workr.HTTPClientAPI
 import io.ktor.client.call.body
 import io.ktor.http.HttpMethod
 import io.ktor.client.statement.bodyAsText
+import io.ktor.client.plugins.*
 
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    onRegisterClick: () -> Unit,
-    onLoginSuccess: (String, String) -> Unit // <-- Usamos bien el parámetro
-) {
+    onLoginSuccess: (loginType: String, userId: String) -> Unit ) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
-    val isEmpresa = remember { mutableStateOf(false) }
+    val isEmpresa = remember { mutableStateOf(false) } // false = empleado, true = empresa
 
+    // Variables para mensajes de error
     val emailError = remember { mutableStateOf(false) }
     val passwordError = remember { mutableStateOf(false) }
 
@@ -68,7 +71,6 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Email
             RoundedInputField(
                 value = email.value,
                 onValueChange = { email.value = it },
@@ -78,7 +80,6 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Password
             RoundedInputField(
                 value = password.value,
                 onValueChange = { password.value = it },
@@ -87,20 +88,8 @@ fun LoginScreen(
                 isError = passwordError.value
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Empleado")
-                Switch(
-                    checked = isEmpresa.value,
-                    onCheckedChange = { isEmpresa.value = it }
-                )
-                Text("Empresa")
-            }
-
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Botón de login
             Button(
                 onClick = {
                     emailError.value = email.value.isBlank()
@@ -119,17 +108,17 @@ fun LoginScreen(
                                     val loginResponse = response.body<LoginResponse>()
 
                                     withContext(Dispatchers.Main) {
+                                        // Sirve para guardar token
+                                        val sharedPref = navController.context.getSharedPreferences("auth_prefs", android.content.Context.MODE_PRIVATE)
+                                        sharedPref.edit().putString("jwt", loginResponse.jwt).apply()
+
                                         Toast.makeText(
                                             navController.context,
                                             "Login exitoso: ${loginResponse.loginType}",
                                             Toast.LENGTH_SHORT
                                         ).show()
 
-                                        // ✅ Llama al callback para que WorkRApp actualice estado y navegue
-                                        onLoginSuccess(
-                                            loginResponse.loginType,
-                                            loginResponse.id
-                                        )
+                                        onLoginSuccess(loginResponse.loginType, loginResponse.id)
                                     }
                                 } else {
                                     val errorMsg = response.bodyAsText()
@@ -182,9 +171,13 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+
+            ) {
                 OutlinedButton(
-                    onClick = onRegisterClick,
+                    onClick = { navController.navigate("register_user") },
                     shape = RoundedCornerShape(20.dp),
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = colorResource(id = R.color.blue_WorkR)
@@ -208,7 +201,6 @@ fun LoginScreen(
         }
     }
 }
-
 
 @Composable
 fun RoundedInputField(

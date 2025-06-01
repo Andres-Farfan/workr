@@ -1,6 +1,5 @@
 package com.example.workr
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,16 +21,15 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.navigation.NavHostController
 
-
 @Composable
 fun PerfilEmpresarialScreen(
+    navController: NavHostController,
     loginType: String,
-    userId: String,
-    navController: NavHostController
+    userId: String
 ) {
     WorkRScaffold(
         navController = navController,
-        loginType = loginType,
+        loginType = loginType
     ) { innerPadding ->
 
         Column(
@@ -41,14 +39,6 @@ fun PerfilEmpresarialScreen(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {}
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -66,33 +56,34 @@ fun PerfilEmpresarialScreen(
                         .padding(15.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    // Aquí podrías colocar un Icon si quieres
-                    // Icon(imageVector = Icons.Default.Business, contentDescription = null, tint = Color.White)
+                    // Puedes agregar aquí un ícono si lo deseas
                 }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text("Nombre",
+            Text(
+                "Nombre",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center)
+                textAlign = TextAlign.Center
+            )
             Text(
                 "Descripción de la empresa y su función.",
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 26.dp, start = 16.dp, end = 16.dp)
+                    .padding(top = 26.dp)
             )
 
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(34.dp),
+                    .padding(vertical = 32.dp),
                 backgroundColor = Color(0xFFF2F8FC),
-                elevation = 4.dp,
+                elevation = 4.dp
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
@@ -115,6 +106,7 @@ fun PerfilEmpresarialScreen(
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
+
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
@@ -133,7 +125,7 @@ fun PerfilEmpresarialScreen(
 
             Column(
                 modifier = Modifier
-                    .padding(horizontal = 34.dp)
+                    .fillMaxWidth()
                     .padding(bottom = 32.dp),
                 horizontalAlignment = Alignment.Start
             ) {
@@ -143,75 +135,44 @@ fun PerfilEmpresarialScreen(
 
                 Text(
                     text = buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Black
-                            )
-                        ) {
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = Color.Black)) {
                             append("Correo: ")
                         }
-                        withStyle(
-                            style = SpanStyle(
-                                color = Color.Blue,
-                                textDecoration = TextDecoration.Underline
-                            )
-                        ) {
+                        withStyle(SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)) {
                             append("nombre@usuario")
                         }
                     },
-                    modifier = Modifier.clickable { /* Acción al hacer clic */ }
+                    modifier = Modifier.clickable { /* Acción */ }
                 )
 
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
                     text = buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Black
-                            )
-                        ) {
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = Color.Black)) {
                             append("Sitio Web: ")
                         }
-                        withStyle(
-                            style = SpanStyle(
-                                color = Color.Blue,
-                                textDecoration = TextDecoration.Underline
-                            )
-                        ) {
+                        withStyle(SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)) {
                             append("empresa.com.mx")
                         }
                     },
-                    modifier = Modifier.clickable { /* Acción al hacer clic */ }
+                    modifier = Modifier.clickable { /* Acción */ }
                 )
 
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
                     text = buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Black
-                            )
-                        ) {
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = Color.Black)) {
                             append("Ubicación: ")
                         }
-                        withStyle(
-                            style = SpanStyle(
-                                color = Color.Blue,
-                                textDecoration = TextDecoration.Underline
-                            )
-                        ) {
+                        withStyle(SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)) {
                             append("Google Maps")
                         }
                     },
-                    modifier = Modifier.clickable { /* Acción al hacer clic */ }
+                    modifier = Modifier.clickable { /* Acción */ }
                 )
             }
         }
     }
 }
-
