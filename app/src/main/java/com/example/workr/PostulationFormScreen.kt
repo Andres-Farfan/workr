@@ -49,10 +49,12 @@ fun PostulacionFormScreen(
     val portafolio = remember { mutableStateOf("") }
 
     val fieldsEnabled = (fromAspirantsTrackingList == null)
+    val aspirantTrackingListMode = fromAspirantsTrackingList != null
 
     WorkRScaffold(
         navController = navController,
         loginType = loginType,
+        fromAspirantsTrackingList = aspirantTrackingListMode
     ) { innerPadding ->
 
         Box(
@@ -65,10 +67,12 @@ fun PostulacionFormScreen(
                 val height = size.height
                 val cornerSize = 80.dp.toPx()
 
-                drawRect(
-                    color = Color(0xFF0078C1),
-                    size = Size(width, 60.dp.toPx())
-                )
+                if (!aspirantTrackingListMode) {
+                    drawRect(
+                        color = Color(0xFF0078C1),
+                        size = Size(width, 60.dp.toPx())
+                    )
+                }
 
                 val pathLeft = Path().apply {
                     moveTo(0f, height - cornerSize)
@@ -119,7 +123,7 @@ fun PostulacionFormScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                if (fromAspirantsTrackingList == null) {
+                if (!aspirantTrackingListMode) {
                     Button(
                         onClick = { /* Acción al enviar */ },
                         modifier = Modifier

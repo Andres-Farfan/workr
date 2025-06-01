@@ -20,11 +20,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 fun WorkRScaffold(
     navController: NavHostController,
     loginType: String,
+    fromAspirantsTrackingList: Boolean = false,
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
         topBar = {
-            WorkRTopBar(navController = navController, loginType = loginType)
+            if (!fromAspirantsTrackingList) {
+                WorkRTopBar(navController = navController, loginType = loginType)
+            }
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
@@ -51,9 +54,9 @@ fun WorkRTopBar(
                 "Perfil"
             ),
             Triple(
-                if (isEmpleado) "company_listing" else "aspirant_tracking_system",
+                if (isEmpleado) "company_listing" else "company_vacancies",
                 if (isEmpleado) R.drawable.ic_jobs else R.drawable.ic_postulations,
-                if (isEmpleado) "Empleos" else "Gestión de Aspirantes"
+                if (isEmpleado) "Empleos" else "Vacantes de empresa"
             ),
             Triple("virtual_office", R.drawable.ic_virtual_office, "Oficina Virtual"),
             Triple("notifications", R.drawable.ic_notifications, "Notificaciones")
