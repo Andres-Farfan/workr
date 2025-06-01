@@ -35,7 +35,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.client.plugins.*
 
 @Composable
-fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit) {
+fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit,onLoginSuccess: (loginType: String, userId: String) -> Unit ) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val isEmpresa = remember { mutableStateOf(false) } // false = empleado, true = empresa
@@ -130,11 +130,7 @@ fun LoginScreen(navController: NavHostController, onRegisterClick: () -> Unit) {
                                             Toast.LENGTH_SHORT
                                         ).show()
 
-                                        if (loginResponse.loginType == "company") {
-                                            navController.navigate("company_profile")
-                                        } else {
-                                            navController.navigate("user_profile")
-                                        }
+                                        onLoginSuccess(loginResponse.loginType, loginResponse.id)
                                     }
                                 } else {
                                     val errorMsg = response.bodyAsText()

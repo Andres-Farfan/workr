@@ -28,7 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.navigation.NavHostController
 
 @Composable
-fun CreateJobScreen(navController: NavHostController, isEmpleado: Boolean) {
+fun CreateJobScreen(navController: NavHostController, loginType: String, userId: String) {
     val scrollState = rememberScrollState()
 
     var position by remember { mutableStateOf("") }
@@ -40,7 +40,7 @@ fun CreateJobScreen(navController: NavHostController, isEmpleado: Boolean) {
 
     Column(modifier = Modifier.fillMaxSize()) {
 
-        WorkRTopBar(navController = navController, isEmpleado = isEmpleado)
+        WorkRTopBar(navController = navController, loginType = loginType )
         // Barra azul vacía
         Box(
             modifier = Modifier

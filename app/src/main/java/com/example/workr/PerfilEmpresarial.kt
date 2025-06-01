@@ -22,7 +22,7 @@ import androidx.navigation.NavHostController
 
 
 @Composable
-fun PerfilEmpresarialScreen(navController: NavHostController, isEmpleado: Boolean) {
+fun PerfilEmpresarialScreen(navController: NavHostController, loginType: String, userId: String) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -41,7 +41,7 @@ fun PerfilEmpresarialScreen(navController: NavHostController, isEmpleado: Boolea
         // Barra superior personalizada
         WorkRTopBar(
             navController = navController,
-            isEmpleado = isEmpleado,
+            loginType = loginType,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally) // Esquina derecha centrada verticalmente
                 .padding(end = 12.dp)

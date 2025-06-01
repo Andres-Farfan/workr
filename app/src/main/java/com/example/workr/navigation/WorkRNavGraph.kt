@@ -60,7 +60,9 @@ fun WorkRApp(loginViewModel: LoginViewModel = viewModel()) {
         }
 
         composable("register_user") {
-            RegistrationScreen(navController = navController)
+            RegistrationScreen(
+                navController = navController,
+                loginType = "user")
         }
 
         composable("company_register") {

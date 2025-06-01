@@ -32,7 +32,8 @@ import kotlinx.serialization.Serializable
 
 @Composable
 fun RegistrationScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    loginType: String
 ) {
     // Estados locales
     var firstName by remember { mutableStateOf("") }
@@ -88,7 +89,7 @@ fun RegistrationScreen(
         // Contenido del formulario
         WorkRTopBar(
             navController = navController,
-            isEmpleado = isEmpleado,
+            loginType = loginType,
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(end = 12.dp)
