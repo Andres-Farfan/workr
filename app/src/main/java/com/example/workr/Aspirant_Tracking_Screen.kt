@@ -1,72 +1,153 @@
 package com.example.workr
 
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+
+/**
+ * Activity propia para el sistema gestor de aspirantes que permite
+ * darle su propia navegación independiente de la principal.
+ */
+class AspirantTrackingActivity: ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Se obtienen datos del intent para la activity del sistema gestor
+        // de aspirantes.
+        val intent = intent
+        val userId = intent.getStringExtra("user_id").orEmpty()
+
+        setContent {
+            // Este controlador de navegación servirá de manera local
+            // en el sistema gestor de aspirantes.
+            val navController = rememberNavController()
+
+            NavHost(navController = navController, startDestination = "aspirant_tracking") {
+                composable("aspirant_tracking") { AspirantTrackingScreen(navController) }
+
+                composable("initial_aspirant_postulation_form") {
+                    PostulacionFormScreen(
+                        navController = navController,
+                        loginType = "company",
+                        userId = userId,
+                        fromAspirantsTrackingList = "initial"
+                    )
+                }
+
+                composable("contacted_aspirant_postulation_form") {
+                    PostulacionFormScreen(
+                        navController = navController,
+                        loginType = "company",
+                        userId = userId,
+                        fromAspirantsTrackingList = "contacted"
+                    )
+                }
+
+                composable("interview_notes") {
+                    InterviewNotesScreen(navController = navController)
+                }
+            }
+        }
+    }
+}
 
 /**
  * Ventana del Sistema Gestor de Aspirantes usada para controlar el
  * flujo de los aspirantes registrados en una vacante.
- * @param globalNavController Controlador de la navegación global de la app.
+ * @param navController Controlador de la navegación local del sistema de aspirantes.
  */
 @Composable
-// Anotación para utilizar la clase PrimaryTabRow, experimental de Material 3.
 @OptIn(ExperimentalMaterial3Api::class)
-fun AspirantTrackingScreen(globalNavController: NavHostController) {
-    // Configuración de variables necesarias para el Navigation Host de las pestañas.
+fun AspirantTrackingScreen(
+    navController: NavHostController,
+) {
     val tabsNavController = rememberNavController()
-    val startTab = AspirantTrackingNavTabs.INITIAL
 
-    // Se guardará como estado el enumerador de la pestaña abierta
-    // para actualizar la apariencia de pestaña seleccionada.
-    var selectedTab by rememberSaveable { mutableStateOf(startTab) }
+    val tabs = listOf("initial", "contacted")
+    val navBackStackEntry by tabsNavController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val selectedTabIndex = tabs.indexOf(currentRoute).takeIf { it >= 0 } ?: 0
 
-    Column {
-        PrimaryTabRow (selectedTabIndex = selectedTab.ordinal) {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        // Título centrado
+        Text(
+            text = "Gestión de Aspirantes",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontWeight = FontWeight.Bold,
+                color = colorResource(id = R.color.black)
+            )
+        )
+
+        // Pestañas
+        PrimaryTabRow(selectedTabIndex = selectedTabIndex) {
             AspirantTrackingNavTabs.entries.forEachIndexed { index, tab ->
                 Tab(
-                    selected = selectedTab.ordinal == index,
+                    selected = selectedTabIndex == index,
                     onClick = {
-                        tabsNavController.navigate(route = tab.route)
-                        selectedTab = tab
+                        if (currentRoute != tab.route) {
+                            tabsNavController.popBackStack()
+                            tabsNavController.navigate(route = tab.route) {
+                                launchSingleTop = true
+                            }
+                        }
                     },
                     text = {
                         Text(
-                            text = tab.label
+                            text = tab.label,
+                            color = colorResource(id = R.color.blue_WorkR)
                         )
                     }
                 )
             }
         }
+
+        // Contenido de cada pestaña
         NavHost(
-            tabsNavController,
-            startDestination = startTab.route
+            navController = tabsNavController,
+            startDestination = "initial",
+            modifier = Modifier.fillMaxSize()
         ) {
             AspirantTrackingNavTabs.entries.forEach { destination ->
                 composable(destination.route) {
-                    when(destination) {
+                    when (destination) {
                         AspirantTrackingNavTabs.INITIAL -> InitialAspirantsListScreen(
                             onFormButtonPressed = {
-                                globalNavController.navigate("initial_aspirant_postulation_form")
+                                navController.navigate("initial_aspirant_postulation_form")
                             }
                         )
                         AspirantTrackingNavTabs.CONTACTED -> ContactedAspirantsListScreen(
                             onFormButtonPressed = {
-                                globalNavController.navigate("contacted_aspirant_postulation_form")
+                                navController.navigate("contacted_aspirant_postulation_form")
                             },
                             onInterviewButtonPressed = {
-                                globalNavController.navigate("interview_notes")
+                                navController.navigate("interview_notes")
                             }
                         )
                     }
@@ -75,6 +156,7 @@ fun AspirantTrackingScreen(globalNavController: NavHostController) {
         }
     }
 }
+
 
 /**
  * Clase enumeradora que lista las posibles pestañas para navegar en el

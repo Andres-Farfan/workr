@@ -1,82 +1,168 @@
 package com.example.workr.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.workr.AspirantTrackingScreen
-import com.example.workr.BusinessCreationScreen
-import com.example.workr.CompanyListing
-import com.example.workr.CompletePerfile
-import com.example.workr.CreateJobScreen
-import com.example.workr.InterviewNotesScreen
-import com.example.workr.JobDetailScreen
-import com.example.workr.LoginScreen
-import com.example.workr.ProfileViewScreen
-import com.example.workr.PerfilEmpresarialScreen
-import com.example.workr.PostulacionFormScreen
-import com.example.workr.ProfileEditScreen
-import com.example.workr.RegistrationScreen
-import com.example.workr.VacantesScreen
+import com.example.workr.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+
+class LoginViewModel : ViewModel() {
+    private val _loginType = MutableStateFlow("")
+    val loginType: StateFlow<String> = _loginType
+
+    private val _userId = MutableStateFlow("")
+    val userId: StateFlow<String> = _userId
+
+    fun updateLogin(type: String, id: String) {
+        _loginType.value = type
+        _userId.value = id
+    }
+}
 
 @Composable
-fun WorkRApp() {
+fun WorkRApp(loginViewModel: LoginViewModel = viewModel()) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "login") {
+    // ✅ Recolectamos el estado observable para que Compose escuche cambios
+    val loginType by loginViewModel.loginType.collectAsState()
+    val userId by loginViewModel.userId.collectAsState()
+
+    NavHost(
+        navController = navController,
+        startDestination = "login",
+        modifier = Modifier.fillMaxSize()
+    ) {
+        // Pantallas SIN barra superior
         composable("login") {
-            LoginScreen(navController = navController, onRegisterClick = {navController.navigate("register")
+            LoginScreen(
+                navController = navController,
+                onLoginSuccess = { type, id ->
+                    loginViewModel.updateLogin(type, id)
+                    navController.navigate(
+                        if (type == "user") "user_profile" else "company_profile"
+                    ) {
+                        popUpTo("login") { inclusive = true }
+                        launchSingleTop = true
+                    }
                 }
             )
         }
 
+        composable("register_user") {
+            RegistrationScreen(
+                navController = navController)
+        }
+
+        composable("company_register") {
+            BusinessCreationScreen(navController = navController)
+        }
+
+        // Pantallas CON barra superior (usan WorkRScaffold internamente)
         composable("user_profile") {
-            ProfileViewScreen(navController, isEmpleado = true)
+            ProfileViewScreen(
+                navController = navController,
+                loginType = loginType,
+                userId = userId
+            )
         }
 
         composable("company_profile") {
-            PerfilEmpresarialScreen(navController = navController, isEmpleado = false)
+            PerfilEmpresarialScreen(
+                navController = navController,
+                loginType = loginType,
+                userId = userId
+            )
         }
 
-        // Agrega aquí más pantallas según vayas creando
         composable("job_creation") {
-            CreateJobScreen(navController, isEmpleado = false)
+            CreateJobScreen(
+                navController = navController,
+                loginType = loginType,
+                userId = userId
+            )
         }
+
         composable("postulation_form") {
-            PostulacionFormScreen(navController, isEmpleado = true)
+            PostulacionFormScreen(
+                navController = navController,
+                loginType = loginType,
+                userId = userId
+            )
         }
-        composable("initial_aspirant_postulation_form") {
-            PostulacionFormScreen(navController, isEmpleado = false, fromAspirantsTrackingList = "initial")
-        }
-        composable("contacted_aspirant_postulation_form") {
-            PostulacionFormScreen(navController, isEmpleado = false, fromAspirantsTrackingList = "contacted")
-        }
+
         composable("company_listing") {
-            CompanyListing(navController, isEmpleado = true)
+            CompanyListing(
+                navController = navController,
+                loginType = loginType,
+                userId = userId
+            )
         }
+
         composable("list_vacancies") {
-            VacantesScreen(navController, isEmpleado = true)
+            VacantesScreen(
+                navController = navController,
+                loginType = loginType,
+                userId = userId
+            )
         }
+
         composable("job_detail") {
-            JobDetailScreen(navController, isEmpleado = true)
+            JobDetailScreen(
+                navController = navController,
+                loginType = loginType,
+                userId = userId
+            )
         }
-        composable("profile_edit_user"){
-            ProfileEditScreen(navController, isEmpleado = true)
+
+        composable("profile_edit_user") {
+            ProfileEditScreen(
+                navController = navController,
+                loginType = loginType,
+                userId = userId
+            )
         }
-        composable("register_user"){
-            RegistrationScreen(navController, isEmpleado = true)
+
+        composable("complete_profile_company") {
+            CompletePerfile(
+                navController = navController,
+                loginType = loginType,
+                userId = userId
+            )
         }
-        composable("complete_profile_company"){
-            CompletePerfile(navController, isEmpleado = false)
+
+        composable("notifications") {
+            NotificationsScreen(
+                navController = navController,
+                loginType = loginType,
+                userId = userId
+            )
         }
-        composable("company_register"){
-            BusinessCreationScreen(navController, isEmpleado = false)
+
+        composable("virtual_office") {
+            VirtualOfficeScreen(
+                navController = navController,
+                loginType = loginType,
+                userId = userId
+            )
         }
-        composable("aspirant_tracking_system") {
-            AspirantTrackingScreen(navController)
-        }
-        composable("interview_notes") {
-            InterviewNotesScreen(navController)
+
+        composable("company_vacancies") {
+            CompanyVacanciesScreen(
+                globalNavController = navController,
+                loginType = loginType,
+                userId = userId
+            )
         }
     }
 }
+
+
+

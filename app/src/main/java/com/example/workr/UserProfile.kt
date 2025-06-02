@@ -1,8 +1,5 @@
 package com.example.workr
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -15,28 +12,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.compose.runtime.Composable
 
 
 @Composable
-fun ProfileViewScreen(navController: NavHostController, isEmpleado: Boolean) {
-    Column(modifier = Modifier.fillMaxSize()) {
+fun ProfileViewScreen(
+    loginType: String,
+    userId: String,
+    navController: NavHostController
+) {
+    val isEmpleado = loginType == "user"
 
-        WorkRTopBar(navController = navController, isEmpleado = isEmpleado)
-
-        // Rectángulo azul superior
-        Box(
+    WorkRScaffold(
+        navController = navController,
+        loginType = loginType,
+    ) { innerPadding ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .background(colorResource(id = R.color.blue_WorkR))
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Column(modifier = Modifier.padding(16.dp)) {
+                .fillMaxSize()
+                .padding(innerPadding) // 🔹 Padding para no tapar el contenido con la top bar
+                .padding(16.dp)
+        ) {
             ProfileHeaderCard()
             ContactSection()
             ExperienceSection()
