@@ -450,7 +450,6 @@ fun ProfileEditScreen(
 
                             val response = HTTPClientAPI.submitMultipartForm(
                                 endpoint = "users/update_profile",
-                                method = HttpMethod.Post,
                                 formFields = mapOf(
                                     "profile_picture" to profilePictureFile.value!!,
                                     "description" to description,
