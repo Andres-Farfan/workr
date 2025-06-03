@@ -1,4 +1,4 @@
-package com.tuapp.ui.screens
+package com.example.workr
 
 import android.content.Intent
 import androidx.compose.foundation.background
