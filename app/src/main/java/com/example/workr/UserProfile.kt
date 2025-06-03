@@ -9,6 +9,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -87,6 +88,19 @@ fun ProfileViewScreen(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.TopEnd
+            ) {
+                androidx.compose.material3.IconButton(
+                    onClick = { navController.navigate("profile_edit_user")}
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Editar"
+                    )
+                }
+            }
             ProfileHeaderCard(profilePictureURL, name, description)
             ContactSection(contactLinks)
             ExperienceSection(experienceRecords)
