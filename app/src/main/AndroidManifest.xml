@@ -7,17 +7,50 @@
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WorkR"
+        android:exported="true"
+        android:launchMode="singleTask"
         tools:targetApi="31">
         <activity
-            android:name=".AspirantTrackingActivity"
+            android:name=".EmployeesCharts"
             android:exported="false"
-            android:label="@string/title_activity_aspirant_tracking_activity"
+            android:label="@string/title_activity_employees_charts"
+            android:theme="@style/Theme.WorkR" />
+        <activity
+            android:name=".Company_Info"
+            android:exported="false"
+            android:label="@string/title_activity_company_info"
+            android:theme="@style/Theme.WorkR" />
+        <activity
+            android:name=".Subscription_Benefits"
+            android:exported="false"
+            android:label="@string/title_activity_subscription_benefits"
+            android:theme="@style/Theme.WorkR" />
+        <activity
+            android:name=".Company_Payment"
+            android:exported="false"
+            android:label="@string/title_activity_company_payment"
+            android:theme="@style/Theme.WorkR" />
+        <activity
+            android:name=".Aspirants_Management_Screen"
+            android:exported="false"
+            android:label="@string/title_activity_aspirants_management_screen"
+            android:theme="@style/Theme.WorkR" />
+        <activity
+            android:name=".Notification_Listing"
+            android:exported="false"
+            android:label="@string/title_activity_notification_listing.kt"
+            android:theme="@style/Theme.WorkR" />
+        <activity
+            android:name=".VacanciesCharts"
+            android:exported="false"
+            android:label="@string/title_activity_vacancies_charts"
             android:theme="@style/Theme.WorkR" />
         <activity
             android:name=".List_vacanciesCompany"
