@@ -1,5 +1,6 @@
 package com.example.workr
 
+import com.google.gson.Gson
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.DefaultRequest
@@ -7,18 +8,18 @@ import io.ktor.client.plugins.HttpSend
 import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.plugin
-import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.header
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
+import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import io.ktor.http.defaultForFile
-import io.ktor.http.headers
 import io.ktor.http.isSecure
 import io.ktor.serialization.gson.gson
 import io.ktor.utils.io.InternalAPI
@@ -30,6 +31,8 @@ import java.io.File
 object HTTPClientAPI {
     private val BACKEND_BASE_URL = BuildConfig.BACKEND_BASE_URL
     private val BACKEND_API_KEY = BuildConfig.BACKEND_API_KEY
+
+    private val gson = Gson()
 
     private var jwt: String? = null
 
@@ -123,8 +126,6 @@ object HTTPClientAPI {
     @OptIn(InternalAPI::class)
     suspend fun submitMultipartForm(
         endpoint: String,
-        method: HttpMethod,
-        headers: Map<String, String> = emptyMap(),
         formFields: Map<String, Any>
     ): HttpResponse {
         // Para el entorno de desarrollo, se usa un nuevo HTTPClient por cada solicitud.
@@ -160,46 +161,39 @@ object HTTPClientAPI {
             // con el endpoint indicado en parámetros.
             val url = "$BACKEND_BASE_URL$endpoint"
 
-            return client.request(url) {
-                this.method = method
-
-                // Agrega headers si los hay.
-                headers.forEach { (key, value) -> this.headers.append(key, value) }
-
-                // Se establecen los diferentes campos del form data.
-                setBody(
-                    MultiPartFormDataContent(
-                        formData() {
-                            for ((key, value) in formFields) {
-                                when (value) {
-                                    is String -> {
-                                        append(key, value)
+            return client.submitFormWithBinaryData(
+                url = url,
+                formData = formData {
+                    for ((key, value) in formFields) {
+                        when (value) {
+                            is String -> {
+                                append(key, value)
+                            }
+                            is File -> {
+                                append(
+                                    key,
+                                    value.readBytes(),
+                                    Headers.build {
+                                        append(HttpHeaders.ContentType, ContentType.defaultForFile(value).toString())
+                                        append(HttpHeaders.ContentDisposition, "filename=\"${value.name}\"")
                                     }
-                                    is File -> {
-                                        append(
-                                            key,
-                                            value.readBytes(),
-                                            headers {
-                                                append(
-                                                    HttpHeaders.ContentDisposition,
-                                                    "filename=\"${value.name}\""
-                                                )
-                                                append(
-                                                    HttpHeaders.ContentType,
-                                                    ContentType.defaultForFile(value)
-                                                )
-                                            }
-                                        )
-                                    }
-                                    else -> {
-                                        throw IllegalArgumentException("Tipo no soportado para campo '$key': ${value::class}")
-                                    }
-                                }
+                                )
+                            }
+                            is Map<*, *> -> {
+                                val json = gson.toJson(value)
+                                append(key, json)
+                            }
+                            is List<*> -> {
+                                val json = gson.toJson(value)
+                                append(key, json)
+                            }
+                            else -> {
+                                throw IllegalArgumentException("Tipo no soportado para '$key': ${value::class}")
                             }
                         }
-                    )
-                )
-            }
+                    }
+                }
+            )
         }
         // Si ocurre un error en la solicitud, se lanzará una excepción para interrumpir otras operaciones.
         catch (e: ResponseException) {

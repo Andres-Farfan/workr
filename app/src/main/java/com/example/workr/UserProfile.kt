@@ -9,6 +9,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -24,7 +25,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImagePainter
@@ -76,6 +76,31 @@ fun ProfileViewScreen(
         }
     }
 
+    var profilePictureURL by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var contactLinks = remember { mutableStateListOf<Map<String, String>>() }
+    var experienceRecords = remember { mutableStateListOf<Map<String, String>>() }
+    var skills = remember { mutableStateListOf<String>() }
+    var educationRecords = remember { mutableStateListOf<Map<String, String>>() }
+
+    LaunchedEffect(Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val body: Map<String, Any> = getProfileData(userId)
+
+            val presentationData: Map<String, String> =
+                body["presentationData"]!! as Map<String, String>
+            profilePictureURL = presentationData["profilePicture"]!!
+            name = presentationData["fullName"]!!
+            description = presentationData["description"]!!
+
+            contactLinks.addAll(body["contactLinks"]!! as List<Map<String, String>>)
+            experienceRecords.addAll(body["experience"]!! as List<Map<String, String>>)
+            skills.addAll(body["skills"]!! as List<String>)
+            educationRecords.addAll(body["education"]!! as List<Map<String, String>>)
+        }
+    }
+
     WorkRScaffold(
         navController = navController,
         loginType = loginType,
@@ -87,28 +112,24 @@ fun ProfileViewScreen(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.TopEnd
+            ) {
+                androidx.compose.material3.IconButton(
+                    onClick = { navController.navigate("profile_edit_user")}
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Editar"
+                    )
+                }
+            }
             ProfileHeaderCard(profilePictureURL, name, description)
             ContactSection(contactLinks)
             ExperienceSection(experienceRecords)
             SkillsSection(skills)
             StudiesSection(educationRecords)
-            //Botón para editar perfil
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(
-                onClick = {
-                    navController.navigate("profile_edit_user")
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-                    .clip(RoundedCornerShape(24.dp)),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFFD9EEFF),
-                    contentColor = Color(0xFF0077CC)
-                )
-            ) {
-                Text("Editar perfil")
-            }
         }
     }
 }
