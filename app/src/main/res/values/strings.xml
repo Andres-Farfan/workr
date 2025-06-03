@@ -8,4 +8,11 @@
     <string name="title_activity_complete_perfile_bussiness">Complete_Perfile_Bussiness</string>
     <string name="title_activity_list_vacancies_company">List_vacanciesCompany</string>
     <string name="title_activity_aspirant_tracking_activity">AspirantTrackingActivity</string>
+    <string name="title_activity_aspirants_management_screen">Aspirants_Management_Screen</string>
+    <string name="title_activity_vacancies_charts">VacanciesCharts</string>
+    <string name="title_activity_notification_listing.kt">Notification_Listing.kt</string>
+    <string name="title_activity_company_payment">Company_Payment</string>
+    <string name="title_activity_subscription_benefits">Subscription_Benefits</string>
+    <string name="title_activity_company_info">Company_Info</string>
+    <string name="title_activity_employees_charts">EmployeesCharts</string>
 </resources>

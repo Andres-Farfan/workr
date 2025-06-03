@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.workr"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -28,6 +28,7 @@ android {
         // Se hacen accesibles para el código las propiedades de configuración con BuildConfig.
         buildConfigField("String", "BACKEND_BASE_URL", properties.getProperty("BACKEND_BASE_URL"))
         buildConfigField("String", "BACKEND_API_KEY", properties.getProperty("BACKEND_API_KEY"))
+        buildConfigField("String", "STRIPE_PUBLISHABLE_KEY", properties.getProperty("STRIPE_PUBLISHABLE_KEY"))
     }
 
     buildFeatures {
@@ -66,7 +67,10 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-serialization-gson:$ktor_version")
-    implementation("androidx.navigation:navigation-compose:2.7.7") // Usa la última versión si es diferente
+    implementation("co.yml:ycharts:2.1.0")
+    implementation("com.stripe:stripe-android:21.15.0")
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("com.airbnb.android:lottie-compose:6.1.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
