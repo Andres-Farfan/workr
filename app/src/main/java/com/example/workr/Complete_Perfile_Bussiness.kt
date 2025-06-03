@@ -16,7 +16,12 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavHostController
-
+import io.ktor.client.call.body
+import io.ktor.http.HttpMethod
+import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun CompletePerfile(
@@ -24,14 +29,13 @@ fun CompletePerfile(
     userId: String,
     navController: NavHostController
 ) {
+    var imageUrl by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var vision by remember { mutableStateOf("") }
     var mission by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var websiteUrl by remember { mutableStateOf("") }
     var locationUrl by remember { mutableStateOf("") }
-
-    val isEmpleado = loginType == "user"
 
     WorkRScaffold(
         navController = navController,
@@ -108,7 +112,12 @@ fun CompletePerfile(
             Spacer(modifier = Modifier.height(24.dp))
 
             OutlinedButton(
-                onClick = { /* acción para guardar */ },
+                onClick = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val resultado = PostCompanyProfileData("ID123")
+                        Log.d("ResultadoAPI", resultado.toString())
+                    }
+                },
                 modifier = Modifier.fillMaxWidth(),
                 border = BorderStroke(1.dp, Color(0xFF0078C1)),
                 colors = ButtonDefaults.outlinedButtonColors(
@@ -132,5 +141,16 @@ fun CompletePerfile(
             }
         }
     }
+}
+suspend fun PostCompanyProfileData(companyId: String): Map<String, Any> {
+    val response = HTTPClientAPI.makeRequest(
+        endpoint = "companies/update_profile",
+        method = HttpMethod.Post
+    )
+
+    val responseBody = response.body<Map<String, Any>>()  // casteo seguro
+    Log.d("POST_PROFILE", "Response body: $responseBody")
+
+    return responseBody
 }
 

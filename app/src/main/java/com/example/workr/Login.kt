@@ -1,5 +1,6 @@
 package com.example.workr
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
@@ -108,33 +109,40 @@ fun LoginScreen(
                                     val loginResponse = response.body<LoginResponse>()
 
                                     withContext(Dispatchers.Main) {
-                                        // Sirve para guardar token
+                                        // Reset errores porque login fue exitoso
+                                        emailError.value = false
+                                        passwordError.value = false
+
+                                        // Guardar token y navegar
                                         val sharedPref = navController.context.getSharedPreferences("auth_prefs", android.content.Context.MODE_PRIVATE)
                                         sharedPref.edit().putString("jwt", loginResponse.jwt).apply()
-
-                                        // Se establece el jwt para uso por defecto en el HTTPClientAPI.
                                         HTTPClientAPI.setJwt(loginResponse.jwt)
 
                                         Toast.makeText(
                                             navController.context,
-                                            "Login exitoso: ${loginResponse.loginType}",
+                                            "Bienvenido: ${loginResponse.loginType}",
                                             Toast.LENGTH_SHORT
                                         ).show()
-
                                         onLoginSuccess(loginResponse.loginType, loginResponse.id)
                                     }
                                 } else {
                                     val errorMsg = response.bodyAsText()
                                     withContext(Dispatchers.Main) {
+                                        // Mostrar error y marcar campos en rojo
+                                        emailError.value = true
+                                        passwordError.value = true
                                         Toast.makeText(
                                             navController.context,
-                                            "Error de login: $errorMsg",
+                                            "Error en los campos: $errorMsg",
                                             Toast.LENGTH_LONG
                                         ).show()
                                     }
                                 }
                             } catch (e: Exception) {
                                 withContext(Dispatchers.Main) {
+                                    // En caso de excepción también marcar error
+                                    emailError.value = true
+                                    passwordError.value = true
                                     Toast.makeText(
                                         navController.context,
                                         "Excepción: ${e.message}",

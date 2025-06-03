@@ -1,5 +1,7 @@
 package com.example.workr
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -26,17 +28,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpMethod
+import kotlinx.serialization.Serializable
+import kotlinx.coroutines.*
 
 // --- Pantalla Principal ---
 @Composable
 fun PostulacionFormScreen(
     navController: NavHostController,
     loginType: String,
-    userId: String,
+    vacancyId: String,
     fromAspirantsTrackingList: String? = null
 ) {
-    val isEmpleado = loginType == "user"
-
     val nombre = remember { mutableStateOf("") }
     val telefono = remember { mutableStateOf("") }
     val correo = remember { mutableStateOf("") }
@@ -124,7 +128,29 @@ fun PostulacionFormScreen(
 
                 if (!aspirantTrackingListMode) {
                     Button(
-                        onClick = { /* Acción al enviar */ },
+                        onClick = {
+                            val postulation = PostulationRequest(
+                                contactEmail = correo.value,
+                                phoneNumber = telefono.value,
+                                highestEducationLevel = nivelEstudio.value,
+                                experience = experiencia.value,
+                                hardSkills = habilidades.value,
+                                softSkills = herramientas.value, // Asumí aquí que herramientas van como "softSkills"
+                                applicationReason = razonIngreso.value,
+                                portfolioLink = portafolio.value,
+                                vacancyId = "" // Aquí deberías asignar el ID de la vacante correspondiente si aplica
+                            )
+
+                            enviarPostulacion(postulation,
+                                onSuccess = {
+                                    Toast.makeText(navController.context, "Postulación enviada con éxito", Toast.LENGTH_LONG).show()
+                                    // Opcional: limpiar campos o navegar a otra pantalla
+                                },
+                                onError = { error ->
+                                    Toast.makeText(navController.context, "Error: $error", Toast.LENGTH_LONG).show()
+                                }
+                            )
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp)
@@ -208,13 +234,44 @@ fun LabelWithInput(label: String, placeholder: String, state: MutableState<Strin
     }
 }
 
-// --- Barra superior azul ---
-@Composable
-fun BlueTopBar() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp)
-            .background(colorResource(id = R.color.blue_WorkR))
-    )
+fun enviarPostulacion(
+    postulation: PostulationRequest,
+    onSuccess: () -> Unit,
+    onError: (String) -> Unit
+) {
+    CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val response = HTTPClientAPI.makeRequest(
+                endpoint = "job_applications/register",
+                method = HttpMethod.Post,
+                body = postulation
+            )
+
+            if (response.status.value == 200 || response.status.value == 201) {
+                withContext(Dispatchers.Main) {
+                    onSuccess()
+                }
+            } else {
+                Log.d("Error en la solicitud",response.bodyAsText())
+
+            }
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                onError(e.message ?: "Error desconocido")
+            }
+        }
+    }
 }
+
+@Serializable
+data class PostulationRequest(
+    val contactEmail: String,
+    val phoneNumber: String,
+    val highestEducationLevel: String,
+    val experience: String,
+    val hardSkills: String,
+    val softSkills: String,
+    val applicationReason: String,
+    val portfolioLink: String,
+    val vacancyId: String,
+)

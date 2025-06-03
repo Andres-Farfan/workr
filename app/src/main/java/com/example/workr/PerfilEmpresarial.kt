@@ -20,6 +20,14 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.navigation.NavHostController
+import com.example.workr.HTTPClientAPI
+import io.ktor.client.call.body
+import io.ktor.http.HttpMethod
+import androidx.compose.runtime.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 
 @Composable
 fun PerfilEmpresarialScreen(
@@ -27,6 +35,12 @@ fun PerfilEmpresarialScreen(
     loginType: String,
     userId: String
 ) {
+    var companyProfile by remember { mutableStateOf<Map<String, Any>?>(null) }
+
+    LaunchedEffect(userId) {
+        companyProfile = getCompanyProfileData(userId)
+    }
+
     WorkRScaffold(
         navController = navController,
         loginType = loginType
@@ -39,49 +53,63 @@ fun PerfilEmpresarialScreen(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Imagen de perfil (perfil redondo)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(125.dp)
-                    .background(color = Color(0xFFDEE9ED))
+                    .background(color = Color(0xFFDEE9ED)),
+                contentAlignment = Alignment.Center
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(120.dp)
-                        .align(Alignment.Center)
-                        .background(Color(0xFF0066CC), shape = CircleShape)
-                        .padding(15.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    // Puedes agregar aquí un ícono si lo deseas
+                val profilePictureUrl = companyProfile?.get("profilePicture") as? String
+                if (profilePictureUrl != null) {
+                    AsyncImage(
+                        model = profilePictureUrl,
+                        contentDescription = "Imagen perfil empresa",
+                        modifier = Modifier
+                            .size(120.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    // Si no hay imagen, un cuadro azul redondo vacío
+                    Box(
+                        modifier = Modifier
+                            .size(120.dp)
+                            .background(Color(0xFF0066CC), shape = CircleShape)
+                    )
                 }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            // Nombre de la empresa
             Text(
-                "Nombre",
+                text = companyProfile?.get("name") as? String ?: "Nombre desconocido",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
+
+            // Descripción corta
             Text(
-                "Descripción de la empresa y su función.",
+                text = companyProfile?.get("description") as? String ?: "",
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 26.dp)
+                    .padding(top = 8.dp)
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 32.dp),
+                    .padding(vertical = 16.dp),
                 backgroundColor = Color(0xFFF2F8FC),
                 elevation = 4.dp
             ) {
@@ -98,12 +126,12 @@ fun PerfilEmpresarialScreen(
                     Text(
                         "Visión:",
                         fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
+                        textAlign = TextAlign.Start,
                         modifier = Modifier.fillMaxWidth()
                     )
                     Text(
-                        "Nuestra visión de la empresa y cuáles son las metas.",
-                        textAlign = TextAlign.Center,
+                        companyProfile?.get("vision") as? String ?: "No disponible",
+                        textAlign = TextAlign.Start,
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -112,16 +140,21 @@ fun PerfilEmpresarialScreen(
                     Text(
                         "Misión:",
                         fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
+                        textAlign = TextAlign.Start,
                         modifier = Modifier.fillMaxWidth()
                     )
                     Text(
-                        "Nuestra misión es lograr nuestros objetivos estratégicos.",
-                        textAlign = TextAlign.Center,
+                        companyProfile?.get("mission") as? String ?: "No disponible",
+                        textAlign = TextAlign.Start,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Contacto (usa la lista de contactLinks)
+            val contactLinks = companyProfile?.get("contactLinks") as? List<Map<String, String>>
 
             Column(
                 modifier = Modifier
@@ -133,46 +166,50 @@ fun PerfilEmpresarialScreen(
 
                 Spacer(modifier = Modifier.height(6.dp))
 
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = Color.Black)) {
-                            append("Correo: ")
-                        }
-                        withStyle(SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)) {
-                            append("nombre@usuario")
-                        }
+                if (contactLinks != null) {
+                    contactLinks.forEach { contact ->
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = Color.Black)) {
+                                    append("${contact["platform"] ?: "Plataforma"}: ")
+                                }
+                                withStyle(SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)) {
+                                    append(contact["link"] ?: "Sin enlace")
+                                }
+                            },
+                            modifier = Modifier.clickable { /* Puedes agregar acción para abrir link */ }
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                    }
+                } else {
+                    Text("No hay información de contacto disponible.")
+                }
+                //boton editar perfil
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = {
+                        navController.navigate("complete_profile_company")
                     },
-                    modifier = Modifier.clickable { /* Acción */ }
-                )
-
-                Spacer(modifier = Modifier.height(6.dp))
-
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = Color.Black)) {
-                            append("Sitio Web: ")
-                        }
-                        withStyle(SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)) {
-                            append("empresa.com.mx")
-                        }
-                    },
-                    modifier = Modifier.clickable { /* Acción */ }
-                )
-
-                Spacer(modifier = Modifier.height(6.dp))
-
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = Color.Black)) {
-                            append("Ubicación: ")
-                        }
-                        withStyle(SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)) {
-                            append("Google Maps")
-                        }
-                    },
-                    modifier = Modifier.clickable { /* Acción */ }
-                )
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .clip(RoundedCornerShape(24.dp)),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color(0xFFD9EEFF),
+                        contentColor = Color(0xFF0077CC)
+                    )
+                ) {
+                    Text("Editar perfil")
+                }
             }
         }
     }
+}
+suspend fun getCompanyProfileData(companyId: String): Map<String, Any> {
+    val response = HTTPClientAPI.makeRequest(
+        endpoint = "companies/profile/$companyId",
+        method = HttpMethod.Get
+    )
+    // Si sabes que es un Map, puedes convertirlo después
+    return response.body() as Map<String, Any>
 }

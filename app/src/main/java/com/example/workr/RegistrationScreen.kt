@@ -174,8 +174,8 @@ fun RegistrationScreen(
                                 if (response.status == HttpStatusCode.OK || response.status == HttpStatusCode.Created) {
                                     withContext(Dispatchers.Main) {
                                         Toast.makeText(context, "Registro exitoso", Toast.LENGTH_SHORT).show()
-                                        navController.navigate("user_profile") {
-                                            popUpTo("register_screen") { inclusive = true }
+                                        navController.navigate("login") {
+                                            popUpTo("register_user") { inclusive = true }
                                         }
                                     }
                                 } else {

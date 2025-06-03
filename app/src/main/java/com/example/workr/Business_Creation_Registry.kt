@@ -40,7 +40,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import android.util.Base64
+import android.webkit.MimeTypeMap
+import io.ktor.client.request.forms.*
+import io.ktor.http.*
 import java.io.ByteArrayOutputStream
+import java.io.File
 
 @Composable
 fun BusinessCreationScreen(navController: NavHostController) {
@@ -60,16 +64,15 @@ fun BusinessCreationScreen(navController: NavHostController) {
             .fillMaxWidth()
             .background(Color.White),
     ) {
-        // Encabezado azul
         WorkRTopBar(
             navController = navController,
             loginType = "company",
             modifier = Modifier
-                .align(Alignment.CenterHorizontally) // Esquina derecha centrada verticalmente
+                .align(Alignment.CenterHorizontally)
                 .fillMaxWidth()
                 .height(65.dp)
         )
-        // Lanzador para seleccionar imagen
+
         val imageLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.GetContent()
         ) { uri: Uri? ->
@@ -100,10 +103,8 @@ fun BusinessCreationScreen(navController: NavHostController) {
                     .align(Alignment.CenterHorizontally),
                 contentAlignment = Alignment.Center
             ) {
-                if (selectedImageUri != null) {
-                    val inputStream = selectedImageUri?.let {
-                        context.contentResolver.openInputStream(it)
-                    }
+                selectedImageUri?.let { uri ->
+                    val inputStream = context.contentResolver.openInputStream(uri)
                     val bitmap = inputStream?.use { BitmapFactory.decodeStream(it) }
                     bitmap?.let {
                         Image(
@@ -218,45 +219,50 @@ fun BusinessCreationScreen(navController: NavHostController) {
                             return@OutlinedButton
                         }
 
-                        // Convertir imagen a Base64
-                        val imageBase64 = selectedImageUri?.let { uri ->
-                            val inputStream = context.contentResolver.openInputStream(uri)
-                            val originalBitmap = BitmapFactory.decodeStream(inputStream)
-                            val resizedBitmap =
-                                resizeBitmap(originalBitmap, 150) // reduce a max 300px ancho o alto
-                            val outputStream = ByteArrayOutputStream()
-                            resizedBitmap.compress(
-                                Bitmap.CompressFormat.PNG,
-                                40,
-                                outputStream
-                            ) // 80% calidad (solo para JPEG realmente)
-                            val byteArray = outputStream.toByteArray()
-                            Base64.encodeToString(byteArray, Base64.NO_WRAP)
-                        } ?: ""
-
                         CoroutineScope(Dispatchers.IO).launch {
                             try {
-                                val request = CompanyRegisterRequest(
-                                    profile_picture = imageBase64,  // Aquí ya se manda la imagen en Base64
-                                    name = companyName,
-                                    commercialSector = sector,
-                                    employeeCount = employeesNumber.toIntOrNull() ?: 0,
-                                    type = companyType,
-                                    adminEmail = adminEmail,
-                                    adminPassword = adminPassword
+                                val tempFile = selectedImageUri?.let { uri ->
+                                    val inputStream = context.contentResolver.openInputStream(uri)
+                                    val extension = MimeTypeMap.getFileExtensionFromUrl(uri.toString())
+
+                                    File.createTempFile("profile_picture", ".$extension", context.cacheDir).apply {
+                                        outputStream().use { fileOut ->
+                                            inputStream?.copyTo(fileOut)
+                                        }
+                                    }
+                                }
+
+                                if (tempFile == null) {
+                                    withContext(Dispatchers.Main) {
+                                        Toast.makeText(context, "Error al procesar la imagen", Toast.LENGTH_SHORT).show()
+                                    }
+                                    return@launch
+                                }
+
+                                val formFields = mapOf<String, Any>(
+                                    "profile_picture" to tempFile,
+                                    "name" to companyName,
+                                    "commercialSector" to sector,
+                                    "employeeCount" to employeesNumber.toInt().toString(),
+                                    "type" to companyType,
+                                    "adminEmail" to adminEmail,
+                                    "adminPassword" to adminPassword
                                 )
-                                val response = HTTPClientAPI.makeRequest(
+
+
+                                val response = HTTPClientAPI.submitMultipartForm(
                                     endpoint = "companies/register",
                                     method = HttpMethod.Post,
-                                    body = request
+                                    formFields = formFields
                                 )
+
                                 if (response.status.value == 200) {
-                                    val registerResponse = response.body<CompanyRegisterResponse>()
+                                    val responseBody = response.bodyAsText()
                                     withContext(Dispatchers.Main) {
                                         sharedPref.edit().putBoolean("has_company", true).apply()
                                         Toast.makeText(
                                             context,
-                                            "Registro exitoso: ${registerResponse.message}",
+                                            "Registro exitoso: $responseBody",
                                             Toast.LENGTH_SHORT
                                         ).show()
                                         navController.navigate("company_profile")
@@ -273,11 +279,7 @@ fun BusinessCreationScreen(navController: NavHostController) {
                                 }
                             } catch (e: Exception) {
                                 withContext(Dispatchers.Main) {
-                                    Toast.makeText(
-                                        context,
-                                        "Error: ${e.message}",
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                    Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_LONG).show()
                                 }
                             }
                         }

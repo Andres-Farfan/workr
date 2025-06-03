@@ -9,18 +9,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavHostController
 
 @Composable
@@ -29,9 +29,9 @@ fun ProfileEditScreen(
     userId: String,
     navController: NavHostController
 ) {
-    val isEmpleado = loginType == "user"
     var description by remember { mutableStateOf(TextFieldValue()) }
-    var contactLink by remember { mutableStateOf(TextFieldValue()) }
+    var contactLinks by remember { mutableStateOf(mutableListOf(TextFieldValue())) }
+    var phoneNumbers by remember { mutableStateOf(mutableListOf(TextFieldValue())) }
     var experiences by remember { mutableStateOf(mutableListOf<ExperienceState>()) }
 
     WorkRScaffold(
@@ -43,12 +43,9 @@ fun ProfileEditScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState()) // para poder scrollear si es necesario
+                .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
-
-            // Ya no necesitas el Box azul ni WorkRTopBar porque el scaffold lo maneja
-
             // Imagen de perfil
             Box(
                 modifier = Modifier
@@ -56,7 +53,7 @@ fun ProfileEditScreen(
                     .clip(CircleShape)
                     .background(Color(0xFF0078C1))
                     .align(Alignment.CenterHorizontally)
-                    .clickable { /* acción para cambiar foto */ }
+                    .clickable { /* Acción para cambiar foto */ }
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -88,33 +85,31 @@ fun ProfileEditScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text("Contacto", fontSize = 16.sp)
-            OutlinedTextField(
-                value = contactLink,
-                onValueChange = { contactLink = it },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Enlace de red social") },
-                trailingIcon = {
-                    IconButton(onClick = { contactLink = TextFieldValue("") }) {
-                        Icon(Icons.Default.Close, contentDescription = "Eliminar")
-                    }
-                }
-            )
+            Text("Enlaces de Contacto", fontSize = 16.sp)
 
-            OutlinedTextField(
-                value = contactLink,
-                onValueChange = { contactLink = it },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Número de teléfono") },
-                trailingIcon = {
-                    IconButton(onClick = { contactLink = TextFieldValue("") }) {
-                        Icon(Icons.Default.Close, contentDescription = "Eliminar")
+            contactLinks.forEachIndexed { index, link ->
+                OutlinedTextField(
+                    value = link,
+                    onValueChange = { newValue ->
+                        contactLinks = contactLinks.toMutableList().also { it[index] = newValue }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text("Enlace de red social") },
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            contactLinks = contactLinks.toMutableList().also { it.removeAt(index) }
+                        }) {
+                            Icon(Icons.Default.Close, contentDescription = "Eliminar enlace")
+                        }
                     }
-                }
-            )
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
 
             OutlinedButton(
-                onClick = { /* agregar contacto */ },
+                onClick = {
+                    contactLinks = contactLinks.toMutableList().also { it.add(TextFieldValue()) }
+                },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.outlinedButtonColors(
                     backgroundColor = Color.White,
@@ -125,17 +120,33 @@ fun ProfileEditScreen(
                 Text("+ Agregar Enlace de Contacto")
             }
 
-            experiences.forEachIndexed { index, experience ->
-                ExperienceItem(
-                    experience = experience,
-                    onRemove = {
-                        experiences = experiences.toMutableList().apply { removeAt(index) }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text("Números de Teléfono", fontSize = 16.sp)
+
+            phoneNumbers.forEachIndexed { index, phone ->
+                OutlinedTextField(
+                    value = phone,
+                    onValueChange = { newValue ->
+                        phoneNumbers = phoneNumbers.toMutableList().also { it[index] = newValue }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text("Número de teléfono") },
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            phoneNumbers = phoneNumbers.toMutableList().also { it.removeAt(index) }
+                        }) {
+                            Icon(Icons.Default.Close, contentDescription = "Eliminar número")
+                        }
                     }
                 )
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
             OutlinedButton(
-                onClick = { /* agregar número de teléfono */ },
+                onClick = {
+                    phoneNumbers = phoneNumbers.toMutableList().also { it.add(TextFieldValue()) }
+                },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.outlinedButtonColors(
                     backgroundColor = Color.White,
@@ -146,6 +157,10 @@ fun ProfileEditScreen(
                 Text("+ Agregar Número de Teléfono")
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text("Experiencia", fontSize = 16.sp)
+
             experiences.forEachIndexed { index, experience ->
                 ExperienceItem(
                     experience = experience,
@@ -153,6 +168,7 @@ fun ProfileEditScreen(
                         experiences = experiences.toMutableList().apply { removeAt(index) }
                     }
                 )
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
             OutlinedButton(
@@ -168,6 +184,8 @@ fun ProfileEditScreen(
             ) {
                 Text("+ Agregar Experiencia")
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
@@ -180,7 +198,7 @@ fun ExperienceItem(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 100.dp, max = 400.dp) // altura máxima del bloque con scroll
+            .heightIn(min = 100.dp, max = 400.dp)
             .background(Color(0xFFEDEDED), RoundedCornerShape(8.dp))
             .padding(8.dp)
     ) {
@@ -240,7 +258,6 @@ fun ExperienceItem(
     }
 }
 
-// Nuevo modelo para manejar estados dinámicos
 class ExperienceState {
     var position by mutableStateOf("")
     var company by mutableStateOf("")

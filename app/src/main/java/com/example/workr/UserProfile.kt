@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImagePainter
@@ -49,7 +50,6 @@ fun ProfileViewScreen(
     userId: String,
     navController: NavHostController
 ) {
-    val isEmpleado = loginType == "user"
 
     var profilePictureURL by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
@@ -92,6 +92,23 @@ fun ProfileViewScreen(
             ExperienceSection(experienceRecords)
             SkillsSection(skills)
             StudiesSection(educationRecords)
+            //Botón para editar perfil
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = {
+                    navController.navigate("profile_edit_user")
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .clip(RoundedCornerShape(24.dp)),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFFD9EEFF),
+                    contentColor = Color(0xFF0077CC)
+                )
+            ) {
+                Text("Editar perfil")
+            }
         }
     }
 }
