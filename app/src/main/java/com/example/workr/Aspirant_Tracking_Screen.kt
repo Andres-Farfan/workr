@@ -1,51 +1,70 @@
 package com.example.workr
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PrimaryTabRow
-import androidx.compose.material3.Tab
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import io.ktor.client.statement.*
+import io.ktor.http.*
 
-/**
- * Activity propia para el sistema gestor de aspirantes que permite
- * darle su propia navegación independiente de la principal.
- */
-class AspirantTrackingActivity: ComponentActivity() {
+// Modelo de aspirante
+data class Aspirant(
+    val id: Int,
+    val name: String,
+    val email: String? = null
+)
+
+// Petición HTTP para obtener aspirantes por vacante
+suspend fun getAspirantsByVacancyId(vacancyId: String): List<Aspirant> {
+    val response = HTTPClientAPI.makeRequest(
+        endpoint = "job_applications/vacancy_applicants",
+        method = HttpMethod.Get,
+        body = mapOf("vacancyId" to vacancyId)
+    )
+    val responseBodyText = response.bodyAsText()
+    Log.d("aspirante_debug", responseBodyText)
+
+    return try {
+        val gson = Gson()
+        val listType = object : TypeToken<List<Aspirant>>() {}.type
+        gson.fromJson<List<Aspirant>>(responseBodyText, listType)
+    } catch (e: Exception) {
+        Log.e("aspirante_debug", "Error parseando aspirantes: ${e.message}")
+        emptyList()
+    }
+}
+
+// Actividad principal para gestión de aspirantes
+class AspirantTrackingActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Se obtienen datos del intent para la activity del sistema gestor
-        // de aspirantes.
-        val intent = intent
         val userId = intent.getStringExtra("user_id").orEmpty()
+        val vacancyId = intent.getStringExtra("vacancy_id").orEmpty()
 
         setContent {
-            // Este controlador de navegación servirá de manera local
-            // en el sistema gestor de aspirantes.
             val navController = rememberNavController()
-
             NavHost(navController = navController, startDestination = "aspirant_tracking") {
-                composable("aspirant_tracking") { AspirantTrackingScreen(navController) }
-
+                composable("aspirant_tracking") {
+                    AspirantTrackingScreen(
+                        navController = navController,
+                        userId = userId,
+                        vacancyId = vacancyId
+                    )
+                }
                 composable("initial_aspirant_postulation_form") {
                     PostulacionFormScreen(
                         navController = navController,
@@ -54,7 +73,6 @@ class AspirantTrackingActivity: ComponentActivity() {
                         fromAspirantsTrackingList = "initial"
                     )
                 }
-
                 composable("contacted_aspirant_postulation_form") {
                     PostulacionFormScreen(
                         navController = navController,
@@ -63,7 +81,6 @@ class AspirantTrackingActivity: ComponentActivity() {
                         fromAspirantsTrackingList = "contacted"
                     )
                 }
-
                 composable("interview_notes") {
                     InterviewNotesScreen(navController = navController)
                 }
@@ -72,27 +89,35 @@ class AspirantTrackingActivity: ComponentActivity() {
     }
 }
 
-/**
- * Ventana del Sistema Gestor de Aspirantes usada para controlar el
- * flujo de los aspirantes registrados en una vacante.
- * @param navController Controlador de la navegación local del sistema de aspirantes.
- */
+// Pantalla principal de gestión de aspirantes con tabs
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun AspirantTrackingScreen(
     navController: NavHostController,
+    userId: String,
+    vacancyId: String
 ) {
     val tabsNavController = rememberNavController()
-
-    val tabs = listOf("initial", "contacted")
+    val tabs = listOf(AspirantTrackingNavTabs.INITIAL, AspirantTrackingNavTabs.CONTACTED)
     val navBackStackEntry by tabsNavController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val selectedTabIndex = tabs.indexOf(currentRoute).takeIf { it >= 0 } ?: 0
+    val selectedTabIndex = tabs.indexOfFirst { it.route == currentRoute }.takeIf { it >= 0 } ?: 0
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        // Título centrado
+    var aspirantsInitial by remember { mutableStateOf<List<Aspirant>>(emptyList()) }
+    var companyProfile by remember { mutableStateOf<Map<String, Any>?>(null) }
+
+    LaunchedEffect(userId, vacancyId) {
+        if (vacancyId.isNotEmpty()) {
+            try {
+                aspirantsInitial = getAspirantsByVacancyId(vacancyId)
+                // Puedes extraer datos de empresa si el backend los devuelve
+                // companyProfile = ...
+            } catch (e: Exception) {
+                Log.e("aspirante_debug", "Error loading aspirants: ${e.message}")
+            }
+        }
+    }
+
+    Column(modifier = Modifier.fillMaxSize()) {
         Text(
             text = "Gestión de Aspirantes",
             modifier = Modifier
@@ -105,16 +130,26 @@ fun AspirantTrackingScreen(
             )
         )
 
-        // Pestañas
-        PrimaryTabRow(selectedTabIndex = selectedTabIndex) {
-            AspirantTrackingNavTabs.entries.forEachIndexed { index, tab ->
+        companyProfile?.let {
+            Text(
+                text = "Empresa: ${it["name"] ?: "Desconocida"}",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                style = MaterialTheme.typography.bodyMedium,
+                color = colorResource(id = R.color.blue_WorkR)
+            )
+        }
+
+        TabRow(selectedTabIndex = selectedTabIndex) {
+            tabs.forEachIndexed { index, tab ->
                 Tab(
                     selected = selectedTabIndex == index,
                     onClick = {
                         if (currentRoute != tab.route) {
-                            tabsNavController.popBackStack()
-                            tabsNavController.navigate(route = tab.route) {
+                            tabsNavController.navigate(tab.route) {
                                 launchSingleTop = true
+                                restoreState = true
                             }
                         }
                     },
@@ -128,44 +163,54 @@ fun AspirantTrackingScreen(
             }
         }
 
-        // Contenido de cada pestaña
         NavHost(
             navController = tabsNavController,
-            startDestination = "initial",
+            startDestination = AspirantTrackingNavTabs.INITIAL.route,
             modifier = Modifier.fillMaxSize()
         ) {
-            AspirantTrackingNavTabs.entries.forEach { destination ->
-                composable(destination.route) {
-                    when (destination) {
-                        AspirantTrackingNavTabs.INITIAL -> InitialAspirantsListScreen(
-                            onFormButtonPressed = {
-                                navController.navigate("initial_aspirant_postulation_form")
-                            }
-                        )
-                        AspirantTrackingNavTabs.CONTACTED -> ContactedAspirantsListScreen(
-                            onFormButtonPressed = {
-                                navController.navigate("contacted_aspirant_postulation_form")
-                            },
-                            onInterviewButtonPressed = {
-                                navController.navigate("interview_notes")
-                            }
+            composable(AspirantTrackingNavTabs.INITIAL.route) {
+                if (aspirantsInitial.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(24.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No hay aspirantes registrados aún",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = colorResource(id = R.color.gray_WorkR)
                         )
                     }
+                } else {
+                    InitialAspirantsListScreen(
+                        vacancyId = vacancyId,
+                        userId = userId,
+                        onFormButtonPressed = {
+                            navController.navigate("initial_aspirant_postulation_form")
+                        }
+                    )
                 }
+            }
+
+            composable(AspirantTrackingNavTabs.CONTACTED.route) {
+                ContactedAspirantsListScreen(
+                    userId = userId,
+                    vacancyId = vacancyId,
+                    onFormButtonPressed = {
+                        navController.navigate("contacted_aspirant_postulation_form")
+                    },
+                    onInterviewButtonPressed = {
+                        navController.navigate("interview_notes")
+                    }
+                )
             }
         }
     }
 }
 
-
-/**
- * Clase enumeradora que lista las posibles pestañas para navegar en el
- * sistema de gestión de aspirantes.
- */
-enum class AspirantTrackingNavTabs(
-    val route: String,
-    val label: String
-) {
+// Tabs disponibles
+enum class AspirantTrackingNavTabs(val route: String, val label: String) {
     INITIAL("initial", "Aspirantes iniciales"),
     CONTACTED("contacted", "Aspirantes contactados")
 }

@@ -1,5 +1,6 @@
 package com.example.workr
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -17,7 +18,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -26,8 +27,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import io.ktor.http.HttpMethod
+import io.ktor.http.isSuccess
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-// --- Pantalla Principal ---
 @Composable
 fun PostulacionFormScreen(
     navController: NavHostController,
@@ -36,6 +42,7 @@ fun PostulacionFormScreen(
     fromAspirantsTrackingList: String? = null
 ) {
     val isEmpleado = loginType == "user"
+    val context = LocalContext.current
 
     val nombre = remember { mutableStateOf("") }
     val telefono = remember { mutableStateOf("") }
@@ -73,6 +80,7 @@ fun PostulacionFormScreen(
                         size = Size(width, 60.dp.toPx())
                     )
                 }
+
                 val pathLeft = Path().apply {
                     moveTo(0f, height - cornerSize)
                     lineTo(0f, height)
@@ -109,7 +117,7 @@ fun PostulacionFormScreen(
                         .padding(vertical = 16.dp)
                 )
 
-                LabelWithInput("Nombre completo:", "Nombre completo(Primero el apellido)", nombre, fieldsEnabled)
+                LabelWithInput("Nombre completo:", "Nombre completo (Primero el apellido)", nombre, fieldsEnabled)
                 LabelWithInput("Número de teléfono:", "Teléfono", telefono, fieldsEnabled)
                 LabelWithInput("Correo electrónico:", "Correo electrónico", correo, fieldsEnabled)
                 LabelWithInput("¿Último nivel de estudio alcanzado?", "Nivel alcanzado", nivelEstudio, fieldsEnabled)
@@ -118,13 +126,77 @@ fun PostulacionFormScreen(
                 LabelWithInput("¿Cuáles son tus principales habilidades técnicas?", "Principales técnicas", habilidades, fieldsEnabled)
                 LabelWithInput("¿Qué herramientas o softwares dominas?", "Herramientas dominadas", herramientas, fieldsEnabled)
                 LabelWithInput("¿Por qué quieres trabajar en nuestra empresa?", "Razón", razonIngreso, fieldsEnabled)
-                LabelWithInput("¿Puedes compartir un portafolio o ejemplos de tu trabajo?", "Razón", portafolio, fieldsEnabled)
+                LabelWithInput("¿Puedes compartir un portafolio o ejemplos de tu trabajo?", "Link o descripción", portafolio, fieldsEnabled)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 if (!aspirantTrackingListMode) {
                     Button(
-                        onClick = { /* Acción al enviar */ },
+                        onClick = {
+                            // Validaciones
+                            if (nombre.value.isBlank() || correo.value.isBlank() || telefono.value.isBlank() ||
+                                nivelEstudio.value.isBlank() || experiencia.value.isBlank() ||
+                                habilidades.value.isBlank() || herramientas.value.isBlank() ||
+                                razonIngreso.value.isBlank()
+                            ) {
+                                Toast.makeText(context, "Completa todos los campos obligatorios.", Toast.LENGTH_LONG).show()
+                                return@Button
+                            }
+
+                            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(correo.value).matches()) {
+                                Toast.makeText(context, "Correo electrónico no válido.", Toast.LENGTH_LONG).show()
+                                return@Button
+                            }
+
+                            val postRequest = PostulacionRequest(
+                                contactEmail = correo.value.trim(),
+                                phoneNumber = telefono.value.trim(),
+                                highestEducationLevel = nivelEstudio.value.trim(),
+                                experience = experiencia.value.trim(),
+                                hardSkills = herramientas.value.trim(),
+                                softSkills = habilidades.value.trim(),
+                                applicationReason = razonIngreso.value.trim(),
+                                portfolioLink = portafolio.value.trim(),
+                                vacancyId = userId
+                            )
+
+                            CoroutineScope(Dispatchers.IO).launch {
+                                try {
+                                    val response = HTTPClientAPI.makeRequest(
+                                        endpoint = "job_applications/register",
+                                        method = HttpMethod.Post,
+                                        body = postRequest
+                                    )
+                                    if (response.status.isSuccess()) {
+                                        withContext(Dispatchers.Main) {
+                                            Toast.makeText(context, "Postulación enviada exitosamente.", Toast.LENGTH_LONG).show()
+
+                                            // Limpiar campos
+                                            nombre.value = ""
+                                            telefono.value = ""
+                                            correo.value = ""
+                                            nivelEstudio.value = ""
+                                            ultimoEmpleo.value = ""
+                                            experiencia.value = ""
+                                            habilidades.value = ""
+                                            herramientas.value = ""
+                                            razonIngreso.value = ""
+                                            portafolio.value = ""
+
+                                            navController.popBackStack()
+                                        }
+                                    } else {
+                                        withContext(Dispatchers.Main) {
+                                            Toast.makeText(context, "Error al enviar: ${response.status.value}", Toast.LENGTH_LONG).show()
+                                        }
+                                    }
+                                } catch (e: Exception) {
+                                    withContext(Dispatchers.Main) {
+                                        Toast.makeText(context, "Error inesperado: ${e.message}", Toast.LENGTH_LONG).show()
+                                    }
+                                }
+                            }
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp)
@@ -159,7 +231,44 @@ fun PostulacionFormScreen(
 
                         if (fromAspirantsTrackingList == "initial") {
                             OutlinedButton(
-                                onClick = { /* Acción para agendar cita */ },
+                                onClick = {
+                                    // Aquí puedes realizar la lógica de agendar cita
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        try {
+                                            val response = HTTPClientAPI.makeRequest(
+                                                endpoint = "job_applications/register_interview",
+                                                method = HttpMethod.Post,
+                                                body = mapOf(
+                                                    "companyId" to userId.toIntOrNull(), // Asegura que sea Int
+                                                    "applicantEmail" to correo.value.trim()
+                                                )
+                                            )
+                                            withContext(Dispatchers.Main) {
+                                                if (response.status.isSuccess()) {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Cita agendada correctamente.",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                } else {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Error: ${response.status.value}",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                            }
+                                        } catch (e: Exception) {
+                                            withContext(Dispatchers.Main) {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Error inesperado: ${e.message}",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
+                                    }
+                                },
                                 border = BorderStroke(1.dp, colorResource(id = R.color.blue_WorkR)),
                                 colors = ButtonDefaults.outlinedButtonColors(
                                     contentColor = colorResource(id = R.color.blue_WorkR)
@@ -177,7 +286,6 @@ fun PostulacionFormScreen(
     }
 }
 
-// --- Campo con etiqueta + input ---
 @Composable
 fun LabelWithInput(label: String, placeholder: String, state: MutableState<String>, enabled: Boolean) {
     Column(modifier = Modifier.padding(bottom = 12.dp)) {
@@ -208,13 +316,14 @@ fun LabelWithInput(label: String, placeholder: String, state: MutableState<Strin
     }
 }
 
-// --- Barra superior azul ---
-@Composable
-fun BlueTopBar() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp)
-            .background(colorResource(id = R.color.blue_WorkR))
-    )
-}
+data class PostulacionRequest(
+    val contactEmail: String,
+    val phoneNumber: String,
+    val highestEducationLevel: String,
+    val experience: String,
+    val hardSkills: String,
+    val softSkills: String,
+    val applicationReason: String,
+    val portfolioLink: String,
+    val vacancyId: String
+)
