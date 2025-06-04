@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.workr"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -29,6 +29,7 @@ android {
         buildConfigField("String", "BACKEND_BASE_URL", properties.getProperty("BACKEND_BASE_URL"))
         buildConfigField("String", "BACKEND_API_KEY", properties.getProperty("BACKEND_API_KEY"))
         buildConfigField("String", "CALLING_APP_ID", properties.getProperty("CALLING_APP_ID"))
+        buildConfigField("String", "STRIPE_PUBLISHABLE_KEY", properties.getProperty("STRIPE_PUBLISHABLE_KEY"))
     }
 
     buildFeatures {
@@ -69,7 +70,10 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-serialization-gson:$ktor_version")
-    implementation("androidx.navigation:navigation-compose:2.7.7") // Usa la última versión si es diferente
+    implementation("co.yml:ycharts:2.1.0")
+    implementation("com.stripe:stripe-android:21.15.0")
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("com.airbnb.android:lottie-compose:6.1.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -90,6 +94,7 @@ dependencies {
     implementation ("androidx.activity:activity-compose:1.7.0") // Integración con Activity
     implementation("androidx.compose.ui:ui-tooling-preview:1.5.1")
     implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation("io.coil-kt:coil-compose:2.2.2")
     implementation("io.coil-kt:coil-svg:2.2.2")
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)

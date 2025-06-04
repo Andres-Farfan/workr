@@ -161,6 +161,10 @@ fun WorkRApp(loginViewModel: LoginViewModel = viewModel()) {
                 userId = userId
             )
         }
+
+        composable("company_info") {
+            CompanyInfoScreen()
+        }
     }
 }
 
