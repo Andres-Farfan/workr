@@ -21,9 +21,13 @@ class LoginViewModel : ViewModel() {
     private val _userId = MutableStateFlow("")
     val userId: StateFlow<String> = _userId
 
-    fun updateLogin(type: String, id: String) {
+    private val _companyId = MutableStateFlow("")
+    val companyId: StateFlow<String> = _companyId
+
+    fun updateLogin(type: String, id: String, companyId: String) {
         _loginType.value = type
         _userId.value = id
+        _companyId.value = companyId
     }
 }
 
@@ -34,6 +38,7 @@ fun WorkRApp(loginViewModel: LoginViewModel = viewModel()) {
     // ✅ Recolectamos el estado observable para que Compose escuche cambios
     val loginType by loginViewModel.loginType.collectAsState()
     val userId by loginViewModel.userId.collectAsState()
+    val companyId by loginViewModel.companyId.collectAsState()
 
     NavHost(
         navController = navController,
@@ -44,8 +49,8 @@ fun WorkRApp(loginViewModel: LoginViewModel = viewModel()) {
         composable("login") {
             LoginScreen(
                 navController = navController,
-                onLoginSuccess = { type, id ->
-                    loginViewModel.updateLogin(type, id)
+                onLoginSuccess = { type, id, companyId ->
+                    loginViewModel.updateLogin(type, id, companyId)
                     navController.navigate(
                         if (type == "user") "user_profile" else "company_profile"
                     ) {
@@ -150,7 +155,8 @@ fun WorkRApp(loginViewModel: LoginViewModel = viewModel()) {
             VirtualOfficeScreen(
                 navController = navController,
                 loginType = loginType,
-                userId = userId
+                userId = userId,
+                companyId = companyId
             )
         }
 
@@ -160,6 +166,10 @@ fun WorkRApp(loginViewModel: LoginViewModel = viewModel()) {
                 loginType = loginType,
                 userId = userId
             )
+        }
+
+        composable("company_info") {
+            CompanyInfoScreen()
         }
     }
 }
