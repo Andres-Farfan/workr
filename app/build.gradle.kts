@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.workr"
-        minSdk = 26
+        minSdk = 24
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -28,8 +28,6 @@ android {
         // Se hacen accesibles para el código las propiedades de configuración con BuildConfig.
         buildConfigField("String", "BACKEND_BASE_URL", properties.getProperty("BACKEND_BASE_URL"))
         buildConfigField("String", "BACKEND_API_KEY", properties.getProperty("BACKEND_API_KEY"))
-        buildConfigField("String", "CALLING_APP_ID", properties.getProperty("CALLING_APP_ID"))
-        buildConfigField("String", "STRIPE_PUBLISHABLE_KEY", properties.getProperty("STRIPE_PUBLISHABLE_KEY"))
     }
 
     buildFeatures {
@@ -63,17 +61,12 @@ android {
 }
 val ktor_version: String by project
 val nav_version: String by project
-val agora_video_sdk_version: String by project
 dependencies {
-    implementation("io.agora.rtc:full-sdk:${agora_video_sdk_version}")
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-serialization-gson:$ktor_version")
-    implementation("co.yml:ycharts:2.1.0")
-    implementation("com.stripe:stripe-android:21.15.0")
-    implementation("io.coil-kt:coil-compose:2.4.0")
-    implementation("com.airbnb.android:lottie-compose:6.1.0")
+    implementation("androidx.navigation:navigation-compose:2.7.7") // Usa la última versión si es diferente
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -89,7 +82,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation ("androidx.compose.ui:ui:1.4.0") // Base de Jetpack Compose
     implementation ("androidx.compose.material:material:1.4.0") // Componentes Material Design
-    implementation ("androidx.compose.material:material-icons-extended:1.4.0") // Iconos Material Design
     implementation ("androidx.compose.ui:ui-tooling-preview:1.4.0") // Herramientas de vista previa
     implementation ("androidx.activity:activity-compose:1.7.0") // Integración con Activity
     implementation("androidx.compose.ui:ui-tooling-preview:1.5.1")

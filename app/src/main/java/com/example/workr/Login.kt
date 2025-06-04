@@ -38,7 +38,7 @@ import io.ktor.client.plugins.*
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    onLoginSuccess: (loginType: String, userId: String, companyId: String) -> Unit ) {
+    onLoginSuccess: (loginType: String, userId: String) -> Unit ) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val isEmpresa = remember { mutableStateOf(false) } // false = empleado, true = empresa
@@ -123,8 +123,7 @@ fun LoginScreen(
                                             "Bienvenido: ${loginResponse.loginType}",
                                             Toast.LENGTH_SHORT
                                         ).show()
-
-                                        onLoginSuccess(loginResponse.loginType, loginResponse.id, loginResponse.virtualOfficeCompanyId)
+                                        onLoginSuccess(loginResponse.loginType, loginResponse.id)
                                     }
                                 } else {
                                     val errorMsg = response.bodyAsText()

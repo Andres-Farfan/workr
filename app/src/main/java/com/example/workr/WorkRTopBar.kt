@@ -59,11 +59,7 @@ fun WorkRTopBar(
                 if (isEmpleado) "Empleos" else "Vacantes de empresa"
             ),
             Triple("virtual_office", R.drawable.ic_virtual_office, "Oficina Virtual"),
-            Triple(
-                if (isEmpleado) "notifications" else "company_info",
-                if (isEmpleado) R.drawable.ic_notifications else R.drawable.folder,
-                if (isEmpleado) "Notificaciones" else "Información"
-            )
+            Triple("notifications", R.drawable.ic_notifications, "Notificaciones")
         )
     }
 

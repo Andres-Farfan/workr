@@ -21,11 +21,25 @@ fun NotificationsScreen(
         navController = navController,
         loginType = loginType,
     ) { innerPadding ->
-        NotificationListing(
-            userId = userId,
-            modifier = Modifier.padding(innerPadding),
-            onBackClick = { navController.popBackStack() }
-        )
+
+        val isEmpleado = loginType == "user"
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(Color.White)
+                .padding(16.dp)
+        ) {
+            Text(
+                text = if (isEmpleado)
+                    "No tienes notificaciones por el momento (Empleado)"
+                else
+                    "No hay notificaciones disponibles para tu empresa",
+                modifier = Modifier.align(Alignment.Center),
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
