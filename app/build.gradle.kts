@@ -28,6 +28,7 @@ android {
         // Se hacen accesibles para el código las propiedades de configuración con BuildConfig.
         buildConfigField("String", "BACKEND_BASE_URL", properties.getProperty("BACKEND_BASE_URL"))
         buildConfigField("String", "BACKEND_API_KEY", properties.getProperty("BACKEND_API_KEY"))
+        buildConfigField("String", "CALLING_APP_ID", properties.getProperty("CALLING_APP_ID"))
     }
 
     buildFeatures {
@@ -61,7 +62,9 @@ android {
 }
 val ktor_version: String by project
 val nav_version: String by project
+val agora_video_sdk_version: String by project
 dependencies {
+    implementation("io.agora.rtc:full-sdk:${agora_video_sdk_version}")
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
