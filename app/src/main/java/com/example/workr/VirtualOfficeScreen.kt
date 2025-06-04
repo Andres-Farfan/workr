@@ -21,7 +21,8 @@ import androidx.navigation.NavHostController
 fun VirtualOfficeScreen(
     navController: NavHostController,
     loginType: String,
-    userId: String
+    userId: String,
+    companyId: String
 ) {
     val context = LocalContext.current
     val isEmpleado = loginType == "user"
@@ -60,6 +61,23 @@ fun VirtualOfficeScreen(
                 }
             }) {
                 Text("Entrar a la Oficina Virtual")
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = {
+                    val sharedPref = navController.context.getSharedPreferences("auth_prefs", android.content.Context.MODE_PRIVATE)
+                    val jwt = sharedPref.getString("jwt", null)
+
+                    val intent = Intent(context, OfficeGroupCallActivity::class.java)
+                    intent.putExtra("user_id", userId)
+                    intent.putExtra("jwt", jwt)
+                    intent.putExtra("company_id", companyId)
+                    context.startActivity(intent)
+                }
+            ) {
+                Text("Entrar a llamada de la oficina")
             }
         }
     }
