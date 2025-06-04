@@ -28,6 +28,7 @@ android {
         // Se hacen accesibles para el código las propiedades de configuración con BuildConfig.
         buildConfigField("String", "BACKEND_BASE_URL", properties.getProperty("BACKEND_BASE_URL"))
         buildConfigField("String", "BACKEND_API_KEY", properties.getProperty("BACKEND_API_KEY"))
+        buildConfigField("String", "CALLING_APP_ID", properties.getProperty("CALLING_APP_ID"))
         buildConfigField("String", "STRIPE_PUBLISHABLE_KEY", properties.getProperty("STRIPE_PUBLISHABLE_KEY"))
     }
 
@@ -62,7 +63,9 @@ android {
 }
 val ktor_version: String by project
 val nav_version: String by project
+val agora_video_sdk_version: String by project
 dependencies {
+    implementation("io.agora.rtc:full-sdk:${agora_video_sdk_version}")
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
@@ -86,6 +89,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation ("androidx.compose.ui:ui:1.4.0") // Base de Jetpack Compose
     implementation ("androidx.compose.material:material:1.4.0") // Componentes Material Design
+    implementation ("androidx.compose.material:material-icons-extended:1.4.0") // Iconos Material Design
     implementation ("androidx.compose.ui:ui-tooling-preview:1.4.0") // Herramientas de vista previa
     implementation ("androidx.activity:activity-compose:1.7.0") // Integración con Activity
     implementation("androidx.compose.ui:ui-tooling-preview:1.5.1")
