@@ -3,6 +3,7 @@ package com.example.workr
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -53,8 +54,12 @@ class Company_Payment : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        Toast.makeText(applicationContext, "Sin configuración de api key, cerrando activity", Toast.LENGTH_SHORT).show()
+        finish()
+        return
+
         // Initialize Stripe
-        PaymentConfiguration.init(applicationContext, BuildConfig.STRIPE_PUBLISHABLE_KEY)
+        PaymentConfiguration.init(applicationContext, "")
 
         paymentSheet = PaymentSheet(this) { paymentSheetResult ->
             onPaymentResult(paymentSheetResult)

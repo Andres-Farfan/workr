@@ -32,7 +32,7 @@ class OfficeGroupCallActivity : AppCompatActivity() {
     }
 
     // Variables de configuración del servicio de llamadas.
-    private val callingAppId = BuildConfig.CALLING_APP_ID
+    private val callingAppId = ""
     private var mRtcEngine: RtcEngine? = null
 
     // Parámetros del intent.
@@ -123,7 +123,10 @@ class OfficeGroupCallActivity : AppCompatActivity() {
 
         // Se verifica la configuración de la propiedad de configuración.
         if (callingAppId.isEmpty()) {
-            throw Exception("Configuración incorrecta de calling app id")
+            // throw Exception("Configuración incorrecta de calling app id")
+            Toast.makeText(applicationContext, "Error al configurar la conexión a llamada, cerrando activity", Toast.LENGTH_SHORT).show()
+            concurrentSafeFinish()
+            return
         }
 
         // Se obtiene el intent y todos sus datos necesarios para conectar a la llamada.
