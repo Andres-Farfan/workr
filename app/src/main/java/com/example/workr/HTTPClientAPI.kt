@@ -29,8 +29,8 @@ import java.io.File
  * Objeto global utilizado para encapsular la lógica de solicitudes HTTP al backend.
  */
 object HTTPClientAPI {
-    private val BACKEND_BASE_URL = BuildConfig.BACKEND_BASE_URL
-    private val BACKEND_API_KEY = BuildConfig.BACKEND_API_KEY
+    private val BACKEND_BASE_URL = ""
+    private val BACKEND_API_KEY = ""
 
     private val gson = Gson()
 

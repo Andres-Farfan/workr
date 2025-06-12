@@ -1,6 +1,3 @@
-import java.io.FileInputStream
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -19,22 +16,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        // Se lee un archivo de propiedades para usarlas en este archivo de Build.
-        // Nota: El archivo debe ser correctamente ignorado del repositorio con .gitignore.
-        val propertiesFile = rootProject.file("config.properties")
-        val properties = Properties()
-        properties.load(FileInputStream(propertiesFile))
-
-        // Se hacen accesibles para el código las propiedades de configuración con BuildConfig.
-        buildConfigField("String", "BACKEND_BASE_URL", properties.getProperty("BACKEND_BASE_URL"))
-        buildConfigField("String", "BACKEND_API_KEY", properties.getProperty("BACKEND_API_KEY"))
-        buildConfigField("String", "CALLING_APP_ID", properties.getProperty("CALLING_APP_ID"))
-        buildConfigField("String", "STRIPE_PUBLISHABLE_KEY", properties.getProperty("STRIPE_PUBLISHABLE_KEY"))
-    }
-
-    buildFeatures {
-        // Se habilita la generación del objeto BuildConfig para el proyecto.
-        buildConfig = true
     }
 
     buildTypes {
